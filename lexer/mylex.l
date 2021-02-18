@@ -89,16 +89,44 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "/*"([^*]|"*"+[^/*])*"*/"               						{}
 "//"(.)*                       									{}
 
-"continue"|"for"|"while"										{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"switch"|"assert"|"default"|"goto"|"package"					{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"synchronized"|"boolean"|"do"|"if"|"private"					{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"this"|"break"|"double"|"implements"|"protected" 				{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"throw"|"byte"|"else"|"import"|"public" 						{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"throws"|"case"|"enum"|"instanceof"|"return" 					{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"transient"|"catch"|"extends"|"int"|"short"						{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"try"|"char"|"final"|"interface"|"static" 						{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"void"|"class"|"finally"|"long"|"strictfp" 						{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
-"volatile"|"const"|"float"|"native"|"super" 					{printf("\n\n TOKEN_NAME: Keyword\t\t\t VALUE: %s",yytext); return -1;}
+
+
+
+"auto"						{return AUTO;}
+"break"						{return BREAK;}
+"case"						{return CASE;}											
+"char"						{return CHAR;}							
+"const"						{return CONST;}						
+"continue"					{return CONTINUE;}							
+"default"					{return DEFAULT;}	
+"do"						{return DO;}
+"double"					{return DOUBLE;}	
+"else"						{return ELSE;}
+"enum"						{return ENUM;}
+"extern"					{return EXTERN;}
+"float"						{return FLOAT;}
+"for"						{return FOR;}
+"goto"						{return GOTO;}
+"if"						{return IF;}
+"inline"					{return INLINE;}	
+"int"						{return INT;}
+"long"						{return LONG;}
+"register"					{return REGISTER;}
+"restrict"					{return RESTRICT;}
+"return"					{return RETURN;}
+"short"						{return SHORT;}
+"signed"					{return SIGNED;}
+"sizeof"					{return SIZEOF;}
+"static"					{return STATIC;}
+"struct"					{return STRUCT;}
+"switch"					{return SWITCH;}
+"typedef"					{return TYPEDEF;}
+"union"						{return UNION;}
+"unsigned"					{return UNSIGNED;}
+"void"						{return VOID;}
+"volatile"					{return VOLATILE;}
+"while"						{return WHILE;}
+
 
 
 "++"|"--"|"~"|"!"|"*"|"/"|"%"|"+"|"-"                           {printf("\n\n TOKEN_NAME: Arithmetic operator\t VALUE: %s",yytext); return -1;}
@@ -113,6 +141,17 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 "true"															{return TRUE;}
 "false"                  										{return FALSE;}
+
+"printf"					{return PRINTF;}
+"scanf"						{return SCANF;}
+"gets"						{return GETS;}
+"puts"						{return PUTS;}
+"sizeof"					{return SIZEOF;}
+"loop"						{return LOOP;}
+"sum"						{return SUM;}
+"max"						{return MAX;}	
+"min"						{return MIN;}
+
 
 \"([^\\\"]|{EscapeSequence})*+\"                         		{return STRING_LITERAL}
 {CHARACTER_CONSTANT}                          					{return CHAR_LITERAL;}
