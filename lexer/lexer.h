@@ -5,3 +5,5 @@
 #define BOOLEAN_LITERAL 5
 #define IDENTIFIER 6
 #define NULL_LITERAL 7
+
+#define OPEN_CURLY 8
