@@ -135,10 +135,11 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "&&"|"||"|"?"|":"                            					{printf("\n\n TOKEN_NAME: Conditional operator\t VALUE: %s",yytext); return -1;}
 "="|"+="|"-="|"*="|"/="|"%="|"&="|"^="|"|="|"<<="|">>="|">>>="  {printf("\n\n TOKEN_NAME: Assignment operator\t VALUE: %s",yytext); return -1;}
 
-"NULL"                          								{return NULL_LITERAL;}
+
 
 {OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} {return INTEGER_LITERAL;}
 
+"NULL"                          								{return NULL_LITERAL;}
 "true"															{return TRUE;}
 "false"                  										{return FALSE;}
 
