@@ -128,12 +128,46 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "while"						{return WHILE;}
 
 
+"->"						{ return ARROW;}
+"++"						{ return INCREMENT;}
+"--"						{ return DECREMENT;}
+"&"							{ return AMPERSAND;}
+"*"							{ return STAR;}
+"+"							{ return ADDITION;}
+"-"							{ return SUBTRACTION;}
+"~"							{ return NEGATION;}
+"!"							{ return EXCLAIMATION;}
+"/" 						{return DIVISION;}
+"%" 						{return MODULO;}
+"<<" 						{return SHIFTLEFT;}
+">>" 						{return SHIFTRIGHT;}
+"<" 						{return LESSTHAN;}
+">" 						{return GREATERTHAN;}
+"<=" 						{return LESSTHANEQUAL;}
+">=" 						{return GREATERTHANEQUAL;}
+"==" 						{return EQUAL;}
+"!=" 						{return NOTEQUAL;}
+"^" 						{return BITXOR;}
+"|" 						{return BITOR;}
+"&&" 						{return AND;}
+"||" 						{return OR;}
+"?" 						{return QUESTION;}
 
-"++"|"--"|"~"|"!"|"*"|"/"|"%"|"+"|"-"                           {printf("\n\n TOKEN_NAME: Arithmetic operator\t VALUE: %s",yytext); return -1;}
-">"|"<"|"<="|">="|"instanceof"|"=="|"!="   						{printf("\n\n TOKEN_NAME: Relational operator\t VALUE: %s",yytext); return -1;}
-">>"|"<<"|">>>"|"&"|"^"|"|"                						{printf("\n\n TOKEN_NAME: Arithmetic operator\t VALUE: %s",yytext); return -1;}
-"&&"|"||"|"?"|":"                            					{printf("\n\n TOKEN_NAME: Conditional operator\t VALUE: %s",yytext); return -1;}
-"="|"+="|"-="|"*="|"/="|"%="|"&="|"^="|"|="|"<<="|">>="|">>>="  {printf("\n\n TOKEN_NAME: Assignment operator\t VALUE: %s",yytext); return -1;}
+
+"..." 						{return DOTS;}
+"=" 						{return ASSIGN;}
+"*=" 						{return MULEQ;}
+"/=" 						{return DIVEQ;}
+"%=" 						{return MODEQ;}
+"+=" 						{return PLUSEQ;}
+"-=" 						{return MINUSEQ;}
+"<<=" 						{return SHIFTLEQ;}
+">>=" 						{return SHIFTREQ;}
+"&=" 						{return BITANDEQ;}
+"^=" 						{return BITXOREQ;}
+"|=" 						{return BITOREQ;}
+"#" 						{return HASH;}
+
 
 
 
