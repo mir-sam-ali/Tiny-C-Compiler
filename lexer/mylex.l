@@ -76,15 +76,15 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 %%
-"{"																{ printf("\n%s\n",yytext); return OPEN_CURLY;}
-"}"																{ printf("\n%s\n",yytext); return CLOSE_CURLY;}
-"("																{ printf("\n%s\n",yytext); return OPEN_PARANTHESIS;}
-")"																{ printf("\n%s\n",yytext); return CLOSE_PARANTHESIS;}
-";"																{ printf("\n%s\n",yytext); return SEMI_COLON;}
+"{"																{ printf("\n%s\n",yytext); }
+"}"																{ printf("\n%s\n",yytext); }
+"("																{ printf("\n%s\n",yytext); }
+")"																{ printf("\n%s\n",yytext); }
+";"																{ printf("\n%s\n",yytext); }
 ","																{ printf("\n%s\n",yytext); return COMMA;}
 "."																{ printf("\n%s\n",yytext); return FULL_STOP;}
-"["																{ printf("\n%s\n",yytext); return OPEN_SQUARE;}
-"]"																{ printf("\n%s\n",yytext); return CLOSE_SQUARE;}
+"["																{ printf("\n%s\n",yytext); }
+"]"																{ printf("\n%s\n",yytext); }
 ":"																{ printf("\n%s\n",yytext); return COLON;}
 "/*"([^*]|"*"+[^/*])*"*/"               						{}
 "//"(.)*                       									{}
@@ -92,7 +92,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 
-"auto"						{ printf("\n%s\n",yytext); return AUTO;}
+
 "break"						{ printf("\n%s\n",yytext); return BREAK;}
 "case"						{ printf("\n%s\n",yytext); return CASE;}											
 "char"						{ printf("\n%s\n",yytext); return CHAR;}							
@@ -100,41 +100,41 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "continue"					{ printf("\n%s\n",yytext); return CONTINUE;}							
 "default"					{ printf("\n%s\n",yytext); return DEFAULT;}	
 "do"						{ printf("\n%s\n",yytext); return DO;}
-"double"					{ printf("\n%s\n",yytext); return DOUBLE;}	
+
 "else"						{ printf("\n%s\n",yytext); return ELSE;}
-"enum"						{ printf("\n%s\n",yytext); return ENUM;}
-"extern"					{ printf("\n%s\n",yytext); return EXTERN;}
-"float"						{ printf("\n%s\n",yytext); return FLOAT;}
+
+
 "for"						{ printf("\n%s\n",yytext); return FOR;}
-"goto"						{ printf("\n%s\n",yytext); return GOTO;}
+
 "if"						{ printf("\n%s\n",yytext); return IF;}
-"inline"					{ printf("\n%s\n",yytext); return INLINE;}	
+
 "int"						{ printf("\n%s\n",yytext); return INT;}
+"long long"					{ printf("\n%s\n",yytext); return LONG_LONG;}
 "long"						{ printf("\n%s\n",yytext); return LONG;}
-"register"					{ printf("\n%s\n",yytext); return REGISTER;}
-"restrict"					{ printf("\n%s\n",yytext); return RESTRICT;}
+
+
 "return"					{ printf("\n%s\n",yytext); return RETURN;}
 "short"						{ printf("\n%s\n",yytext); return SHORT;}
 "signed"					{ printf("\n%s\n",yytext); return SIGNED;}
+"boolean"					{ printf("\n%s\n",yytext); return BOOLEAN;}
 
-"static"					{ printf("\n%s\n",yytext); return STATIC;}
-"struct"					{ printf("\n%s\n",yytext); return STRUCT;}
+
 "switch"					{ printf("\n%s\n",yytext); return SWITCH;}
-"typedef"					{ printf("\n%s\n",yytext); return TYPEDEF;}
-"union"						{ printf("\n%s\n",yytext); return UNION;}
+
+
 "unsigned"					{ printf("\n%s\n",yytext); return UNSIGNED;}
 "void"						{ printf("\n%s\n",yytext); return VOID;}
-"volatile"					{ printf("\n%s\n",yytext); return VOLATILE;}
+
 "while"						{ printf("\n%s\n",yytext); return WHILE;}
 
 
-"->"						{  printf("\n%s\n",yytext); return ARROW;}
+
 "++"						{  printf("\n%s\n",yytext); return INCREMENT;}
 "--"						{  printf("\n%s\n",yytext); return DECREMENT;}
 "&"							{  printf("\n%s\n",yytext); return AMPERSAND;}
 "*"							{  printf("\n%s\n",yytext); return STAR;}
 "+"							{  printf("\n%s\n",yytext); return ADDITION;}
-"-"							{  printf("\n%s\n",yytext); return SUBTRACTION;}
+"-"							{  printf("\n%s\n",yytext); return MINUS;}
 "~"							{  printf("\n%s\n",yytext); return NEGATION;}
 "!"							{  printf("\n%s\n",yytext); return EXCLAIMATION;}
 "/" 						{ printf("\n%s\n",yytext); return DIVISION;}
@@ -170,7 +170,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 {OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { printf("\n%s\n",yytext); return INTEGER_LITERAL;}
 
-"NULL"                          								{ printf("\n%s\n",yytext); return NULL_LITERAL;}
+
 "true"															{ printf("\n%s\n",yytext); return TRUE;}
 "false"                  										{ printf("\n%s\n",yytext); return FALSE;}
 
