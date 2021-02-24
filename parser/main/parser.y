@@ -138,8 +138,10 @@ single_stmt :if_block
 							
 	    ;
 
-for_block: FOR '(' expression_stmt expression_stmt expression ')'  stmt 	         
+for_block: FOR '(' for_declaration expression_stmt expression ')'  stmt 	         
     		 ;
+
+for_declaration: data_type  declaration_list ';'| expression_stmt;
 
 if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
 		|IF '(' expression ')' stmt ELSE stmt	
