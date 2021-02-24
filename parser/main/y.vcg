@@ -1,0 +1,198 @@
+graph: {
+	display_edge_labels:	yes
+	priority_phase:	yes
+	port_sharing:	no
+	crossing_weight:	median
+	splines:	yes
+	node: {
+		title:	"0"
+		label:	"state  0\n $accept -> . data_type $end"
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"1"
+		label:	"SHORT"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"2"
+		label:	"INT"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"3"
+		label:	"LONG"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"4"
+		label:	"LONG_LONG"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"5"
+		label:	"SIGNED"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"6"
+		label:	"UNSIGNED"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"7"
+		label:	"CHAR"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"8"
+		label:	"BOOLEAN"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"9"
+		label:	"data_type"
+		color:	green
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"10"
+		label:	"sign_specifier"
+		color:	green
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"0"
+		targetname:	"11"
+		label:	"type_specifier"
+		color:	green
+		textcolor:	black
+	}
+	node: {
+		title:	"1"
+		label:	"state  1\n type_specifier -> SHORT ."
+	}
+	node: {
+		title:	"2"
+		label:	"state  2\n type_specifier -> INT ."
+	}
+	node: {
+		title:	"3"
+		label:	"state  3\n type_specifier -> LONG ."
+	}
+	node: {
+		title:	"4"
+		label:	"state  4\n type_specifier -> LONG_LONG ."
+	}
+	node: {
+		title:	"5"
+		label:	"state  5\n sign_specifier -> SIGNED ."
+	}
+	node: {
+		title:	"6"
+		label:	"state  6\n sign_specifier -> UNSIGNED ."
+	}
+	node: {
+		title:	"7"
+		label:	"state  7\n type_specifier -> CHAR ."
+	}
+	node: {
+		title:	"8"
+		label:	"state  8\n type_specifier -> BOOLEAN ."
+	}
+	node: {
+		title:	"9"
+		label:	"state  9\n $accept -> data_type . $end"
+	}
+	edge: {
+		sourcename:	"9"
+		targetname:	"12"
+		label:	"$end"
+		color:	blue
+		textcolor:	black
+	}
+	node: {
+		title:	"10"
+		label:	"state 10\n data_type -> sign_specifier . type_specifier"
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"1"
+		label:	"SHORT"
+		color:	blue
+		textcolor:	black
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"2"
+		label:	"INT"
+		color:	blue
+		textcolor:	black
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"3"
+		label:	"LONG"
+		color:	blue
+		textcolor:	black
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"4"
+		label:	"LONG_LONG"
+		color:	blue
+		textcolor:	black
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"7"
+		label:	"CHAR"
+		color:	blue
+		textcolor:	black
+	}
+	backedge: {
+		sourcename:	"10"
+		targetname:	"8"
+		label:	"BOOLEAN"
+		color:	blue
+		textcolor:	black
+	}
+	edge: {
+		sourcename:	"10"
+		targetname:	"13"
+		label:	"type_specifier"
+		color:	green
+		textcolor:	black
+	}
+	node: {
+		title:	"11"
+		label:	"state 11\n data_type -> type_specifier ."
+	}
+	node: {
+		title:	"12"
+		label:	"state 12\n $accept -> data_type $end ."
+	}
+	node: {
+		title:	"13"
+		label:	"state 13\n data_type -> sign_specifier type_specifier ."
+	}
+
+
+}

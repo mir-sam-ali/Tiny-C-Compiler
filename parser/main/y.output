@@ -1,0 +1,438 @@
+Useless nonterminals
+
+   stmt
+   compound_stmt
+   statements
+   single_stmt
+   for_block
+   if_block
+   while_block
+   declaration
+   declaration_list
+   sub_decl
+   expression_stmt
+   expression
+   sub_expr
+   assignment_expr
+   unary_expr
+   lhs
+   identifier
+   assign
+   arithmetic_expr
+   constant
+   array_access
+   array_index
+
+
+Terminals which are not used
+
+   IDENTIFIER
+   INTEGER_LITERAL
+   STRING_LITERAL
+   CHAR_LITERAL
+   AND
+   OR
+   LESSTHANEQUAL
+   GREATERTHANEQUAL
+   EQ
+   NEQ
+   AMPERSAND
+   MULEQ
+   DIVEQ
+   MODEQ
+   PLUSEQ
+   MINUSEQ
+   INCREMENT
+   DECREMENT
+   CONST
+   VOID
+   IF
+   FOR
+   WHILE
+   CONTINUE
+   BREAK
+   RETURN
+   CASE
+   DEFAULT
+   DO
+   ELSE
+   SWITCH
+   STAR
+   ADDITION
+   MINUS
+   NEGATION
+   EXCLAIMATION
+   DIVISION
+   MODULO
+   SHIFTLEFT
+   SHIFTRIGHT
+   LESSTHAN
+   GREATERTHAN
+   BITXOR
+   BITOR
+   QUESTION
+   ASSIGN
+   SHIFTLEQ
+   SHIFTREQ
+   BITANDEQ
+   BITXOREQ
+   BITOREQ
+   HASH
+   TRUE
+   FALSE
+   PRINTF
+   SCANF
+   GETS
+   PUTS
+   SIZEOF
+   LOOP
+   SUM
+   MAX
+   MIN
+   COMMA
+   FULL_STOP
+   OPEN_SQUARE
+   CLOSE_SQUARE
+   COLON
+   LOGICAL_AND
+   '{'
+   '}'
+   ';'
+   '('
+   ')'
+   '['
+   ']'
+
+
+Useless rules
+
+   11 stmt: compound_stmt
+   12     | single_stmt
+
+   13 compound_stmt: '{' statements '}'
+
+   14 statements: statements stmt
+   15           | /* empty */
+
+   16 single_stmt: if_block
+   17            | for_block
+   18            | while_block
+   19            | declaration
+   20            | RETURN ';'
+   21            | CONTINUE ';'
+   22            | BREAK ';'
+   23            | RETURN sub_expr ';'
+
+   24 for_block: FOR '(' expression_stmt expression_stmt expression ')' stmt
+
+   25 if_block: IF '(' expression ')' stmt
+   26         | IF '(' expression ')' stmt ELSE stmt
+
+   27 while_block: WHILE '(' expression ')' stmt
+
+   28 declaration: data_type declaration_list ';'
+   29            | declaration_list ';'
+   30            | unary_expr ';'
+
+   31 declaration_list: declaration_list COMMA sub_decl
+   32                 | sub_decl
+
+   33 sub_decl: assignment_expr
+   34         | identifier
+   35         | array_access
+
+   36 expression_stmt: expression ';'
+   37                | ';'
+
+   38 expression: expression COMMA sub_expr
+   39           | sub_expr
+
+   40 sub_expr: sub_expr GREATERTHAN sub_expr
+   41         | sub_expr LESSTHAN sub_expr
+   42         | sub_expr EQ sub_expr
+   43         | sub_expr NEQ sub_expr
+   44         | sub_expr GREATERTHANEQUAL sub_expr
+   45         | sub_expr LESSTHANEQUAL sub_expr
+   46         | sub_expr LOGICAL_AND sub_expr
+   47         | sub_expr OR sub_expr
+   48         | EXCLAIMATION sub_expr
+   49         | arithmetic_expr
+   50         | assignment_expr
+   51         | unary_expr
+
+   52 assignment_expr: lhs assign arithmetic_expr
+   53                | lhs assign array_access
+   54                | lhs assign unary_expr
+   55                | unary_expr assign unary_expr
+
+   56 unary_expr: identifier INCREMENT
+   57           | identifier DECREMENT
+   58           | DECREMENT identifier
+   59           | INCREMENT identifier
+
+   60 lhs: identifier
+   61    | array_access
+
+   62 identifier: IDENTIFIER
+
+   63 assign: ASSIGN
+   64       | PLUSEQ
+   65       | MINUSEQ
+   66       | MULEQ
+   67       | DIVEQ
+   68       | MODEQ
+
+   69 arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
+   70                | arithmetic_expr MINUS arithmetic_expr
+   71                | arithmetic_expr STAR arithmetic_expr
+   72                | arithmetic_expr DIVISION arithmetic_expr
+   73                | arithmetic_expr MODULO arithmetic_expr
+   74                | '(' arithmetic_expr ')'
+   75                | MINUS arithmetic_expr
+   76                | identifier
+   77                | constant
+
+   78 constant: INTEGER_LITERAL
+
+   79 array_access: identifier '[' array_index ']'
+
+   80 array_index: constant
+   81            | identifier
+
+
+Grammar
+
+    0 $accept: data_type $end
+
+    1 data_type: sign_specifier type_specifier
+    2          | type_specifier
+
+    3 sign_specifier: SIGNED
+    4               | UNSIGNED
+
+    5 type_specifier: INT
+    6               | SHORT
+    7               | LONG
+    8               | LONG_LONG
+    9               | CHAR
+   10               | BOOLEAN
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40)
+')' (41)
+';' (59)
+'[' (91)
+']' (93)
+'{' (123)
+'}' (125)
+error (256)
+IDENTIFIER (258)
+INTEGER_LITERAL (259)
+STRING_LITERAL (260)
+CHAR_LITERAL (261)
+AND (262)
+OR (263)
+LESSTHANEQUAL (264)
+GREATERTHANEQUAL (265)
+EQ (266)
+NEQ (267)
+AMPERSAND (268)
+MULEQ (269)
+DIVEQ (270)
+MODEQ (271)
+PLUSEQ (272)
+MINUSEQ (273)
+INCREMENT (274)
+DECREMENT (275)
+SHORT (276) 6
+INT (277) 5
+LONG (278) 7
+LONG_LONG (279) 8
+SIGNED (280) 3
+UNSIGNED (281) 4
+CONST (282)
+CHAR (283) 9
+BOOLEAN (284) 10
+VOID (285)
+IF (286)
+FOR (287)
+WHILE (288)
+CONTINUE (289)
+BREAK (290)
+RETURN (291)
+CASE (292)
+DEFAULT (293)
+DO (294)
+ELSE (295)
+SWITCH (296)
+STAR (297)
+ADDITION (298)
+MINUS (299)
+NEGATION (300)
+EXCLAIMATION (301)
+DIVISION (302)
+MODULO (303)
+SHIFTLEFT (304)
+SHIFTRIGHT (305)
+LESSTHAN (306)
+GREATERTHAN (307)
+BITXOR (308)
+BITOR (309)
+QUESTION (310)
+ASSIGN (311)
+SHIFTLEQ (312)
+SHIFTREQ (313)
+BITANDEQ (314)
+BITXOREQ (315)
+BITOREQ (316)
+HASH (317)
+TRUE (318)
+FALSE (319)
+PRINTF (320)
+SCANF (321)
+GETS (322)
+PUTS (323)
+SIZEOF (324)
+LOOP (325)
+SUM (326)
+MAX (327)
+MIN (328)
+COMMA (329)
+FULL_STOP (330)
+OPEN_SQUARE (331)
+CLOSE_SQUARE (332)
+COLON (333)
+LOGICAL_AND (334)
+UMINUS (335)
+LOWER_THAN_ELSE (336)
+
+
+Nonterminals, with rules where they appear
+
+$accept (89)
+    on left: 0
+data_type (90)
+    on left: 1 2, on right: 0
+sign_specifier (91)
+    on left: 3 4, on right: 1
+type_specifier (92)
+    on left: 5 6 7 8 9 10, on right: 1 2
+
+
+state 0
+
+    0 $accept: . data_type $end
+
+    SHORT      shift, and go to state 1
+    INT        shift, and go to state 2
+    LONG       shift, and go to state 3
+    LONG_LONG  shift, and go to state 4
+    SIGNED     shift, and go to state 5
+    UNSIGNED   shift, and go to state 6
+    CHAR       shift, and go to state 7
+    BOOLEAN    shift, and go to state 8
+
+    data_type       go to state 9
+    sign_specifier  go to state 10
+    type_specifier  go to state 11
+
+
+state 1
+
+    6 type_specifier: SHORT .
+
+    $default  reduce using rule 6 (type_specifier)
+
+
+state 2
+
+    5 type_specifier: INT .
+
+    $default  reduce using rule 5 (type_specifier)
+
+
+state 3
+
+    7 type_specifier: LONG .
+
+    $default  reduce using rule 7 (type_specifier)
+
+
+state 4
+
+    8 type_specifier: LONG_LONG .
+
+    $default  reduce using rule 8 (type_specifier)
+
+
+state 5
+
+    3 sign_specifier: SIGNED .
+
+    $default  reduce using rule 3 (sign_specifier)
+
+
+state 6
+
+    4 sign_specifier: UNSIGNED .
+
+    $default  reduce using rule 4 (sign_specifier)
+
+
+state 7
+
+    9 type_specifier: CHAR .
+
+    $default  reduce using rule 9 (type_specifier)
+
+
+state 8
+
+   10 type_specifier: BOOLEAN .
+
+    $default  reduce using rule 10 (type_specifier)
+
+
+state 9
+
+    0 $accept: data_type . $end
+
+    $end  shift, and go to state 12
+
+
+state 10
+
+    1 data_type: sign_specifier . type_specifier
+
+    SHORT      shift, and go to state 1
+    INT        shift, and go to state 2
+    LONG       shift, and go to state 3
+    LONG_LONG  shift, and go to state 4
+    CHAR       shift, and go to state 7
+    BOOLEAN    shift, and go to state 8
+
+    type_specifier  go to state 13
+
+
+state 11
+
+    2 data_type: type_specifier .
+
+    $default  reduce using rule 2 (data_type)
+
+
+state 12
+
+    0 $accept: data_type $end .
+
+    $default  accept
+
+
+state 13
+
+    1 data_type: sign_specifier type_specifier .
+
+    $default  reduce using rule 1 (data_type)

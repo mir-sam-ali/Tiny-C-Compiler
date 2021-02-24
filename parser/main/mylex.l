@@ -1,5 +1,9 @@
 %{
-//#include "lexer.h"	
+//#include "lexer.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "y.tab.h"	
 %}
 %option nounput yylineno
 
@@ -185,7 +189,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "min"						{ printf("\n%s\n",yytext); return MIN;}
 
 
-\"([^\\\"]|{EscapeSequence})*+\"                         		{ printf("\n%s\n",yytext); return STRING_LITERAL}
+\"([^\\\"]|{EscapeSequence})*+\"                         		{ printf("\n%s\n",yytext); return STRING_LITERAL;}
 {CHARACTER_CONSTANT}                          					{ printf("\n%s\n",yytext); return CHAR_LITERAL;}
 {C_LETTER}({C_LETTER}|{DIGIT})*   								{printf("\n\n TOKEN_NAME: Identifier\t\t\t VALUE: %s",yytext); return IDENTIFIER;}
 \n|\t                               							{}
