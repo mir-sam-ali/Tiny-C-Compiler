@@ -89,7 +89,16 @@
 
 %%
 
- 
+compound_stmt : '{' statements '}' | statements {printf("statements accepted\n");}  ;
+
+statements: statements stmt | ;
+
+/* Generic statement. Can be compound or a single statement */
+stmt:compound_stmt		
+    |single_stmt		
+    ;
+
+
  /* Now we will define a grammar for how types can be specified */
 
 data_type : sign_specifier type_specifier
@@ -109,14 +118,7 @@ type_specifier: INT {printf("int accepted\n");}
     ;
 
 /* The function body is covered in braces and has multiple statements. */
-compound_stmt : '{' statements '}' ;
 
-statements: statements stmt | ;
-
-/* Generic statement. Can be compound or a single statement */
-stmt:compound_stmt		
-    |single_stmt		
-    ;
 
  /* Grammar for what constitutes every individual statement */
 single_stmt :if_block	
@@ -201,7 +203,7 @@ unary_expr:
 
 lhs: identifier	| array_access;
 
-identifier: IDENTIFIER {printf("identifier recognized\n")};
+identifier: IDENTIFIER {printf("identifier recognized\n");};
 
 assign: ASSIGN 			
     |PLUSEQ 	

@@ -958,27 +958,27 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 83 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 84 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 85 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 86 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 87 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -993,12 +993,12 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 90 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 91 "mylex.l"
-{ printf("\n%s\n",yytext); }
+{ printf("\n%s\n",yytext); return yytext[0];}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
