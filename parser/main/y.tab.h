@@ -115,9 +115,8 @@
      OPEN_SQUARE = 331,
      CLOSE_SQUARE = 332,
      COLON = 333,
-     LOGICAL_AND = 334,
-     UMINUS = 335,
-     LOWER_THAN_ELSE = 336
+     UMINUS = 334,
+     LOWER_THAN_ELSE = 335
    };
 #endif
 /* Tokens.  */
@@ -197,9 +196,8 @@
 #define OPEN_SQUARE 331
 #define CLOSE_SQUARE 332
 #define COLON 333
-#define LOGICAL_AND 334
-#define UMINUS 335
-#define LOWER_THAN_ELSE 336
+#define UMINUS 334
+#define LOWER_THAN_ELSE 335
 
 
 
@@ -216,7 +214,7 @@ typedef union YYSTYPE
 	// int instr;
 }
 /* Line 1529 of yacc.c.  */
-#line 220 "y.tab.h"
+#line 218 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

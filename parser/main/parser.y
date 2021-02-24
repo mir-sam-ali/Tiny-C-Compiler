@@ -75,7 +75,7 @@
 %left COMMA
 %right ASSIGN
 %left OR
-%left LOGICAL_AND
+%left AND
 %left EQ NEQ
 %left LESSTHAN GREATERTHAN LESSTHANEQUAL GREATERTHANEQUAL
 %left ADDITION MINUS
@@ -183,7 +183,7 @@ sub_expr:
 		| sub_expr NEQ sub_expr
 		| sub_expr GREATERTHANEQUAL sub_expr
 		| sub_expr LESSTHANEQUAL sub_expr
-		|sub_expr LOGICAL_AND sub_expr
+		|sub_expr AND sub_expr
 		|sub_expr OR sub_expr
 		|EXCLAIMATION sub_expr
 		|arithmetic_expr
