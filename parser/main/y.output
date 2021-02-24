@@ -1,8 +1,8 @@
 Useless nonterminals
 
-   stmt
    compound_stmt
    statements
+   stmt
    single_stmt
    for_block
    if_block
@@ -106,13 +106,13 @@ Terminals which are not used
 
 Useless rules
 
-   11 stmt: compound_stmt
-   12     | single_stmt
+   11 compound_stmt: '{' statements '}'
 
-   13 compound_stmt: '{' statements '}'
+   12 statements: statements stmt
+   13           | /* empty */
 
-   14 statements: statements stmt
-   15           | /* empty */
+   14 stmt: compound_stmt
+   15     | single_stmt
 
    16 single_stmt: if_block
    17            | for_block

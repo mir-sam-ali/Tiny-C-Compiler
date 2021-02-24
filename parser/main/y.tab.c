@@ -234,17 +234,10 @@
 /* Copy the first part of user declarations.  */
 #line 1 "parser.y"
 
-	#include <bits/stdc++.h>
-	// #include "symboltable.h"
-	#include "lex.yy.c"
-
-	using namespace std;
-
-	int yyerror(char *msg);
-
-
-
-	void printlist(vector<int>);
+	#include<stdio.h>
+	#include<string.h>
+	int yylex();
+	int yyerror();
 
 
 /* Enabling traces.  */
@@ -278,7 +271,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 282 "y.tab.c"
+#line 275 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -570,8 +563,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   102,   102,   103,   106,   107,   111,   112,   113,   114,
-     115,   116
+       0,    95,    95,    96,    99,   100,   104,   105,   106,   107,
+     108,   109
 };
 #endif
 
@@ -1495,9 +1488,14 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
+        case 6:
+#line 104 "parser.y"
+    {printf("int accepted\n");}
+    break;
+
+
 /* Line 1267 of yacc.c.  */
-#line 1501 "y.tab.c"
+#line 1499 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1711,42 +1709,39 @@ yyreturn:
 }
 
 
-#line 247 "parser.y"
+#line 236 "parser.y"
 
 
-void printlist(vector<int> v){
-	for(auto it:v)
-		cout<<it<<" ";
-	cout<<"Next: "<<nextinstr<<endl;
-}
+// int main(int argc, char *argv[])
+// {
+// 	//  int i;
+// 	//  for(i=0; i<NUM_TABLES;i++)
+// 	//  {
+// 	//   symbol_table_list[i].symbol_table = NULL;
+// 	//   symbol_table_list[i].parent = -1;
+// 	//  }
 
-int main(int argc, char *argv[])
-{
-	//  int i;
-	//  for(i=0; i<NUM_TABLES;i++)
-	//  {
-	//   symbol_table_list[i].symbol_table = NULL;
-	//   symbol_table_list[i].parent = -1;
-	//  }
+// 	// constant_table = create_table();
+//     // symbol_table_list[0].symbol_table = create_table();
+// 	// yyin = fopen(argv[1], "r");
 
-	// constant_table = create_table();
-    // symbol_table_list[0].symbol_table = create_table();
-	// yyin = fopen(argv[1], "r");
+// 	if(!yyparse())
+// 	{
+// 		printf("\nPARSING COMPLETE\n\n\n");
+// 	}
+// 	else
+// 	{
+// 			printf("\nPARSING FAILED!\n\n\n");
+// 	}
 
-	if(!yyparse())
-	{
-		printf("\nPARSING COMPLETE\n\n\n");
-	}
-	else
-	{
-			printf("\nPARSING FAILED!\n\n\n");
-	}
+// 	//displayICG();
+// }
 
-	//displayICG();
-}
-
-int yyerror(const char *msg)
-{
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
-	exit(0);
+extern FILE *yyin;
+int main(int argc, char *argv[]){
+	yyin = fopen(argv[1],"r");  
+	while(!feof(yyin))
+		yyparse();
+	fclose(yyin);
+	return 0;
 }
