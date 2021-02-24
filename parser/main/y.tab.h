@@ -1,14 +1,14 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
+/* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,9 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -33,92 +31,104 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Tokens.  */
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 1
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     IDENTIFIER = 258,
-     INTEGER_LITERAL = 259,
-     STRING_LITERAL = 260,
-     CHAR_LITERAL = 261,
-     AND = 262,
-     OR = 263,
-     LESSTHANEQUAL = 264,
-     GREATERTHANEQUAL = 265,
-     EQ = 266,
-     NEQ = 267,
-     AMPERSAND = 268,
-     MULEQ = 269,
-     DIVEQ = 270,
-     MODEQ = 271,
-     PLUSEQ = 272,
-     MINUSEQ = 273,
-     INCREMENT = 274,
-     DECREMENT = 275,
-     SHORT = 276,
-     INT = 277,
-     LONG = 278,
-     LONG_LONG = 279,
-     SIGNED = 280,
-     UNSIGNED = 281,
-     CONST = 282,
-     CHAR = 283,
-     BOOLEAN = 284,
-     VOID = 285,
-     IF = 286,
-     FOR = 287,
-     WHILE = 288,
-     CONTINUE = 289,
-     BREAK = 290,
-     RETURN = 291,
-     CASE = 292,
-     DEFAULT = 293,
-     DO = 294,
-     ELSE = 295,
-     SWITCH = 296,
-     STAR = 297,
-     ADDITION = 298,
-     MINUS = 299,
-     NEGATION = 300,
-     EXCLAIMATION = 301,
-     DIVISION = 302,
-     MODULO = 303,
-     SHIFTLEFT = 304,
-     SHIFTRIGHT = 305,
-     LESSTHAN = 306,
-     GREATERTHAN = 307,
-     BITXOR = 308,
-     BITOR = 309,
-     QUESTION = 310,
-     ASSIGN = 311,
-     SHIFTLEQ = 312,
-     SHIFTREQ = 313,
-     BITANDEQ = 314,
-     BITXOREQ = 315,
-     BITOREQ = 316,
-     HASH = 317,
-     TRUE = 318,
-     FALSE = 319,
-     PRINTF = 320,
-     SCANF = 321,
-     GETS = 322,
-     PUTS = 323,
-     SIZEOF = 324,
-     LOOP = 325,
-     SUM = 326,
-     MAX = 327,
-     MIN = 328,
-     COMMA = 329,
-     FULL_STOP = 330,
-     OPEN_SQUARE = 331,
-     CLOSE_SQUARE = 332,
-     COLON = 333,
-     LOGICAL_AND = 334,
-     UMINUS = 335,
-     LOWER_THAN_ELSE = 336
-   };
+  enum yytokentype
+  {
+    IDENTIFIER = 258,
+    INTEGER_LITERAL = 259,
+    STRING_LITERAL = 260,
+    CHAR_LITERAL = 261,
+    AND = 262,
+    OR = 263,
+    LESSTHANEQUAL = 264,
+    GREATERTHANEQUAL = 265,
+    EQ = 266,
+    NEQ = 267,
+    AMPERSAND = 268,
+    MULEQ = 269,
+    DIVEQ = 270,
+    MODEQ = 271,
+    PLUSEQ = 272,
+    MINUSEQ = 273,
+    INCREMENT = 274,
+    DECREMENT = 275,
+    SHORT = 276,
+    INT = 277,
+    LONG = 278,
+    LONG_LONG = 279,
+    SIGNED = 280,
+    UNSIGNED = 281,
+    CONST = 282,
+    CHAR = 283,
+    BOOLEAN = 284,
+    VOID = 285,
+    IF = 286,
+    FOR = 287,
+    WHILE = 288,
+    CONTINUE = 289,
+    BREAK = 290,
+    RETURN = 291,
+    CASE = 292,
+    DEFAULT = 293,
+    DO = 294,
+    ELSE = 295,
+    SWITCH = 296,
+    STAR = 297,
+    ADDITION = 298,
+    MINUS = 299,
+    NEGATION = 300,
+    EXCLAIMATION = 301,
+    DIVISION = 302,
+    MODULO = 303,
+    SHIFTLEFT = 304,
+    SHIFTRIGHT = 305,
+    LESSTHAN = 306,
+    GREATERTHAN = 307,
+    BITXOR = 308,
+    BITOR = 309,
+    QUESTION = 310,
+    ASSIGN = 311,
+    SHIFTLEQ = 312,
+    SHIFTREQ = 313,
+    BITANDEQ = 314,
+    BITXOREQ = 315,
+    BITOREQ = 316,
+    HASH = 317,
+    TRUE = 318,
+    FALSE = 319,
+    PRINTF = 320,
+    SCANF = 321,
+    GETS = 322,
+    PUTS = 323,
+    SIZEOF = 324,
+    LOOP = 325,
+    SUM = 326,
+    MAX = 327,
+    MIN = 328,
+    COMMA = 329,
+    FULL_STOP = 330,
+    OPEN_SQUARE = 331,
+    CLOSE_SQUARE = 332,
+    COLON = 333,
+    LOGICAL_AND = 334,
+    UMINUS = 335,
+    LOWER_THAN_ELSE = 336
+  };
 #endif
 /* Tokens.  */
 #define IDENTIFIER 258
@@ -201,15 +211,30 @@
 #define UMINUS 335
 #define LOWER_THAN_ELSE 336
 
-
-
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
+union YYSTYPE
+{
+#line 10 "parser.y"
+
+	// int data_type;
+	// entry_t* entry;
+	// content_t* content;
+	// string* op;
+	// vector<int>* nextlist;
+	// int instr;
+
+#line 228 "y.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define YYSTYPE_IS_DECLARED 1
 #endif
+
 
 extern YYSTYPE yylval;
 
+int yyparse (void);
+
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */

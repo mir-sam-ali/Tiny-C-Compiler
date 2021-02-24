@@ -1,51 +1,51 @@
-Terminals which are not used
+Terminals unused in grammar
 
-   STRING_LITERAL
-   CHAR_LITERAL
-   AND
-   AMPERSAND
-   CONST
-   VOID
-   CASE
-   DEFAULT
-   DO
-   SWITCH
-   NEGATION
-   SHIFTLEFT
-   SHIFTRIGHT
-   BITXOR
-   BITOR
-   QUESTION
-   SHIFTLEQ
-   SHIFTREQ
-   BITANDEQ
-   BITXOREQ
-   BITOREQ
-   HASH
-   TRUE
-   FALSE
-   PRINTF
-   SCANF
-   GETS
-   PUTS
-   SIZEOF
-   LOOP
-   SUM
-   MAX
-   MIN
-   FULL_STOP
-   OPEN_SQUARE
-   CLOSE_SQUARE
-   COLON
+    STRING_LITERAL
+    CHAR_LITERAL
+    AND
+    AMPERSAND
+    CONST
+    VOID
+    CASE
+    DEFAULT
+    DO
+    SWITCH
+    NEGATION
+    SHIFTLEFT
+    SHIFTRIGHT
+    BITXOR
+    BITOR
+    QUESTION
+    SHIFTLEQ
+    SHIFTREQ
+    BITANDEQ
+    BITXOREQ
+    BITOREQ
+    HASH
+    TRUE
+    FALSE
+    PRINTF
+    SCANF
+    GETS
+    PUTS
+    SIZEOF
+    LOOP
+    SUM
+    MAX
+    MIN
+    FULL_STOP
+    OPEN_SQUARE
+    CLOSE_SQUARE
+    COLON
 
 
 State 0 conflicts: 1 shift/reduce
 State 3 conflicts: 18 shift/reduce, 21 reduce/reduce
 State 4 conflicts: 19 shift/reduce
-State 113 conflicts: 18 shift/reduce
-State 116 conflicts: 18 shift/reduce
-State 136 conflicts: 18 shift/reduce
-State 137 conflicts: 18 shift/reduce
+State 114 conflicts: 18 shift/reduce
+State 118 conflicts: 18 shift/reduce
+State 139 conflicts: 18 shift/reduce
+State 140 conflicts: 18 shift/reduce
 
 
 Grammar
@@ -56,7 +56,7 @@ Grammar
     2              | statements
 
     3 statements: statements stmt
-    4           | /* empty */
+    4           | %empty
 
     5 stmt: compound_stmt
     6     | single_stmt
@@ -101,216 +101,240 @@ Grammar
    35         | identifier
    36         | array_access
 
-   37 expression_stmt: expression ';'
-   38                | ';'
+   37 expression_stmt: data_type expression ';'
+   38                | expression ';'
+   39                | ';'
 
-   39 expression: expression COMMA sub_expr
-   40           | sub_expr
+   40 expression: expression COMMA sub_expr
+   41           | sub_expr
 
-   41 sub_expr: sub_expr GREATERTHAN sub_expr
-   42         | sub_expr LESSTHAN sub_expr
-   43         | sub_expr EQ sub_expr
-   44         | sub_expr NEQ sub_expr
-   45         | sub_expr GREATERTHANEQUAL sub_expr
-   46         | sub_expr LESSTHANEQUAL sub_expr
-   47         | sub_expr LOGICAL_AND sub_expr
-   48         | sub_expr OR sub_expr
-   49         | EXCLAIMATION sub_expr
-   50         | arithmetic_expr
-   51         | assignment_expr
-   52         | unary_expr
+   42 sub_expr: sub_expr GREATERTHAN sub_expr
+   43         | sub_expr LESSTHAN sub_expr
+   44         | sub_expr EQ sub_expr
+   45         | sub_expr NEQ sub_expr
+   46         | sub_expr GREATERTHANEQUAL sub_expr
+   47         | sub_expr LESSTHANEQUAL sub_expr
+   48         | sub_expr LOGICAL_AND sub_expr
+   49         | sub_expr OR sub_expr
+   50         | EXCLAIMATION sub_expr
+   51         | arithmetic_expr
+   52         | assignment_expr
+   53         | unary_expr
 
-   53 assignment_expr: lhs assign arithmetic_expr
-   54                | lhs assign array_access
-   55                | lhs assign unary_expr
-   56                | unary_expr assign unary_expr
+   54 assignment_expr: lhs assign arithmetic_expr
+   55                | lhs assign array_access
+   56                | lhs assign unary_expr
+   57                | unary_expr assign unary_expr
 
-   57 unary_expr: identifier INCREMENT
-   58           | identifier DECREMENT
-   59           | DECREMENT identifier
-   60           | INCREMENT identifier
+   58 unary_expr: identifier INCREMENT
+   59           | identifier DECREMENT
+   60           | DECREMENT identifier
+   61           | INCREMENT identifier
 
-   61 lhs: identifier
-   62    | array_access
+   62 lhs: identifier
+   63    | array_access
 
-   63 identifier: IDENTIFIER
+   64 identifier: IDENTIFIER
 
-   64 assign: ASSIGN
-   65       | PLUSEQ
-   66       | MINUSEQ
-   67       | MULEQ
-   68       | DIVEQ
-   69       | MODEQ
+   65 assign: ASSIGN
+   66       | PLUSEQ
+   67       | MINUSEQ
+   68       | MULEQ
+   69       | DIVEQ
+   70       | MODEQ
 
-   70 arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
-   71                | arithmetic_expr MINUS arithmetic_expr
-   72                | arithmetic_expr STAR arithmetic_expr
-   73                | arithmetic_expr DIVISION arithmetic_expr
-   74                | arithmetic_expr MODULO arithmetic_expr
-   75                | '(' arithmetic_expr ')'
-   76                | MINUS arithmetic_expr
-   77                | identifier
-   78                | constant
+   71 arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
+   72                | arithmetic_expr MINUS arithmetic_expr
+   73                | arithmetic_expr STAR arithmetic_expr
+   74                | arithmetic_expr DIVISION arithmetic_expr
+   75                | arithmetic_expr MODULO arithmetic_expr
+   76                | '(' arithmetic_expr ')'
+   77                | MINUS arithmetic_expr
+   78                | identifier
+   79                | constant
 
-   79 constant: INTEGER_LITERAL
+   80 constant: INTEGER_LITERAL
 
-   80 array_access: identifier '[' array_index ']'
+   81 array_access: identifier '[' array_index ']'
 
-   81 array_index: constant
-   82            | identifier
+   82 array_index: constant
+   83            | identifier
 
 
 Terminals, with rules where they appear
 
-$end (0) 0
-'(' (40) 25 26 27 28 75
-')' (41) 25 26 27 28 75
-';' (59) 21 22 23 24 29 30 31 37 38
-'[' (91) 80
-']' (93) 80
-'{' (123) 1
-'}' (125) 1
-error (256)
-IDENTIFIER (258) 63
-INTEGER_LITERAL (259) 79
-STRING_LITERAL (260)
-CHAR_LITERAL (261)
-AND (262)
-OR (263) 48
-LESSTHANEQUAL (264) 46
-GREATERTHANEQUAL (265) 45
-EQ (266) 43
-NEQ (267) 44
-AMPERSAND (268)
-MULEQ (269) 67
-DIVEQ (270) 68
-MODEQ (271) 69
-PLUSEQ (272) 65
-MINUSEQ (273) 66
-INCREMENT (274) 57 60
-DECREMENT (275) 58 59
-SHORT (276) 12
-INT (277) 11
-LONG (278) 13
-LONG_LONG (279) 14
-SIGNED (280) 9
-UNSIGNED (281) 10
-CONST (282)
-CHAR (283) 15
-BOOLEAN (284) 16
-VOID (285)
-IF (286) 26 27
-FOR (287) 25
-WHILE (288) 28
-CONTINUE (289) 22
-BREAK (290) 23
-RETURN (291) 21 24
-CASE (292)
-DEFAULT (293)
-DO (294)
-ELSE (295) 27
-SWITCH (296)
-STAR (297) 72
-ADDITION (298) 70
-MINUS (299) 71 76
-NEGATION (300)
-EXCLAIMATION (301) 49
-DIVISION (302) 73
-MODULO (303) 74
-SHIFTLEFT (304)
-SHIFTRIGHT (305)
-LESSTHAN (306) 42
-GREATERTHAN (307) 41
-BITXOR (308)
-BITOR (309)
-QUESTION (310)
-ASSIGN (311) 64
-SHIFTLEQ (312)
-SHIFTREQ (313)
-BITANDEQ (314)
-BITXOREQ (315)
-BITOREQ (316)
-HASH (317)
-TRUE (318)
-FALSE (319)
-PRINTF (320)
-SCANF (321)
-GETS (322)
-PUTS (323)
-SIZEOF (324)
-LOOP (325)
-SUM (326)
-MAX (327)
-MIN (328)
-COMMA (329) 32 39
-FULL_STOP (330)
-OPEN_SQUARE (331)
-CLOSE_SQUARE (332)
-COLON (333)
-LOGICAL_AND (334) 47
-UMINUS (335)
-LOWER_THAN_ELSE (336)
+    $end (0) 0
+    '(' (40) 25 26 27 28 76
+    ')' (41) 25 26 27 28 76
+    ';' (59) 21 22 23 24 29 30 31 37 38 39
+    '[' (91) 81
+    ']' (93) 81
+    '{' (123) 1
+    '}' (125) 1
+    error (256)
+    IDENTIFIER (258) 64
+    INTEGER_LITERAL (259) 80
+    STRING_LITERAL (260)
+    CHAR_LITERAL (261)
+    AND (262)
+    OR (263) 49
+    LESSTHANEQUAL (264) 47
+    GREATERTHANEQUAL (265) 46
+    EQ (266) 44
+    NEQ (267) 45
+    AMPERSAND (268)
+    MULEQ (269) 68
+    DIVEQ (270) 69
+    MODEQ (271) 70
+    PLUSEQ (272) 66
+    MINUSEQ (273) 67
+    INCREMENT (274) 58 61
+    DECREMENT (275) 59 60
+    SHORT (276) 12
+    INT (277) 11
+    LONG (278) 13
+    LONG_LONG (279) 14
+    SIGNED (280) 9
+    UNSIGNED (281) 10
+    CONST (282)
+    CHAR (283) 15
+    BOOLEAN (284) 16
+    VOID (285)
+    IF (286) 26 27
+    FOR (287) 25
+    WHILE (288) 28
+    CONTINUE (289) 22
+    BREAK (290) 23
+    RETURN (291) 21 24
+    CASE (292)
+    DEFAULT (293)
+    DO (294)
+    ELSE (295) 27
+    SWITCH (296)
+    STAR (297) 73
+    ADDITION (298) 71
+    MINUS (299) 72 77
+    NEGATION (300)
+    EXCLAIMATION (301) 50
+    DIVISION (302) 74
+    MODULO (303) 75
+    SHIFTLEFT (304)
+    SHIFTRIGHT (305)
+    LESSTHAN (306) 43
+    GREATERTHAN (307) 42
+    BITXOR (308)
+    BITOR (309)
+    QUESTION (310)
+    ASSIGN (311) 65
+    SHIFTLEQ (312)
+    SHIFTREQ (313)
+    BITANDEQ (314)
+    BITXOREQ (315)
+    BITOREQ (316)
+    HASH (317)
+    TRUE (318)
+    FALSE (319)
+    PRINTF (320)
+    SCANF (321)
+    GETS (322)
+    PUTS (323)
+    SIZEOF (324)
+    LOOP (325)
+    SUM (326)
+    MAX (327)
+    MIN (328)
+    COMMA (329) 32 40
+    FULL_STOP (330)
+    OPEN_SQUARE (331)
+    CLOSE_SQUARE (332)
+    COLON (333)
+    LOGICAL_AND (334) 48
+    UMINUS (335)
+    LOWER_THAN_ELSE (336)
 
 
 Nonterminals, with rules where they appear
 
-$accept (89)
-    on left: 0
-compound_stmt (90)
-    on left: 1 2, on right: 0 5
-statements (91)
-    on left: 3 4, on right: 1 2 3
-stmt (92)
-    on left: 5 6, on right: 3 25 26 27 28
-data_type (93)
-    on left: 7 8, on right: 29
-sign_specifier (94)
-    on left: 9 10, on right: 7
-type_specifier (95)
-    on left: 11 12 13 14 15 16, on right: 7 8
-single_stmt (96)
-    on left: 17 18 19 20 21 22 23 24, on right: 6
-for_block (97)
-    on left: 25, on right: 18
-if_block (98)
-    on left: 26 27, on right: 17
-while_block (99)
-    on left: 28, on right: 19
-declaration (100)
-    on left: 29 30 31, on right: 20
-declaration_list (101)
-    on left: 32 33, on right: 29 30 32
-sub_decl (102)
-    on left: 34 35 36, on right: 32 33
-expression_stmt (103)
-    on left: 37 38, on right: 25
-expression (104)
-    on left: 39 40, on right: 25 26 27 28 37 39
-sub_expr (105)
-    on left: 41 42 43 44 45 46 47 48 49 50 51 52, on right: 24 39 40
-    41 42 43 44 45 46 47 48 49
-assignment_expr (106)
-    on left: 53 54 55 56, on right: 34 51
-unary_expr (107)
-    on left: 57 58 59 60, on right: 31 52 55 56
-lhs (108)
-    on left: 61 62, on right: 53 54 55
-identifier (109)
-    on left: 63, on right: 35 57 58 59 60 61 77 80 82
-assign (110)
-    on left: 64 65 66 67 68 69, on right: 53 54 55 56
-arithmetic_expr (111)
-    on left: 70 71 72 73 74 75 76 77 78, on right: 50 53 70 71 72 73
-    74 75 76
-constant (112)
-    on left: 79, on right: 78 81
-array_access (113)
-    on left: 80, on right: 36 54 62
-array_index (114)
-    on left: 81 82, on right: 80
+    $accept (89)
+        on left: 0
+    compound_stmt <content> (90)
+        on left: 1 2
+        on right: 0 5
+    statements <content> (91)
+        on left: 3 4
+        on right: 1 2 3
+    stmt <content> (92)
+        on left: 5 6
+        on right: 3 25 26 27 28
+    data_type (93)
+        on left: 7 8
+        on right: 29 37
+    sign_specifier (94)
+        on left: 9 10
+        on right: 7
+    type_specifier (95)
+        on left: 11 12 13 14 15 16
+        on right: 7 8
+    single_stmt <content> (96)
+        on left: 17 18 19 20 21 22 23 24
+        on right: 6
+    for_block <content> (97)
+        on left: 25
+        on right: 18
+    if_block <content> (98)
+        on left: 26 27
+        on right: 17
+    while_block <content> (99)
+        on left: 28
+        on right: 19
+    declaration (100)
+        on left: 29 30 31
+        on right: 20
+    declaration_list (101)
+        on left: 32 33
+        on right: 29 30 32
+    sub_decl (102)
+        on left: 34 35 36
+        on right: 32 33
+    expression_stmt <content> (103)
+        on left: 37 38 39
+        on right: 25
+    expression <content> (104)
+        on left: 40 41
+        on right: 25 26 27 28 37 38 40
+    sub_expr <content> (105)
+        on left: 42 43 44 45 46 47 48 49 50 51 52 53
+        on right: 24 40 41 42 43 44 45 46 47 48 49 50
+    assignment_expr <content> (106)
+        on left: 54 55 56 57
+        on right: 34 52
+    unary_expr <content> (107)
+        on left: 58 59 60 61
+        on right: 31 53 56 57
+    lhs <content> (108)
+        on left: 62 63
+        on right: 54 55 56
+    identifier <entry> (109)
+        on left: 64
+        on right: 35 58 59 60 61 62 78 81 83
+    assign <op> (110)
+        on left: 65 66 67 68 69 70
+        on right: 54 55 56 57
+    arithmetic_expr <content> (111)
+        on left: 71 72 73 74 75 76 77 78 79
+        on right: 51 54 71 72 73 74 75 76 77
+    constant <entry> (112)
+        on left: 80
+        on right: 79 82
+    array_access <content> (113)
+        on left: 81
+        on right: 36 55 63
+    array_index <entry> (114)
+        on left: 82 83
+        on right: 81
 
 
-state 0
+State 0
 
     0 $accept: . compound_stmt $end
 
@@ -323,7 +347,7 @@ state 0
     statements     go to state 3
 
 
-state 1
+State 1
 
     1 compound_stmt: '{' . statements '}'
 
@@ -332,14 +356,14 @@ state 1
     statements  go to state 4
 
 
-state 2
+State 2
 
     0 $accept: compound_stmt . $end
 
     $end  shift, and go to state 5
 
 
-state 3
+State 3
 
     2 compound_stmt: statements .
     3 statements: statements . stmt
@@ -427,7 +451,7 @@ state 3
     array_access      go to state 39
 
 
-state 4
+State 4
 
     1 compound_stmt: '{' statements . '}'
     3 statements: statements . stmt
@@ -492,95 +516,95 @@ state 4
     array_access      go to state 39
 
 
-state 5
+State 5
 
     0 $accept: compound_stmt $end .
 
     $default  accept
 
 
-state 6
+State 6
 
-   63 identifier: IDENTIFIER .
+   64 identifier: IDENTIFIER .
 
-    $default  reduce using rule 63 (identifier)
+    $default  reduce using rule 64 (identifier)
 
 
-state 7
+State 7
 
-   60 unary_expr: INCREMENT . identifier
+   61 unary_expr: INCREMENT . identifier
 
     IDENTIFIER  shift, and go to state 6
 
     identifier  go to state 41
 
 
-state 8
+State 8
 
-   59 unary_expr: DECREMENT . identifier
+   60 unary_expr: DECREMENT . identifier
 
     IDENTIFIER  shift, and go to state 6
 
     identifier  go to state 42
 
 
-state 9
+State 9
 
    12 type_specifier: SHORT .
 
     $default  reduce using rule 12 (type_specifier)
 
 
-state 10
+State 10
 
    11 type_specifier: INT .
 
     $default  reduce using rule 11 (type_specifier)
 
 
-state 11
+State 11
 
    13 type_specifier: LONG .
 
     $default  reduce using rule 13 (type_specifier)
 
 
-state 12
+State 12
 
    14 type_specifier: LONG_LONG .
 
     $default  reduce using rule 14 (type_specifier)
 
 
-state 13
+State 13
 
     9 sign_specifier: SIGNED .
 
     $default  reduce using rule 9 (sign_specifier)
 
 
-state 14
+State 14
 
    10 sign_specifier: UNSIGNED .
 
     $default  reduce using rule 10 (sign_specifier)
 
 
-state 15
+State 15
 
    15 type_specifier: CHAR .
 
     $default  reduce using rule 15 (type_specifier)
 
 
-state 16
+State 16
 
    16 type_specifier: BOOLEAN .
 
     $default  reduce using rule 16 (type_specifier)
 
 
-state 17
+State 17
 
    26 if_block: IF . '(' expression ')' stmt
    27         | IF . '(' expression ')' stmt ELSE stmt
@@ -588,35 +612,35 @@ state 17
     '('  shift, and go to state 43
 
 
-state 18
+State 18
 
    25 for_block: FOR . '(' expression_stmt expression_stmt expression ')' stmt
 
     '('  shift, and go to state 44
 
 
-state 19
+State 19
 
    28 while_block: WHILE . '(' expression ')' stmt
 
     '('  shift, and go to state 45
 
 
-state 20
+State 20
 
    22 single_stmt: CONTINUE . ';'
 
     ';'  shift, and go to state 46
 
 
-state 21
+State 21
 
    23 single_stmt: BREAK . ';'
 
     ';'  shift, and go to state 47
 
 
-state 22
+State 22
 
    21 single_stmt: RETURN . ';'
    24            | RETURN . sub_expr ';'
@@ -640,21 +664,21 @@ state 22
     array_access     go to state 59
 
 
-state 23
+State 23
 
     5 stmt: compound_stmt .
 
     $default  reduce using rule 5 (stmt)
 
 
-state 24
+State 24
 
     3 statements: statements stmt .
 
     $default  reduce using rule 3 (statements)
 
 
-state 25
+State 25
 
    29 declaration: data_type . declaration_list ';'
 
@@ -671,7 +695,7 @@ state 25
     array_access      go to state 39
 
 
-state 26
+State 26
 
     7 data_type: sign_specifier . type_specifier
 
@@ -685,49 +709,49 @@ state 26
     type_specifier  go to state 62
 
 
-state 27
+State 27
 
     8 data_type: type_specifier .
 
     $default  reduce using rule 8 (data_type)
 
 
-state 28
+State 28
 
     6 stmt: single_stmt .
 
     $default  reduce using rule 6 (stmt)
 
 
-state 29
+State 29
 
    18 single_stmt: for_block .
 
     $default  reduce using rule 18 (single_stmt)
 
 
-state 30
+State 30
 
    17 single_stmt: if_block .
 
     $default  reduce using rule 17 (single_stmt)
 
 
-state 31
+State 31
 
    19 single_stmt: while_block .
 
     $default  reduce using rule 19 (single_stmt)
 
 
-state 32
+State 32
 
    20 single_stmt: declaration .
 
     $default  reduce using rule 20 (single_stmt)
 
 
-state 33
+State 33
 
    30 declaration: declaration_list . ';'
    32 declaration_list: declaration_list . COMMA sub_decl
@@ -736,24 +760,24 @@ state 33
     ';'    shift, and go to state 64
 
 
-state 34
+State 34
 
    33 declaration_list: sub_decl .
 
     $default  reduce using rule 33 (declaration_list)
 
 
-state 35
+State 35
 
    34 sub_decl: assignment_expr .
 
     $default  reduce using rule 34 (sub_decl)
 
 
-state 36
+State 36
 
    31 declaration: unary_expr . ';'
-   56 assignment_expr: unary_expr . assign unary_expr
+   57 assignment_expr: unary_expr . assign unary_expr
 
     MULEQ    shift, and go to state 65
     DIVEQ    shift, and go to state 66
@@ -766,11 +790,11 @@ state 36
     assign  go to state 72
 
 
-state 37
+State 37
 
-   53 assignment_expr: lhs . assign arithmetic_expr
-   54                | lhs . assign array_access
-   55                | lhs . assign unary_expr
+   54 assignment_expr: lhs . assign arithmetic_expr
+   55                | lhs . assign array_access
+   56                | lhs . assign unary_expr
 
     MULEQ    shift, and go to state 65
     DIVEQ    shift, and go to state 66
@@ -782,13 +806,13 @@ state 37
     assign  go to state 73
 
 
-state 38
+State 38
 
    35 sub_decl: identifier .
-   57 unary_expr: identifier . INCREMENT
-   58           | identifier . DECREMENT
-   61 lhs: identifier .
-   80 array_access: identifier . '[' array_index ']'
+   58 unary_expr: identifier . INCREMENT
+   59           | identifier . DECREMENT
+   62 lhs: identifier .
+   81 array_access: identifier . '[' array_index ']'
 
     INCREMENT  shift, and go to state 74
     DECREMENT  shift, and go to state 75
@@ -796,41 +820,41 @@ state 38
 
     COMMA     reduce using rule 35 (sub_decl)
     ';'       reduce using rule 35 (sub_decl)
-    $default  reduce using rule 61 (lhs)
-
-
-state 39
-
-   36 sub_decl: array_access .
-   62 lhs: array_access .
-
-    COMMA     reduce using rule 36 (sub_decl)
-    ';'       reduce using rule 36 (sub_decl)
     $default  reduce using rule 62 (lhs)
 
 
-state 40
+State 39
+
+   36 sub_decl: array_access .
+   63 lhs: array_access .
+
+    COMMA     reduce using rule 36 (sub_decl)
+    ';'       reduce using rule 36 (sub_decl)
+    $default  reduce using rule 63 (lhs)
+
+
+State 40
 
     1 compound_stmt: '{' statements '}' .
 
     $default  reduce using rule 1 (compound_stmt)
 
 
-state 41
+State 41
 
-   60 unary_expr: INCREMENT identifier .
+   61 unary_expr: INCREMENT identifier .
+
+    $default  reduce using rule 61 (unary_expr)
+
+
+State 42
+
+   60 unary_expr: DECREMENT identifier .
 
     $default  reduce using rule 60 (unary_expr)
 
 
-state 42
-
-   59 unary_expr: DECREMENT identifier .
-
-    $default  reduce using rule 59 (unary_expr)
-
-
-state 43
+State 43
 
    26 if_block: IF '(' . expression ')' stmt
    27         | IF '(' . expression ')' stmt ELSE stmt
@@ -854,7 +878,7 @@ state 43
     array_access     go to state 59
 
 
-state 44
+State 44
 
    25 for_block: FOR '(' . expression_stmt expression_stmt expression ')' stmt
 
@@ -862,35 +886,23 @@ state 44
     INTEGER_LITERAL  shift, and go to state 48
     INCREMENT        shift, and go to state 7
     DECREMENT        shift, and go to state 8
+    SHORT            shift, and go to state 9
+    INT              shift, and go to state 10
+    LONG             shift, and go to state 11
+    LONG_LONG        shift, and go to state 12
+    SIGNED           shift, and go to state 13
+    UNSIGNED         shift, and go to state 14
+    CHAR             shift, and go to state 15
+    BOOLEAN          shift, and go to state 16
     MINUS            shift, and go to state 49
     EXCLAIMATION     shift, and go to state 50
     ';'              shift, and go to state 79
     '('              shift, and go to state 52
 
-    expression_stmt  go to state 80
-    expression       go to state 81
-    sub_expr         go to state 78
-    assignment_expr  go to state 54
-    unary_expr       go to state 55
-    lhs              go to state 37
-    identifier       go to state 56
-    arithmetic_expr  go to state 57
-    constant         go to state 58
-    array_access     go to state 59
-
-
-state 45
-
-   28 while_block: WHILE '(' . expression ')' stmt
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    EXCLAIMATION     shift, and go to state 50
-    '('              shift, and go to state 52
-
+    data_type        go to state 80
+    sign_specifier   go to state 26
+    type_specifier   go to state 27
+    expression_stmt  go to state 81
     expression       go to state 82
     sub_expr         go to state 78
     assignment_expr  go to state 54
@@ -902,44 +914,9 @@ state 45
     array_access     go to state 59
 
 
-state 46
+State 45
 
-   22 single_stmt: CONTINUE ';' .
-
-    $default  reduce using rule 22 (single_stmt)
-
-
-state 47
-
-   23 single_stmt: BREAK ';' .
-
-    $default  reduce using rule 23 (single_stmt)
-
-
-state 48
-
-   79 constant: INTEGER_LITERAL .
-
-    $default  reduce using rule 79 (constant)
-
-
-state 49
-
-   76 arithmetic_expr: MINUS . arithmetic_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    MINUS            shift, and go to state 49
-    '('              shift, and go to state 52
-
-    identifier       go to state 83
-    arithmetic_expr  go to state 84
-    constant         go to state 58
-
-
-state 50
-
-   49 sub_expr: EXCLAIMATION . sub_expr
+   28 while_block: WHILE '(' . expression ')' stmt
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -949,353 +926,7 @@ state 50
     EXCLAIMATION     shift, and go to state 50
     '('              shift, and go to state 52
 
-    sub_expr         go to state 85
-    assignment_expr  go to state 54
-    unary_expr       go to state 55
-    lhs              go to state 37
-    identifier       go to state 56
-    arithmetic_expr  go to state 57
-    constant         go to state 58
-    array_access     go to state 59
-
-
-state 51
-
-   21 single_stmt: RETURN ';' .
-
-    $default  reduce using rule 21 (single_stmt)
-
-
-state 52
-
-   75 arithmetic_expr: '(' . arithmetic_expr ')'
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    MINUS            shift, and go to state 49
-    '('              shift, and go to state 52
-
-    identifier       go to state 83
-    arithmetic_expr  go to state 86
-    constant         go to state 58
-
-
-state 53
-
-   24 single_stmt: RETURN sub_expr . ';'
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    OR                shift, and go to state 87
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    EQ                shift, and go to state 90
-    NEQ               shift, and go to state 91
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-    LOGICAL_AND       shift, and go to state 94
-    ';'               shift, and go to state 95
-
-
-state 54
-
-   51 sub_expr: assignment_expr .
-
-    $default  reduce using rule 51 (sub_expr)
-
-
-state 55
-
-   52 sub_expr: unary_expr .
-   56 assignment_expr: unary_expr . assign unary_expr
-
-    MULEQ    shift, and go to state 65
-    DIVEQ    shift, and go to state 66
-    MODEQ    shift, and go to state 67
-    PLUSEQ   shift, and go to state 68
-    MINUSEQ  shift, and go to state 69
-    ASSIGN   shift, and go to state 70
-
-    $default  reduce using rule 52 (sub_expr)
-
-    assign  go to state 72
-
-
-state 56
-
-   57 unary_expr: identifier . INCREMENT
-   58           | identifier . DECREMENT
-   61 lhs: identifier .
-   77 arithmetic_expr: identifier .
-   80 array_access: identifier . '[' array_index ']'
-
-    INCREMENT  shift, and go to state 74
-    DECREMENT  shift, and go to state 75
-    '['        shift, and go to state 76
-
-    MULEQ     reduce using rule 61 (lhs)
-    DIVEQ     reduce using rule 61 (lhs)
-    MODEQ     reduce using rule 61 (lhs)
-    PLUSEQ    reduce using rule 61 (lhs)
-    MINUSEQ   reduce using rule 61 (lhs)
-    ASSIGN    reduce using rule 61 (lhs)
-    $default  reduce using rule 77 (arithmetic_expr)
-
-
-state 57
-
-   50 sub_expr: arithmetic_expr .
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-
-    STAR      shift, and go to state 96
-    ADDITION  shift, and go to state 97
-    MINUS     shift, and go to state 98
-    DIVISION  shift, and go to state 99
-    MODULO    shift, and go to state 100
-
-    $default  reduce using rule 50 (sub_expr)
-
-
-state 58
-
-   78 arithmetic_expr: constant .
-
-    $default  reduce using rule 78 (arithmetic_expr)
-
-
-state 59
-
-   62 lhs: array_access .
-
-    $default  reduce using rule 62 (lhs)
-
-
-state 60
-
-   29 declaration: data_type declaration_list . ';'
-   32 declaration_list: declaration_list . COMMA sub_decl
-
-    COMMA  shift, and go to state 63
-    ';'    shift, and go to state 101
-
-
-state 61
-
-   56 assignment_expr: unary_expr . assign unary_expr
-
-    MULEQ    shift, and go to state 65
-    DIVEQ    shift, and go to state 66
-    MODEQ    shift, and go to state 67
-    PLUSEQ   shift, and go to state 68
-    MINUSEQ  shift, and go to state 69
-    ASSIGN   shift, and go to state 70
-
-    assign  go to state 72
-
-
-state 62
-
-    7 data_type: sign_specifier type_specifier .
-
-    $default  reduce using rule 7 (data_type)
-
-
-state 63
-
-   32 declaration_list: declaration_list COMMA . sub_decl
-
-    IDENTIFIER  shift, and go to state 6
-    INCREMENT   shift, and go to state 7
-    DECREMENT   shift, and go to state 8
-
-    sub_decl         go to state 102
-    assignment_expr  go to state 35
-    unary_expr       go to state 61
-    lhs              go to state 37
-    identifier       go to state 38
-    array_access     go to state 39
-
-
-state 64
-
-   30 declaration: declaration_list ';' .
-
-    $default  reduce using rule 30 (declaration)
-
-
-state 65
-
-   67 assign: MULEQ .
-
-    $default  reduce using rule 67 (assign)
-
-
-state 66
-
-   68 assign: DIVEQ .
-
-    $default  reduce using rule 68 (assign)
-
-
-state 67
-
-   69 assign: MODEQ .
-
-    $default  reduce using rule 69 (assign)
-
-
-state 68
-
-   65 assign: PLUSEQ .
-
-    $default  reduce using rule 65 (assign)
-
-
-state 69
-
-   66 assign: MINUSEQ .
-
-    $default  reduce using rule 66 (assign)
-
-
-state 70
-
-   64 assign: ASSIGN .
-
-    $default  reduce using rule 64 (assign)
-
-
-state 71
-
-   31 declaration: unary_expr ';' .
-
-    $default  reduce using rule 31 (declaration)
-
-
-state 72
-
-   56 assignment_expr: unary_expr assign . unary_expr
-
-    IDENTIFIER  shift, and go to state 6
-    INCREMENT   shift, and go to state 7
-    DECREMENT   shift, and go to state 8
-
-    unary_expr  go to state 103
-    identifier  go to state 104
-
-
-state 73
-
-   53 assignment_expr: lhs assign . arithmetic_expr
-   54                | lhs assign . array_access
-   55                | lhs assign . unary_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    '('              shift, and go to state 52
-
-    unary_expr       go to state 105
-    identifier       go to state 106
-    arithmetic_expr  go to state 107
-    constant         go to state 58
-    array_access     go to state 108
-
-
-state 74
-
-   57 unary_expr: identifier INCREMENT .
-
-    $default  reduce using rule 57 (unary_expr)
-
-
-state 75
-
-   58 unary_expr: identifier DECREMENT .
-
-    $default  reduce using rule 58 (unary_expr)
-
-
-state 76
-
-   80 array_access: identifier '[' . array_index ']'
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-
-    identifier   go to state 109
-    constant     go to state 110
-    array_index  go to state 111
-
-
-state 77
-
-   26 if_block: IF '(' expression . ')' stmt
-   27         | IF '(' expression . ')' stmt ELSE stmt
-   39 expression: expression . COMMA sub_expr
-
-    COMMA  shift, and go to state 112
-    ')'    shift, and go to state 113
-
-
-state 78
-
-   40 expression: sub_expr .
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    OR                shift, and go to state 87
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    EQ                shift, and go to state 90
-    NEQ               shift, and go to state 91
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-    LOGICAL_AND       shift, and go to state 94
-
-    $default  reduce using rule 40 (expression)
-
-
-state 79
-
-   38 expression_stmt: ';' .
-
-    $default  reduce using rule 38 (expression_stmt)
-
-
-state 80
-
-   25 for_block: FOR '(' expression_stmt . expression_stmt expression ')' stmt
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    EXCLAIMATION     shift, and go to state 50
-    ';'              shift, and go to state 79
-    '('              shift, and go to state 52
-
-    expression_stmt  go to state 114
-    expression       go to state 81
+    expression       go to state 83
     sub_expr         go to state 78
     assignment_expr  go to state 54
     unary_expr       go to state 55
@@ -1306,122 +937,516 @@ state 80
     array_access     go to state 59
 
 
-state 81
+State 46
 
-   37 expression_stmt: expression . ';'
-   39 expression: expression . COMMA sub_expr
+   22 single_stmt: CONTINUE ';' .
 
-    COMMA  shift, and go to state 112
-    ';'    shift, and go to state 115
+    $default  reduce using rule 22 (single_stmt)
 
 
-state 82
+State 47
+
+   23 single_stmt: BREAK ';' .
+
+    $default  reduce using rule 23 (single_stmt)
+
+
+State 48
+
+   80 constant: INTEGER_LITERAL .
+
+    $default  reduce using rule 80 (constant)
+
+
+State 49
+
+   77 arithmetic_expr: MINUS . arithmetic_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    MINUS            shift, and go to state 49
+    '('              shift, and go to state 52
+
+    identifier       go to state 84
+    arithmetic_expr  go to state 85
+    constant         go to state 58
+
+
+State 50
+
+   50 sub_expr: EXCLAIMATION . sub_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    '('              shift, and go to state 52
+
+    sub_expr         go to state 86
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
+
+
+State 51
+
+   21 single_stmt: RETURN ';' .
+
+    $default  reduce using rule 21 (single_stmt)
+
+
+State 52
+
+   76 arithmetic_expr: '(' . arithmetic_expr ')'
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    MINUS            shift, and go to state 49
+    '('              shift, and go to state 52
+
+    identifier       go to state 84
+    arithmetic_expr  go to state 87
+    constant         go to state 58
+
+
+State 53
+
+   24 single_stmt: RETURN sub_expr . ';'
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    OR                shift, and go to state 88
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    EQ                shift, and go to state 91
+    NEQ               shift, and go to state 92
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+    LOGICAL_AND       shift, and go to state 95
+    ';'               shift, and go to state 96
+
+
+State 54
+
+   52 sub_expr: assignment_expr .
+
+    $default  reduce using rule 52 (sub_expr)
+
+
+State 55
+
+   53 sub_expr: unary_expr .
+   57 assignment_expr: unary_expr . assign unary_expr
+
+    MULEQ    shift, and go to state 65
+    DIVEQ    shift, and go to state 66
+    MODEQ    shift, and go to state 67
+    PLUSEQ   shift, and go to state 68
+    MINUSEQ  shift, and go to state 69
+    ASSIGN   shift, and go to state 70
+
+    $default  reduce using rule 53 (sub_expr)
+
+    assign  go to state 72
+
+
+State 56
+
+   58 unary_expr: identifier . INCREMENT
+   59           | identifier . DECREMENT
+   62 lhs: identifier .
+   78 arithmetic_expr: identifier .
+   81 array_access: identifier . '[' array_index ']'
+
+    INCREMENT  shift, and go to state 74
+    DECREMENT  shift, and go to state 75
+    '['        shift, and go to state 76
+
+    MULEQ     reduce using rule 62 (lhs)
+    DIVEQ     reduce using rule 62 (lhs)
+    MODEQ     reduce using rule 62 (lhs)
+    PLUSEQ    reduce using rule 62 (lhs)
+    MINUSEQ   reduce using rule 62 (lhs)
+    ASSIGN    reduce using rule 62 (lhs)
+    $default  reduce using rule 78 (arithmetic_expr)
+
+
+State 57
+
+   51 sub_expr: arithmetic_expr .
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+
+    STAR      shift, and go to state 97
+    ADDITION  shift, and go to state 98
+    MINUS     shift, and go to state 99
+    DIVISION  shift, and go to state 100
+    MODULO    shift, and go to state 101
+
+    $default  reduce using rule 51 (sub_expr)
+
+
+State 58
+
+   79 arithmetic_expr: constant .
+
+    $default  reduce using rule 79 (arithmetic_expr)
+
+
+State 59
+
+   63 lhs: array_access .
+
+    $default  reduce using rule 63 (lhs)
+
+
+State 60
+
+   29 declaration: data_type declaration_list . ';'
+   32 declaration_list: declaration_list . COMMA sub_decl
+
+    COMMA  shift, and go to state 63
+    ';'    shift, and go to state 102
+
+
+State 61
+
+   57 assignment_expr: unary_expr . assign unary_expr
+
+    MULEQ    shift, and go to state 65
+    DIVEQ    shift, and go to state 66
+    MODEQ    shift, and go to state 67
+    PLUSEQ   shift, and go to state 68
+    MINUSEQ  shift, and go to state 69
+    ASSIGN   shift, and go to state 70
+
+    assign  go to state 72
+
+
+State 62
+
+    7 data_type: sign_specifier type_specifier .
+
+    $default  reduce using rule 7 (data_type)
+
+
+State 63
+
+   32 declaration_list: declaration_list COMMA . sub_decl
+
+    IDENTIFIER  shift, and go to state 6
+    INCREMENT   shift, and go to state 7
+    DECREMENT   shift, and go to state 8
+
+    sub_decl         go to state 103
+    assignment_expr  go to state 35
+    unary_expr       go to state 61
+    lhs              go to state 37
+    identifier       go to state 38
+    array_access     go to state 39
+
+
+State 64
+
+   30 declaration: declaration_list ';' .
+
+    $default  reduce using rule 30 (declaration)
+
+
+State 65
+
+   68 assign: MULEQ .
+
+    $default  reduce using rule 68 (assign)
+
+
+State 66
+
+   69 assign: DIVEQ .
+
+    $default  reduce using rule 69 (assign)
+
+
+State 67
+
+   70 assign: MODEQ .
+
+    $default  reduce using rule 70 (assign)
+
+
+State 68
+
+   66 assign: PLUSEQ .
+
+    $default  reduce using rule 66 (assign)
+
+
+State 69
+
+   67 assign: MINUSEQ .
+
+    $default  reduce using rule 67 (assign)
+
+
+State 70
+
+   65 assign: ASSIGN .
+
+    $default  reduce using rule 65 (assign)
+
+
+State 71
+
+   31 declaration: unary_expr ';' .
+
+    $default  reduce using rule 31 (declaration)
+
+
+State 72
+
+   57 assignment_expr: unary_expr assign . unary_expr
+
+    IDENTIFIER  shift, and go to state 6
+    INCREMENT   shift, and go to state 7
+    DECREMENT   shift, and go to state 8
+
+    unary_expr  go to state 104
+    identifier  go to state 105
+
+
+State 73
+
+   54 assignment_expr: lhs assign . arithmetic_expr
+   55                | lhs assign . array_access
+   56                | lhs assign . unary_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    '('              shift, and go to state 52
+
+    unary_expr       go to state 106
+    identifier       go to state 107
+    arithmetic_expr  go to state 108
+    constant         go to state 58
+    array_access     go to state 109
+
+
+State 74
+
+   58 unary_expr: identifier INCREMENT .
+
+    $default  reduce using rule 58 (unary_expr)
+
+
+State 75
+
+   59 unary_expr: identifier DECREMENT .
+
+    $default  reduce using rule 59 (unary_expr)
+
+
+State 76
+
+   81 array_access: identifier '[' . array_index ']'
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+
+    identifier   go to state 110
+    constant     go to state 111
+    array_index  go to state 112
+
+
+State 77
+
+   26 if_block: IF '(' expression . ')' stmt
+   27         | IF '(' expression . ')' stmt ELSE stmt
+   40 expression: expression . COMMA sub_expr
+
+    COMMA  shift, and go to state 113
+    ')'    shift, and go to state 114
+
+
+State 78
+
+   41 expression: sub_expr .
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    OR                shift, and go to state 88
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    EQ                shift, and go to state 91
+    NEQ               shift, and go to state 92
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+    LOGICAL_AND       shift, and go to state 95
+
+    $default  reduce using rule 41 (expression)
+
+
+State 79
+
+   39 expression_stmt: ';' .
+
+    $default  reduce using rule 39 (expression_stmt)
+
+
+State 80
+
+   37 expression_stmt: data_type . expression ';'
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    '('              shift, and go to state 52
+
+    expression       go to state 115
+    sub_expr         go to state 78
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
+
+
+State 81
+
+   25 for_block: FOR '(' expression_stmt . expression_stmt expression ')' stmt
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    SHORT            shift, and go to state 9
+    INT              shift, and go to state 10
+    LONG             shift, and go to state 11
+    LONG_LONG        shift, and go to state 12
+    SIGNED           shift, and go to state 13
+    UNSIGNED         shift, and go to state 14
+    CHAR             shift, and go to state 15
+    BOOLEAN          shift, and go to state 16
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    ';'              shift, and go to state 79
+    '('              shift, and go to state 52
+
+    data_type        go to state 80
+    sign_specifier   go to state 26
+    type_specifier   go to state 27
+    expression_stmt  go to state 116
+    expression       go to state 82
+    sub_expr         go to state 78
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
+
+
+State 82
+
+   38 expression_stmt: expression . ';'
+   40 expression: expression . COMMA sub_expr
+
+    COMMA  shift, and go to state 113
+    ';'    shift, and go to state 117
+
+
+State 83
 
    28 while_block: WHILE '(' expression . ')' stmt
-   39 expression: expression . COMMA sub_expr
+   40 expression: expression . COMMA sub_expr
 
-    COMMA  shift, and go to state 112
-    ')'    shift, and go to state 116
+    COMMA  shift, and go to state 113
+    ')'    shift, and go to state 118
 
 
-state 83
+State 84
 
-   77 arithmetic_expr: identifier .
+   78 arithmetic_expr: identifier .
+
+    $default  reduce using rule 78 (arithmetic_expr)
+
+
+State 85
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+   77                | MINUS arithmetic_expr .
 
     $default  reduce using rule 77 (arithmetic_expr)
 
 
-state 84
+State 86
 
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-   76                | MINUS arithmetic_expr .
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+   50         | EXCLAIMATION sub_expr .
 
-    $default  reduce using rule 76 (arithmetic_expr)
-
-
-state 85
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-   49         | EXCLAIMATION sub_expr .
-
-    $default  reduce using rule 49 (sub_expr)
+    $default  reduce using rule 50 (sub_expr)
 
 
-state 86
+State 87
 
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-   75                | '(' arithmetic_expr . ')'
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+   76                | '(' arithmetic_expr . ')'
 
-    STAR      shift, and go to state 96
-    ADDITION  shift, and go to state 97
-    MINUS     shift, and go to state 98
-    DIVISION  shift, and go to state 99
-    MODULO    shift, and go to state 100
-    ')'       shift, and go to state 117
-
-
-state 87
-
-   48 sub_expr: sub_expr OR . sub_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    EXCLAIMATION     shift, and go to state 50
-    '('              shift, and go to state 52
-
-    sub_expr         go to state 118
-    assignment_expr  go to state 54
-    unary_expr       go to state 55
-    lhs              go to state 37
-    identifier       go to state 56
-    arithmetic_expr  go to state 57
-    constant         go to state 58
-    array_access     go to state 59
+    STAR      shift, and go to state 97
+    ADDITION  shift, and go to state 98
+    MINUS     shift, and go to state 99
+    DIVISION  shift, and go to state 100
+    MODULO    shift, and go to state 101
+    ')'       shift, and go to state 119
 
 
-state 88
+State 88
 
-   46 sub_expr: sub_expr LESSTHANEQUAL . sub_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    EXCLAIMATION     shift, and go to state 50
-    '('              shift, and go to state 52
-
-    sub_expr         go to state 119
-    assignment_expr  go to state 54
-    unary_expr       go to state 55
-    lhs              go to state 37
-    identifier       go to state 56
-    arithmetic_expr  go to state 57
-    constant         go to state 58
-    array_access     go to state 59
-
-
-state 89
-
-   45 sub_expr: sub_expr GREATERTHANEQUAL . sub_expr
+   49 sub_expr: sub_expr OR . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1441,9 +1466,9 @@ state 89
     array_access     go to state 59
 
 
-state 90
+State 89
 
-   43 sub_expr: sub_expr EQ . sub_expr
+   47 sub_expr: sub_expr LESSTHANEQUAL . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1463,9 +1488,9 @@ state 90
     array_access     go to state 59
 
 
-state 91
+State 90
 
-   44 sub_expr: sub_expr NEQ . sub_expr
+   46 sub_expr: sub_expr GREATERTHANEQUAL . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1485,9 +1510,9 @@ state 91
     array_access     go to state 59
 
 
-state 92
+State 91
 
-   42 sub_expr: sub_expr LESSTHAN . sub_expr
+   44 sub_expr: sub_expr EQ . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1507,9 +1532,9 @@ state 92
     array_access     go to state 59
 
 
-state 93
+State 92
 
-   41 sub_expr: sub_expr GREATERTHAN . sub_expr
+   45 sub_expr: sub_expr NEQ . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1529,9 +1554,9 @@ state 93
     array_access     go to state 59
 
 
-state 94
+State 93
 
-   47 sub_expr: sub_expr LOGICAL_AND . sub_expr
+   43 sub_expr: sub_expr LESSTHAN . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1551,183 +1576,227 @@ state 94
     array_access     go to state 59
 
 
-state 95
+State 94
+
+   42 sub_expr: sub_expr GREATERTHAN . sub_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    '('              shift, and go to state 52
+
+    sub_expr         go to state 126
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
+
+
+State 95
+
+   48 sub_expr: sub_expr LOGICAL_AND . sub_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    '('              shift, and go to state 52
+
+    sub_expr         go to state 127
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
+
+
+State 96
 
    24 single_stmt: RETURN sub_expr ';' .
 
     $default  reduce using rule 24 (single_stmt)
 
 
-state 96
+State 97
 
-   72 arithmetic_expr: arithmetic_expr STAR . arithmetic_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    MINUS            shift, and go to state 49
-    '('              shift, and go to state 52
-
-    identifier       go to state 83
-    arithmetic_expr  go to state 126
-    constant         go to state 58
-
-
-state 97
-
-   70 arithmetic_expr: arithmetic_expr ADDITION . arithmetic_expr
+   73 arithmetic_expr: arithmetic_expr STAR . arithmetic_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
     MINUS            shift, and go to state 49
     '('              shift, and go to state 52
 
-    identifier       go to state 83
-    arithmetic_expr  go to state 127
-    constant         go to state 58
-
-
-state 98
-
-   71 arithmetic_expr: arithmetic_expr MINUS . arithmetic_expr
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    MINUS            shift, and go to state 49
-    '('              shift, and go to state 52
-
-    identifier       go to state 83
+    identifier       go to state 84
     arithmetic_expr  go to state 128
     constant         go to state 58
 
 
-state 99
+State 98
 
-   73 arithmetic_expr: arithmetic_expr DIVISION . arithmetic_expr
+   71 arithmetic_expr: arithmetic_expr ADDITION . arithmetic_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
     MINUS            shift, and go to state 49
     '('              shift, and go to state 52
 
-    identifier       go to state 83
+    identifier       go to state 84
     arithmetic_expr  go to state 129
     constant         go to state 58
 
 
-state 100
+State 99
 
-   74 arithmetic_expr: arithmetic_expr MODULO . arithmetic_expr
+   72 arithmetic_expr: arithmetic_expr MINUS . arithmetic_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
     MINUS            shift, and go to state 49
     '('              shift, and go to state 52
 
-    identifier       go to state 83
+    identifier       go to state 84
     arithmetic_expr  go to state 130
     constant         go to state 58
 
 
-state 101
+State 100
+
+   74 arithmetic_expr: arithmetic_expr DIVISION . arithmetic_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    MINUS            shift, and go to state 49
+    '('              shift, and go to state 52
+
+    identifier       go to state 84
+    arithmetic_expr  go to state 131
+    constant         go to state 58
+
+
+State 101
+
+   75 arithmetic_expr: arithmetic_expr MODULO . arithmetic_expr
+
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    MINUS            shift, and go to state 49
+    '('              shift, and go to state 52
+
+    identifier       go to state 84
+    arithmetic_expr  go to state 132
+    constant         go to state 58
+
+
+State 102
 
    29 declaration: data_type declaration_list ';' .
 
     $default  reduce using rule 29 (declaration)
 
 
-state 102
+State 103
 
    32 declaration_list: declaration_list COMMA sub_decl .
 
     $default  reduce using rule 32 (declaration_list)
 
 
-state 103
+State 104
 
-   56 assignment_expr: unary_expr assign unary_expr .
+   57 assignment_expr: unary_expr assign unary_expr .
 
-    $default  reduce using rule 56 (assignment_expr)
+    $default  reduce using rule 57 (assignment_expr)
 
 
-state 104
+State 105
 
-   57 unary_expr: identifier . INCREMENT
-   58           | identifier . DECREMENT
+   58 unary_expr: identifier . INCREMENT
+   59           | identifier . DECREMENT
 
     INCREMENT  shift, and go to state 74
     DECREMENT  shift, and go to state 75
 
 
-state 105
+State 106
 
-   55 assignment_expr: lhs assign unary_expr .
+   56 assignment_expr: lhs assign unary_expr .
 
-    $default  reduce using rule 55 (assignment_expr)
+    $default  reduce using rule 56 (assignment_expr)
 
 
-state 106
+State 107
 
-   57 unary_expr: identifier . INCREMENT
-   58           | identifier . DECREMENT
-   77 arithmetic_expr: identifier .
-   80 array_access: identifier . '[' array_index ']'
+   58 unary_expr: identifier . INCREMENT
+   59           | identifier . DECREMENT
+   78 arithmetic_expr: identifier .
+   81 array_access: identifier . '[' array_index ']'
 
     INCREMENT  shift, and go to state 74
     DECREMENT  shift, and go to state 75
     '['        shift, and go to state 76
 
-    $default  reduce using rule 77 (arithmetic_expr)
+    $default  reduce using rule 78 (arithmetic_expr)
 
 
-state 107
+State 108
 
-   53 assignment_expr: lhs assign arithmetic_expr .
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
+   54 assignment_expr: lhs assign arithmetic_expr .
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
 
-    STAR      shift, and go to state 96
-    ADDITION  shift, and go to state 97
-    MINUS     shift, and go to state 98
-    DIVISION  shift, and go to state 99
-    MODULO    shift, and go to state 100
-
-    $default  reduce using rule 53 (assignment_expr)
-
-
-state 108
-
-   54 assignment_expr: lhs assign array_access .
+    STAR      shift, and go to state 97
+    ADDITION  shift, and go to state 98
+    MINUS     shift, and go to state 99
+    DIVISION  shift, and go to state 100
+    MODULO    shift, and go to state 101
 
     $default  reduce using rule 54 (assignment_expr)
 
 
-state 109
+State 109
 
-   82 array_index: identifier .
+   55 assignment_expr: lhs assign array_access .
+
+    $default  reduce using rule 55 (assignment_expr)
+
+
+State 110
+
+   83 array_index: identifier .
+
+    $default  reduce using rule 83 (array_index)
+
+
+State 111
+
+   82 array_index: constant .
 
     $default  reduce using rule 82 (array_index)
 
 
-state 110
+State 112
 
-   81 array_index: constant .
+   81 array_access: identifier '[' array_index . ']'
 
-    $default  reduce using rule 81 (array_index)
-
-
-state 111
-
-   80 array_access: identifier '[' array_index . ']'
-
-    ']'  shift, and go to state 131
+    ']'  shift, and go to state 133
 
 
-state 112
+State 113
 
-   39 expression: expression COMMA . sub_expr
+   40 expression: expression COMMA . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1737,7 +1806,7 @@ state 112
     EXCLAIMATION     shift, and go to state 50
     '('              shift, and go to state 52
 
-    sub_expr         go to state 132
+    sub_expr         go to state 134
     assignment_expr  go to state 54
     unary_expr       go to state 55
     lhs              go to state 37
@@ -1747,103 +1816,10 @@ state 112
     array_access     go to state 59
 
 
-state 113
+State 114
 
    26 if_block: IF '(' expression ')' . stmt
    27         | IF '(' expression ')' . stmt ELSE stmt
-
-    IDENTIFIER  shift, and go to state 6
-    INCREMENT   shift, and go to state 7
-    DECREMENT   shift, and go to state 8
-    SHORT       shift, and go to state 9
-    INT         shift, and go to state 10
-    LONG        shift, and go to state 11
-    LONG_LONG   shift, and go to state 12
-    SIGNED      shift, and go to state 13
-    UNSIGNED    shift, and go to state 14
-    CHAR        shift, and go to state 15
-    BOOLEAN     shift, and go to state 16
-    IF          shift, and go to state 17
-    FOR         shift, and go to state 18
-    WHILE       shift, and go to state 19
-    CONTINUE    shift, and go to state 20
-    BREAK       shift, and go to state 21
-    RETURN      shift, and go to state 22
-    '{'         shift, and go to state 1
-
-    IDENTIFIER  [reduce using rule 4 (statements)]
-    INCREMENT   [reduce using rule 4 (statements)]
-    DECREMENT   [reduce using rule 4 (statements)]
-    SHORT       [reduce using rule 4 (statements)]
-    INT         [reduce using rule 4 (statements)]
-    LONG        [reduce using rule 4 (statements)]
-    LONG_LONG   [reduce using rule 4 (statements)]
-    SIGNED      [reduce using rule 4 (statements)]
-    UNSIGNED    [reduce using rule 4 (statements)]
-    CHAR        [reduce using rule 4 (statements)]
-    BOOLEAN     [reduce using rule 4 (statements)]
-    IF          [reduce using rule 4 (statements)]
-    FOR         [reduce using rule 4 (statements)]
-    WHILE       [reduce using rule 4 (statements)]
-    CONTINUE    [reduce using rule 4 (statements)]
-    BREAK       [reduce using rule 4 (statements)]
-    RETURN      [reduce using rule 4 (statements)]
-    '{'         [reduce using rule 4 (statements)]
-    $default    reduce using rule 4 (statements)
-
-    compound_stmt     go to state 23
-    statements        go to state 3
-    stmt              go to state 133
-    data_type         go to state 25
-    sign_specifier    go to state 26
-    type_specifier    go to state 27
-    single_stmt       go to state 28
-    for_block         go to state 29
-    if_block          go to state 30
-    while_block       go to state 31
-    declaration       go to state 32
-    declaration_list  go to state 33
-    sub_decl          go to state 34
-    assignment_expr   go to state 35
-    unary_expr        go to state 36
-    lhs               go to state 37
-    identifier        go to state 38
-    array_access      go to state 39
-
-
-state 114
-
-   25 for_block: FOR '(' expression_stmt expression_stmt . expression ')' stmt
-
-    IDENTIFIER       shift, and go to state 6
-    INTEGER_LITERAL  shift, and go to state 48
-    INCREMENT        shift, and go to state 7
-    DECREMENT        shift, and go to state 8
-    MINUS            shift, and go to state 49
-    EXCLAIMATION     shift, and go to state 50
-    '('              shift, and go to state 52
-
-    expression       go to state 134
-    sub_expr         go to state 78
-    assignment_expr  go to state 54
-    unary_expr       go to state 55
-    lhs              go to state 37
-    identifier       go to state 56
-    arithmetic_expr  go to state 57
-    constant         go to state 58
-    array_access     go to state 59
-
-
-state 115
-
-   37 expression_stmt: expression ';' .
-
-    $default  reduce using rule 37 (expression_stmt)
-
-
-state 116
-
-   28 while_block: WHILE '(' expression ')' . stmt
 
     IDENTIFIER  shift, and go to state 6
     INCREMENT   shift, and go to state 7
@@ -1904,286 +1880,48 @@ state 116
     array_access      go to state 39
 
 
-state 117
+State 115
 
-   75 arithmetic_expr: '(' arithmetic_expr ')' .
+   37 expression_stmt: data_type expression . ';'
+   40 expression: expression . COMMA sub_expr
 
-    $default  reduce using rule 75 (arithmetic_expr)
+    COMMA  shift, and go to state 113
+    ';'    shift, and go to state 136
 
 
-state 118
+State 116
 
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-   48         | sub_expr OR sub_expr .
+   25 for_block: FOR '(' expression_stmt expression_stmt . expression ')' stmt
 
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    EQ                shift, and go to state 90
-    NEQ               shift, and go to state 91
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-    LOGICAL_AND       shift, and go to state 94
+    IDENTIFIER       shift, and go to state 6
+    INTEGER_LITERAL  shift, and go to state 48
+    INCREMENT        shift, and go to state 7
+    DECREMENT        shift, and go to state 8
+    MINUS            shift, and go to state 49
+    EXCLAIMATION     shift, and go to state 50
+    '('              shift, and go to state 52
 
-    $default  reduce using rule 48 (sub_expr)
+    expression       go to state 137
+    sub_expr         go to state 78
+    assignment_expr  go to state 54
+    unary_expr       go to state 55
+    lhs              go to state 37
+    identifier       go to state 56
+    arithmetic_expr  go to state 57
+    constant         go to state 58
+    array_access     go to state 59
 
 
-state 119
+State 117
 
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   46         | sub_expr LESSTHANEQUAL sub_expr .
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
+   38 expression_stmt: expression ';' .
 
-    $default  reduce using rule 46 (sub_expr)
+    $default  reduce using rule 38 (expression_stmt)
 
 
-state 120
+State 118
 
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   45         | sub_expr GREATERTHANEQUAL sub_expr .
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    $default  reduce using rule 45 (sub_expr)
-
-
-state 121
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   43         | sub_expr EQ sub_expr .
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-
-    $default  reduce using rule 43 (sub_expr)
-
-
-state 122
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   44         | sub_expr NEQ sub_expr .
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-
-    $default  reduce using rule 44 (sub_expr)
-
-
-state 123
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   42         | sub_expr LESSTHAN sub_expr .
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    $default  reduce using rule 42 (sub_expr)
-
-
-state 124
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   41         | sub_expr GREATERTHAN sub_expr .
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    $default  reduce using rule 41 (sub_expr)
-
-
-state 125
-
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   47         | sub_expr LOGICAL_AND sub_expr .
-   48         | sub_expr . OR sub_expr
-
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    EQ                shift, and go to state 90
-    NEQ               shift, and go to state 91
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-
-    $default  reduce using rule 47 (sub_expr)
-
-
-state 126
-
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   72                | arithmetic_expr STAR arithmetic_expr .
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-
-    $default  reduce using rule 72 (arithmetic_expr)
-
-
-state 127
-
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   70                | arithmetic_expr ADDITION arithmetic_expr .
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-
-    STAR      shift, and go to state 96
-    DIVISION  shift, and go to state 99
-    MODULO    shift, and go to state 100
-
-    $default  reduce using rule 70 (arithmetic_expr)
-
-
-state 128
-
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   71                | arithmetic_expr MINUS arithmetic_expr .
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-
-    STAR      shift, and go to state 96
-    DIVISION  shift, and go to state 99
-    MODULO    shift, and go to state 100
-
-    $default  reduce using rule 71 (arithmetic_expr)
-
-
-state 129
-
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   73                | arithmetic_expr DIVISION arithmetic_expr .
-   74                | arithmetic_expr . MODULO arithmetic_expr
-
-    $default  reduce using rule 73 (arithmetic_expr)
-
-
-state 130
-
-   70 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
-   71                | arithmetic_expr . MINUS arithmetic_expr
-   72                | arithmetic_expr . STAR arithmetic_expr
-   73                | arithmetic_expr . DIVISION arithmetic_expr
-   74                | arithmetic_expr . MODULO arithmetic_expr
-   74                | arithmetic_expr MODULO arithmetic_expr .
-
-    $default  reduce using rule 74 (arithmetic_expr)
-
-
-state 131
-
-   80 array_access: identifier '[' array_index ']' .
-
-    $default  reduce using rule 80 (array_access)
-
-
-state 132
-
-   39 expression: expression COMMA sub_expr .
-   41 sub_expr: sub_expr . GREATERTHAN sub_expr
-   42         | sub_expr . LESSTHAN sub_expr
-   43         | sub_expr . EQ sub_expr
-   44         | sub_expr . NEQ sub_expr
-   45         | sub_expr . GREATERTHANEQUAL sub_expr
-   46         | sub_expr . LESSTHANEQUAL sub_expr
-   47         | sub_expr . LOGICAL_AND sub_expr
-   48         | sub_expr . OR sub_expr
-
-    OR                shift, and go to state 87
-    LESSTHANEQUAL     shift, and go to state 88
-    GREATERTHANEQUAL  shift, and go to state 89
-    EQ                shift, and go to state 90
-    NEQ               shift, and go to state 91
-    LESSTHAN          shift, and go to state 92
-    GREATERTHAN       shift, and go to state 93
-    LOGICAL_AND       shift, and go to state 94
-
-    $default  reduce using rule 39 (expression)
-
-
-state 133
-
-   26 if_block: IF '(' expression ')' stmt .
-   27         | IF '(' expression ')' stmt . ELSE stmt
-
-    ELSE  shift, and go to state 136
-
-    $default  reduce using rule 26 (if_block)
-
-
-state 134
-
-   25 for_block: FOR '(' expression_stmt expression_stmt expression . ')' stmt
-   39 expression: expression . COMMA sub_expr
-
-    COMMA  shift, and go to state 112
-    ')'    shift, and go to state 137
-
-
-state 135
-
-   28 while_block: WHILE '(' expression ')' stmt .
-
-    $default  reduce using rule 28 (while_block)
-
-
-state 136
-
-   27 if_block: IF '(' expression ')' stmt ELSE . stmt
+   28 while_block: WHILE '(' expression ')' . stmt
 
     IDENTIFIER  shift, and go to state 6
     INCREMENT   shift, and go to state 7
@@ -2244,7 +1982,354 @@ state 136
     array_access      go to state 39
 
 
-state 137
+State 119
+
+   76 arithmetic_expr: '(' arithmetic_expr ')' .
+
+    $default  reduce using rule 76 (arithmetic_expr)
+
+
+State 120
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+   49         | sub_expr OR sub_expr .
+
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    EQ                shift, and go to state 91
+    NEQ               shift, and go to state 92
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+    LOGICAL_AND       shift, and go to state 95
+
+    $default  reduce using rule 49 (sub_expr)
+
+
+State 121
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   47         | sub_expr LESSTHANEQUAL sub_expr .
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    $default  reduce using rule 47 (sub_expr)
+
+
+State 122
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   46         | sub_expr GREATERTHANEQUAL sub_expr .
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    $default  reduce using rule 46 (sub_expr)
+
+
+State 123
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   44         | sub_expr EQ sub_expr .
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+
+    $default  reduce using rule 44 (sub_expr)
+
+
+State 124
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   45         | sub_expr NEQ sub_expr .
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+
+    $default  reduce using rule 45 (sub_expr)
+
+
+State 125
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   43         | sub_expr LESSTHAN sub_expr .
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    $default  reduce using rule 43 (sub_expr)
+
+
+State 126
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   42         | sub_expr GREATERTHAN sub_expr .
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    $default  reduce using rule 42 (sub_expr)
+
+
+State 127
+
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   48         | sub_expr LOGICAL_AND sub_expr .
+   49         | sub_expr . OR sub_expr
+
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    EQ                shift, and go to state 91
+    NEQ               shift, and go to state 92
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+
+    $default  reduce using rule 48 (sub_expr)
+
+
+State 128
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   73                | arithmetic_expr STAR arithmetic_expr .
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+
+    $default  reduce using rule 73 (arithmetic_expr)
+
+
+State 129
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   71                | arithmetic_expr ADDITION arithmetic_expr .
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+
+    STAR      shift, and go to state 97
+    DIVISION  shift, and go to state 100
+    MODULO    shift, and go to state 101
+
+    $default  reduce using rule 71 (arithmetic_expr)
+
+
+State 130
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   72                | arithmetic_expr MINUS arithmetic_expr .
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+
+    STAR      shift, and go to state 97
+    DIVISION  shift, and go to state 100
+    MODULO    shift, and go to state 101
+
+    $default  reduce using rule 72 (arithmetic_expr)
+
+
+State 131
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   74                | arithmetic_expr DIVISION arithmetic_expr .
+   75                | arithmetic_expr . MODULO arithmetic_expr
+
+    $default  reduce using rule 74 (arithmetic_expr)
+
+
+State 132
+
+   71 arithmetic_expr: arithmetic_expr . ADDITION arithmetic_expr
+   72                | arithmetic_expr . MINUS arithmetic_expr
+   73                | arithmetic_expr . STAR arithmetic_expr
+   74                | arithmetic_expr . DIVISION arithmetic_expr
+   75                | arithmetic_expr . MODULO arithmetic_expr
+   75                | arithmetic_expr MODULO arithmetic_expr .
+
+    $default  reduce using rule 75 (arithmetic_expr)
+
+
+State 133
+
+   81 array_access: identifier '[' array_index ']' .
+
+    $default  reduce using rule 81 (array_access)
+
+
+State 134
+
+   40 expression: expression COMMA sub_expr .
+   42 sub_expr: sub_expr . GREATERTHAN sub_expr
+   43         | sub_expr . LESSTHAN sub_expr
+   44         | sub_expr . EQ sub_expr
+   45         | sub_expr . NEQ sub_expr
+   46         | sub_expr . GREATERTHANEQUAL sub_expr
+   47         | sub_expr . LESSTHANEQUAL sub_expr
+   48         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr . OR sub_expr
+
+    OR                shift, and go to state 88
+    LESSTHANEQUAL     shift, and go to state 89
+    GREATERTHANEQUAL  shift, and go to state 90
+    EQ                shift, and go to state 91
+    NEQ               shift, and go to state 92
+    LESSTHAN          shift, and go to state 93
+    GREATERTHAN       shift, and go to state 94
+    LOGICAL_AND       shift, and go to state 95
+
+    $default  reduce using rule 40 (expression)
+
+
+State 135
+
+   26 if_block: IF '(' expression ')' stmt .
+   27         | IF '(' expression ')' stmt . ELSE stmt
+
+    ELSE  shift, and go to state 139
+
+    $default  reduce using rule 26 (if_block)
+
+
+State 136
+
+   37 expression_stmt: data_type expression ';' .
+
+    $default  reduce using rule 37 (expression_stmt)
+
+
+State 137
+
+   25 for_block: FOR '(' expression_stmt expression_stmt expression . ')' stmt
+   40 expression: expression . COMMA sub_expr
+
+    COMMA  shift, and go to state 113
+    ')'    shift, and go to state 140
+
+
+State 138
+
+   28 while_block: WHILE '(' expression ')' stmt .
+
+    $default  reduce using rule 28 (while_block)
+
+
+State 139
+
+   27 if_block: IF '(' expression ')' stmt ELSE . stmt
+
+    IDENTIFIER  shift, and go to state 6
+    INCREMENT   shift, and go to state 7
+    DECREMENT   shift, and go to state 8
+    SHORT       shift, and go to state 9
+    INT         shift, and go to state 10
+    LONG        shift, and go to state 11
+    LONG_LONG   shift, and go to state 12
+    SIGNED      shift, and go to state 13
+    UNSIGNED    shift, and go to state 14
+    CHAR        shift, and go to state 15
+    BOOLEAN     shift, and go to state 16
+    IF          shift, and go to state 17
+    FOR         shift, and go to state 18
+    WHILE       shift, and go to state 19
+    CONTINUE    shift, and go to state 20
+    BREAK       shift, and go to state 21
+    RETURN      shift, and go to state 22
+    '{'         shift, and go to state 1
+
+    IDENTIFIER  [reduce using rule 4 (statements)]
+    INCREMENT   [reduce using rule 4 (statements)]
+    DECREMENT   [reduce using rule 4 (statements)]
+    SHORT       [reduce using rule 4 (statements)]
+    INT         [reduce using rule 4 (statements)]
+    LONG        [reduce using rule 4 (statements)]
+    LONG_LONG   [reduce using rule 4 (statements)]
+    SIGNED      [reduce using rule 4 (statements)]
+    UNSIGNED    [reduce using rule 4 (statements)]
+    CHAR        [reduce using rule 4 (statements)]
+    BOOLEAN     [reduce using rule 4 (statements)]
+    IF          [reduce using rule 4 (statements)]
+    FOR         [reduce using rule 4 (statements)]
+    WHILE       [reduce using rule 4 (statements)]
+    CONTINUE    [reduce using rule 4 (statements)]
+    BREAK       [reduce using rule 4 (statements)]
+    RETURN      [reduce using rule 4 (statements)]
+    '{'         [reduce using rule 4 (statements)]
+    $default    reduce using rule 4 (statements)
+
+    compound_stmt     go to state 23
+    statements        go to state 3
+    stmt              go to state 141
+    data_type         go to state 25
+    sign_specifier    go to state 26
+    type_specifier    go to state 27
+    single_stmt       go to state 28
+    for_block         go to state 29
+    if_block          go to state 30
+    while_block       go to state 31
+    declaration       go to state 32
+    declaration_list  go to state 33
+    sub_decl          go to state 34
+    assignment_expr   go to state 35
+    unary_expr        go to state 36
+    lhs               go to state 37
+    identifier        go to state 38
+    array_access      go to state 39
+
+
+State 140
 
    25 for_block: FOR '(' expression_stmt expression_stmt expression ')' . stmt
 
@@ -2289,7 +2374,7 @@ state 137
 
     compound_stmt     go to state 23
     statements        go to state 3
-    stmt              go to state 139
+    stmt              go to state 142
     data_type         go to state 25
     sign_specifier    go to state 26
     type_specifier    go to state 27
@@ -2307,14 +2392,14 @@ state 137
     array_access      go to state 39
 
 
-state 138
+State 141
 
    27 if_block: IF '(' expression ')' stmt ELSE stmt .
 
     $default  reduce using rule 27 (if_block)
 
 
-state 139
+State 142
 
    25 for_block: FOR '(' expression_stmt expression_stmt expression ')' stmt .
 
