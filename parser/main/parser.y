@@ -1,19 +1,20 @@
 %{
-	#include<stdio.h>
-	#include<string.h>
-	int yylex();
-	int yyerror();
+	#include <stdio.h>
+	#include <string.h>
+    extern FILE *yyin;
+    int yylex();
+    int yyerror();
 %}
 
-// %union
-// {
-// 	int data_type;
-// 	entry_t* entry;
-// 	content_t* content;
-// 	string* op;
-// 	vector<int>* nextlist;
-// 	int instr;
-// }
+%union
+{
+	// int data_type;
+	// entry_t* entry;
+	// content_t* content;
+	// string* op;
+	// vector<int>* nextlist;
+	// int instr;
+}
 
 %token IDENTIFIER
 
@@ -165,7 +166,8 @@ sub_decl: assignment_expr
 			;
 
 /* This is because we can have empty expession statements inside for loops */
-expression_stmt: expression ';'	  			
+expression_stmt: data_type expression ';'	
+				| expression ';'
 				| ';'	
     			;
 
@@ -261,11 +263,16 @@ array_index: constant
 // 	//displayICG();
 // }
 
-extern FILE *yyin;
+
 int main(int argc, char *argv[]){
-	yyin = fopen(argv[1],"r");  
-	while(!feof(yyin))
+    yyin = fopen(argv[1],"r"); 
+    	while(!feof(yyin))
 		yyparse();
 	fclose(yyin);
 	return 0;
+}
+
+int yyerror(){
+  printf("\nSyntaxerror\n");
+  return 0;
 }
