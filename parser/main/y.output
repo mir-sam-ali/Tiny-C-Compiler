@@ -1,7 +1,6 @@
 Terminals which are not used
 
    STRING_LITERAL
-   AND
    AMPERSAND
    CONST
    VOID
@@ -34,6 +33,7 @@ Terminals which are not used
    OPEN_SQUARE
    CLOSE_SQUARE
    COLON
+   LOGICAL_AND
 
 
 Rules never reduced
@@ -49,6 +49,7 @@ State 3 conflicts: 18 shift/reduce, 21 reduce/reduce
 State 4 conflicts: 19 shift/reduce
 State 62 conflicts: 16 reduce/reduce
 State 90 conflicts: 17 reduce/reduce
+State 91 conflicts: 1 shift/reduce
 State 114 conflicts: 16 reduce/reduce
 State 116 conflicts: 1 reduce/reduce
 State 118 conflicts: 1 reduce/reduce
@@ -57,6 +58,14 @@ State 124 conflicts: 2 reduce/reduce
 State 125 conflicts: 2 reduce/reduce
 State 126 conflicts: 15 reduce/reduce
 State 130 conflicts: 18 shift/reduce
+State 132 conflicts: 8 shift/reduce
+State 133 conflicts: 1 shift/reduce
+State 134 conflicts: 1 shift/reduce
+State 135 conflicts: 1 shift/reduce
+State 136 conflicts: 1 shift/reduce
+State 137 conflicts: 1 shift/reduce
+State 138 conflicts: 1 shift/reduce
+State 139 conflicts: 1 shift/reduce
 State 152 conflicts: 18 shift/reduce
 State 153 conflicts: 18 shift/reduce
 
@@ -130,7 +139,7 @@ Grammar
    47         | sub_expr NEQ sub_expr
    48         | sub_expr GREATERTHANEQUAL sub_expr
    49         | sub_expr LESSTHANEQUAL sub_expr
-   50         | sub_expr LOGICAL_AND sub_expr
+   50         | sub_expr AND sub_expr
    51         | sub_expr OR sub_expr
    52         | EXCLAIMATION sub_expr
    53         | arithmetic_expr
@@ -199,7 +208,7 @@ IDENTIFIER (258) 66
 INTEGER_LITERAL (259) 84
 STRING_LITERAL (260)
 CHAR_LITERAL (261) 85
-AND (262)
+AND (262) 50
 OR (263) 51
 LESSTHANEQUAL (264) 49
 GREATERTHANEQUAL (265) 48
@@ -271,7 +280,7 @@ FULL_STOP (330)
 OPEN_SQUARE (331)
 CLOSE_SQUARE (332)
 COLON (333)
-LOGICAL_AND (334) 50
+LOGICAL_AND (334)
 UMINUS (335)
 LOWER_THAN_ELSE (336)
 
@@ -1071,17 +1080,17 @@ state 56
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    OR                shift, and go to state 93
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    EQ                shift, and go to state 96
-    NEQ               shift, and go to state 97
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
-    LOGICAL_AND       shift, and go to state 100
+    AND               shift, and go to state 93
+    OR                shift, and go to state 94
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    EQ                shift, and go to state 97
+    NEQ               shift, and go to state 98
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
     ';'               shift, and go to state 101
 
 
@@ -1161,6 +1170,8 @@ state 62
    81 arithmetic_expr: array_access .
    83                | array_access .
 
+    AND               reduce using rule 81 (arithmetic_expr)
+    AND               [reduce using rule 83 (arithmetic_expr)]
     OR                reduce using rule 81 (arithmetic_expr)
     OR                [reduce using rule 83 (arithmetic_expr)]
     LESSTHANEQUAL     reduce using rule 81 (arithmetic_expr)
@@ -1193,8 +1204,6 @@ state 62
     ASSIGN            reduce using rule 65 (lhs)
     COMMA             reduce using rule 81 (arithmetic_expr)
     COMMA             [reduce using rule 83 (arithmetic_expr)]
-    LOGICAL_AND       reduce using rule 81 (arithmetic_expr)
-    LOGICAL_AND       [reduce using rule 83 (arithmetic_expr)]
     ';'               reduce using rule 81 (arithmetic_expr)
     ';'               [reduce using rule 83 (arithmetic_expr)]
     ')'               reduce using rule 81 (arithmetic_expr)
@@ -1394,17 +1403,17 @@ state 81
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    OR                shift, and go to state 93
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    EQ                shift, and go to state 96
-    NEQ               shift, and go to state 97
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
-    LOGICAL_AND       shift, and go to state 100
+    AND               shift, and go to state 93
+    OR                shift, and go to state 94
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    EQ                shift, and go to state 97
+    NEQ               shift, and go to state 98
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
 
     $default  reduce using rule 43 (expression)
 
@@ -1536,6 +1545,8 @@ state 90
    81 arithmetic_expr: array_access .
    83                | array_access .
 
+    AND               reduce using rule 81 (arithmetic_expr)
+    AND               [reduce using rule 83 (arithmetic_expr)]
     OR                reduce using rule 81 (arithmetic_expr)
     OR                [reduce using rule 83 (arithmetic_expr)]
     LESSTHANEQUAL     reduce using rule 81 (arithmetic_expr)
@@ -1562,8 +1573,6 @@ state 90
     GREATERTHAN       [reduce using rule 83 (arithmetic_expr)]
     COMMA             reduce using rule 81 (arithmetic_expr)
     COMMA             [reduce using rule 83 (arithmetic_expr)]
-    LOGICAL_AND       reduce using rule 81 (arithmetic_expr)
-    LOGICAL_AND       [reduce using rule 83 (arithmetic_expr)]
     ';'               reduce using rule 81 (arithmetic_expr)
     ';'               [reduce using rule 83 (arithmetic_expr)]
     ')'               reduce using rule 81 (arithmetic_expr)
@@ -1581,10 +1590,13 @@ state 91
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
    52         | EXCLAIMATION sub_expr .
 
+    AND  shift, and go to state 93
+
+    AND       [reduce using rule 52 (sub_expr)]
     $default  reduce using rule 52 (sub_expr)
 
 
@@ -1607,7 +1619,7 @@ state 92
 
 state 93
 
-   51 sub_expr: sub_expr OR . sub_expr
+   50 sub_expr: sub_expr AND . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1632,7 +1644,7 @@ state 93
 
 state 94
 
-   49 sub_expr: sub_expr LESSTHANEQUAL . sub_expr
+   51 sub_expr: sub_expr OR . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1657,7 +1669,7 @@ state 94
 
 state 95
 
-   48 sub_expr: sub_expr GREATERTHANEQUAL . sub_expr
+   49 sub_expr: sub_expr LESSTHANEQUAL . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1682,7 +1694,7 @@ state 95
 
 state 96
 
-   46 sub_expr: sub_expr EQ . sub_expr
+   48 sub_expr: sub_expr GREATERTHANEQUAL . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1707,7 +1719,7 @@ state 96
 
 state 97
 
-   47 sub_expr: sub_expr NEQ . sub_expr
+   46 sub_expr: sub_expr EQ . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1732,7 +1744,7 @@ state 97
 
 state 98
 
-   45 sub_expr: sub_expr LESSTHAN . sub_expr
+   47 sub_expr: sub_expr NEQ . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1757,7 +1769,7 @@ state 98
 
 state 99
 
-   44 sub_expr: sub_expr GREATERTHAN . sub_expr
+   45 sub_expr: sub_expr LESSTHAN . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1782,7 +1794,7 @@ state 99
 
 state 100
 
-   50 sub_expr: sub_expr LOGICAL_AND . sub_expr
+   44 sub_expr: sub_expr GREATERTHAN . sub_expr
 
     IDENTIFIER       shift, and go to state 6
     INTEGER_LITERAL  shift, and go to state 48
@@ -1977,6 +1989,9 @@ state 114
    81 arithmetic_expr: array_access .
    83                | array_access .
 
+    AND               reduce using rule 57 (assignment_expr)
+    AND               [reduce using rule 81 (arithmetic_expr)]
+    AND               [reduce using rule 83 (arithmetic_expr)]
     OR                reduce using rule 57 (assignment_expr)
     OR                [reduce using rule 81 (arithmetic_expr)]
     OR                [reduce using rule 83 (arithmetic_expr)]
@@ -2011,9 +2026,6 @@ state 114
     COMMA             reduce using rule 57 (assignment_expr)
     COMMA             [reduce using rule 81 (arithmetic_expr)]
     COMMA             [reduce using rule 83 (arithmetic_expr)]
-    LOGICAL_AND       reduce using rule 57 (assignment_expr)
-    LOGICAL_AND       [reduce using rule 81 (arithmetic_expr)]
-    LOGICAL_AND       [reduce using rule 83 (arithmetic_expr)]
     ';'               reduce using rule 57 (assignment_expr)
     ';'               [reduce using rule 81 (arithmetic_expr)]
     ';'               [reduce using rule 83 (arithmetic_expr)]
@@ -2234,6 +2246,8 @@ state 126
    81 arithmetic_expr: array_access .
    83                | array_access .
 
+    AND               reduce using rule 81 (arithmetic_expr)
+    AND               [reduce using rule 83 (arithmetic_expr)]
     OR                reduce using rule 81 (arithmetic_expr)
     OR                [reduce using rule 83 (arithmetic_expr)]
     LESSTHANEQUAL     reduce using rule 81 (arithmetic_expr)
@@ -2267,8 +2281,6 @@ state 126
     COMMA             reduce using rule 38 (sub_decl)
     COMMA             [reduce using rule 81 (arithmetic_expr)]
     COMMA             [reduce using rule 83 (arithmetic_expr)]
-    LOGICAL_AND       reduce using rule 81 (arithmetic_expr)
-    LOGICAL_AND       [reduce using rule 83 (arithmetic_expr)]
     ';'               reduce using rule 38 (sub_decl)
     ';'               [reduce using rule 81 (arithmetic_expr)]
     ';'               [reduce using rule 83 (arithmetic_expr)]
@@ -2412,19 +2424,28 @@ state 132
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
+   50         | sub_expr AND sub_expr .
    51         | sub_expr . OR sub_expr
-   51         | sub_expr OR sub_expr .
 
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    EQ                shift, and go to state 96
-    NEQ               shift, and go to state 97
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
-    LOGICAL_AND       shift, and go to state 100
+    AND               shift, and go to state 93
+    OR                shift, and go to state 94
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    EQ                shift, and go to state 97
+    NEQ               shift, and go to state 98
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
 
-    $default  reduce using rule 51 (sub_expr)
+    AND               [reduce using rule 50 (sub_expr)]
+    OR                [reduce using rule 50 (sub_expr)]
+    LESSTHANEQUAL     [reduce using rule 50 (sub_expr)]
+    GREATERTHANEQUAL  [reduce using rule 50 (sub_expr)]
+    EQ                [reduce using rule 50 (sub_expr)]
+    NEQ               [reduce using rule 50 (sub_expr)]
+    LESSTHAN          [reduce using rule 50 (sub_expr)]
+    GREATERTHAN       [reduce using rule 50 (sub_expr)]
+    $default          reduce using rule 50 (sub_expr)
 
 
 state 133
@@ -2435,11 +2456,20 @@ state 133
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   49         | sub_expr LESSTHANEQUAL sub_expr .
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
+   51         | sub_expr OR sub_expr .
 
-    $default  reduce using rule 49 (sub_expr)
+    AND               shift, and go to state 93
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    EQ                shift, and go to state 97
+    NEQ               shift, and go to state 98
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
+
+    AND       [reduce using rule 51 (sub_expr)]
+    $default  reduce using rule 51 (sub_expr)
 
 
 state 134
@@ -2449,15 +2479,36 @@ state 134
    46         | sub_expr . EQ sub_expr
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
-   48         | sub_expr GREATERTHANEQUAL sub_expr .
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   49         | sub_expr LESSTHANEQUAL sub_expr .
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    $default  reduce using rule 48 (sub_expr)
+    AND  shift, and go to state 93
+
+    AND       [reduce using rule 49 (sub_expr)]
+    $default  reduce using rule 49 (sub_expr)
 
 
 state 135
+
+   44 sub_expr: sub_expr . GREATERTHAN sub_expr
+   45         | sub_expr . LESSTHAN sub_expr
+   46         | sub_expr . EQ sub_expr
+   47         | sub_expr . NEQ sub_expr
+   48         | sub_expr . GREATERTHANEQUAL sub_expr
+   48         | sub_expr GREATERTHANEQUAL sub_expr .
+   49         | sub_expr . LESSTHANEQUAL sub_expr
+   50         | sub_expr . AND sub_expr
+   51         | sub_expr . OR sub_expr
+
+    AND  shift, and go to state 93
+
+    AND       [reduce using rule 48 (sub_expr)]
+    $default  reduce using rule 48 (sub_expr)
+
+
+state 136
 
    44 sub_expr: sub_expr . GREATERTHAN sub_expr
    45         | sub_expr . LESSTHAN sub_expr
@@ -2466,18 +2517,20 @@ state 135
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
+    AND               shift, and go to state 93
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
 
+    AND       [reduce using rule 46 (sub_expr)]
     $default  reduce using rule 46 (sub_expr)
 
 
-state 136
+state 137
 
    44 sub_expr: sub_expr . GREATERTHAN sub_expr
    45         | sub_expr . LESSTHAN sub_expr
@@ -2486,18 +2539,20 @@ state 136
    47         | sub_expr NEQ sub_expr .
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
+    AND               shift, and go to state 93
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
 
+    AND       [reduce using rule 47 (sub_expr)]
     $default  reduce using rule 47 (sub_expr)
 
 
-state 137
+state 138
 
    44 sub_expr: sub_expr . GREATERTHAN sub_expr
    45         | sub_expr . LESSTHAN sub_expr
@@ -2506,13 +2561,16 @@ state 137
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
+    AND  shift, and go to state 93
+
+    AND       [reduce using rule 45 (sub_expr)]
     $default  reduce using rule 45 (sub_expr)
 
 
-state 138
+state 139
 
    44 sub_expr: sub_expr . GREATERTHAN sub_expr
    44         | sub_expr GREATERTHAN sub_expr .
@@ -2521,32 +2579,13 @@ state 138
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
+    AND  shift, and go to state 93
+
+    AND       [reduce using rule 44 (sub_expr)]
     $default  reduce using rule 44 (sub_expr)
-
-
-state 139
-
-   44 sub_expr: sub_expr . GREATERTHAN sub_expr
-   45         | sub_expr . LESSTHAN sub_expr
-   46         | sub_expr . EQ sub_expr
-   47         | sub_expr . NEQ sub_expr
-   48         | sub_expr . GREATERTHANEQUAL sub_expr
-   49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
-   50         | sub_expr LOGICAL_AND sub_expr .
-   51         | sub_expr . OR sub_expr
-
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    EQ                shift, and go to state 96
-    NEQ               shift, and go to state 97
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
-
-    $default  reduce using rule 50 (sub_expr)
 
 
 state 140
@@ -2633,17 +2672,17 @@ state 146
    47         | sub_expr . NEQ sub_expr
    48         | sub_expr . GREATERTHANEQUAL sub_expr
    49         | sub_expr . LESSTHANEQUAL sub_expr
-   50         | sub_expr . LOGICAL_AND sub_expr
+   50         | sub_expr . AND sub_expr
    51         | sub_expr . OR sub_expr
 
-    OR                shift, and go to state 93
-    LESSTHANEQUAL     shift, and go to state 94
-    GREATERTHANEQUAL  shift, and go to state 95
-    EQ                shift, and go to state 96
-    NEQ               shift, and go to state 97
-    LESSTHAN          shift, and go to state 98
-    GREATERTHAN       shift, and go to state 99
-    LOGICAL_AND       shift, and go to state 100
+    AND               shift, and go to state 93
+    OR                shift, and go to state 94
+    LESSTHANEQUAL     shift, and go to state 95
+    GREATERTHANEQUAL  shift, and go to state 96
+    EQ                shift, and go to state 97
+    NEQ               shift, and go to state 98
+    LESSTHAN          shift, and go to state 99
+    GREATERTHAN       shift, and go to state 100
 
     $default  reduce using rule 42 (expression)
 

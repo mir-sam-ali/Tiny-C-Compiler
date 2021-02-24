@@ -183,7 +183,7 @@ sub_expr:
 		| sub_expr NEQ sub_expr
 		| sub_expr GREATERTHANEQUAL sub_expr
 		| sub_expr LESSTHANEQUAL sub_expr
-		|sub_expr LOGICAL_AND sub_expr
+		|sub_expr AND sub_expr
 		|sub_expr OR sub_expr
 		|EXCLAIMATION sub_expr
 		|arithmetic_expr
