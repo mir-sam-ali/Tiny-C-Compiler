@@ -225,16 +225,17 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 			    |'(' arithmetic_expr ')'
     		    |MINUS arithmetic_expr %prec UMINUS	
     	        |identifier
+				|array_access
     		    |constant
     		 ;
 
-constant: INTEGER_LITERAL 			
+constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ; 			
     ;
 
 array_access: identifier '[' array_index ']';
 
 array_index: constant		
-		   | identifier	;
+		   | identifier | arithmetic_expr	;
 
 %%
 

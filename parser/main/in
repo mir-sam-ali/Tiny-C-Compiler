@@ -1,4 +1,2 @@
-
-for(int k=0;k<10;k++){
-
-}
+char a = 'v';
+boolean c=true;
