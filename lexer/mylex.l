@@ -145,8 +145,8 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 ">" 						{ printf("\n%s\n",yytext); return GREATERTHAN;}
 "<=" 						{ printf("\n%s\n",yytext); return LESSTHANEQUAL;}
 ">=" 						{ printf("\n%s\n",yytext); return GREATERTHANEQUAL;}
-"==" 						{ printf("\n%s\n",yytext); return EQUAL;}
-"!=" 						{ printf("\n%s\n",yytext); return NOTEQUAL;}
+"==" 						{ printf("\n%s\n",yytext); return EQ;}
+"!=" 						{ printf("\n%s\n",yytext); return NEQ;}
 "^" 						{ printf("\n%s\n",yytext); return BITXOR;}
 "|" 						{ printf("\n%s\n",yytext); return BITOR;}
 "&&" 						{ printf("\n%s\n",yytext); return AND;}

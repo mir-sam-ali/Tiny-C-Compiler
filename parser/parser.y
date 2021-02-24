@@ -50,13 +50,13 @@
 	int instr;
 }
 
-%token <entry> IDENTIFIER
+%token IDENTIFIER
 
  /* Constants */
-%token <entry> DEC_CONSTANT HEX_CONSTANT CHAR_CONSTANT FLOAT_CONSTANT STRING
+%token INTEGER_LITERAL
 
  /* Logical and Relational operators */
-%token LOGICAL_AND LOGICAL_OR LS_EQ GR_EQ EQ NOT_EQ
+%token AND OR LESSTHANEQUAL GREATERTHANEQUAL EQ NEQ
 
  /* Short hand assignment operators */
 %token MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
@@ -99,10 +99,10 @@
 
 %left ','
 %right '='
-%left LOGICAL_OR
+%left OR
 %left LOGICAL_AND
-%left EQ NOT_EQ
-%left '<' '>' LS_EQ GR_EQ
+%left EQ NEQ
+%left '<' '>' LESSTHANEQUAL GREATERTHANEQUAL
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
@@ -115,27 +115,8 @@
 
 %%
 
- /* Program is made up of multiple builder blocks. */
-starter: starter builder
-			 | builder;
-
- /* Each builder block is either a function or a declaration */
-builder: function
-			 | declaration
-			 ;
-
- /* This is how a function looks like */
-function: type identifier '(' argument_list ')' compound_stmt;
  
  /* Now we will define a grammar for how types can be specified */
-
-type : data_type pointer    
-     | data_type		    
-		 ;
-
-pointer: '*' pointer
-    	| '*'
-       ;
 
 data_type : sign_specifier type_specifier
     	| type_specifier
@@ -145,32 +126,15 @@ sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier :INT              
-    |SHORT INT                   
+type_specifier :
+    INT                                 
     |SHORT                       
-    |LONG                        
-	|LONG INT                    
-    |LONG_LONG                   
-    |LONG_LONG INT               
-	|CHAR 				
-	|FLOAT 				
-	|VOID				
-	|CHAR_STAR				
+    |LONG                                          
+    |LONG_LONG                                  
+	|CHAR
+    |BOOLEAN
     ;
 
- /* grammar rules for argument list */
- /* argument list can be empty */
-argument_list : arguments
-    	|
-    	;
- /* arguments are comma separated TYPE ID pairs */
-arguments : arguments ',' arg
-    	| arg
-    	;
-
- /* Each arg is a TYPE ID pair */
-arg : type identifier
-    ;
 
  /* Generic statement. Can be compound or a single statement */
 stmt:compound_stmt		
@@ -182,7 +146,7 @@ compound_stmt :
 				'{' statements '}' 
     ;
 
-statements:statements M stmt |
+statements:statements stmt |
     ;
 
  /* Grammar for what constitutes every individual statement */
@@ -203,18 +167,14 @@ single_stmt :if_block
 							
 	    ;
 
-for_block: FOR '(' expression_stmt M expression_stmt M expression ')'  N M stmt 	         
+for_block: FOR '(' expression_stmt expression_stmt expression ')'  stmt 	         
     		 ;
 
-if_block:IF '(' expression ')' M stmt 	%prec LOWER_THAN_ELSE
-	 		
-
-		|IF '(' expression ')' M stmt  ELSE N M stmt
-			
+if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
+		|IF '(' expression ')' stmt ELSE stmt	
     ;
 
-while_block: WHILE M '(' expression	')' M  stmt 
-			
+while_block: WHILE '(' expression ')'  stmt 
 		;
 
 declaration: type  declaration_list ';'			
@@ -245,11 +205,12 @@ sub_expr:
 		sub_expr '>' sub_expr	
 		| sub_expr '<' sub_expr
 		| sub_expr EQ sub_expr
-		| sub_expr NOT_EQ sub_expr
-		| sub_expr GR_EQ sub_expr
-		| sub_expr LS_EQ sub_expr
-		|sub_expr LOGICAL_AND M sub_expr
-		|sub_expr LOGICAL_OR M sub_expr
+		| sub_expr NEQ
+	 sub_expr
+		| sub_expr GREATERTHANEQUAL sub_expr
+		| sub_expr LESSTHANEQUAL sub_expr
+		|sub_expr LOGICAL_AND sub_expr
+		|sub_expr OR sub_expr
 		|'!' sub_expr
 		|arithmetic_expr
     	|assignment_expr
@@ -295,122 +256,15 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
     		    |constant
     		 ;
 
-constant: DEC_CONSTANT 			
-    	| HEX_CONSTANT			
-		| CHAR_CONSTANT			
-		| FLOAT_CONSTANT		
+constant: INTEGER_LITERAL 			
     ;
 
 array_access: identifier '[' array_index ']';
 
-array_index: constant		{$$ = $1;}
-		   | identifier		{$$ = $1;}
-					 ;
-
-function_call: identifier '(' parameter_list ')'
-             | identifier '(' ')'	
-         ;
-
-parameter_list:
-              parameter_list ','  parameter
-              |parameter
-              ;
-
-parameter: sub_expr	
-		 | STRING	
-		 ;
-
-M: ;
-
-N: ;
+array_index: constant		
+		   | identifier	;
 
 %%
-
-void gencode(string x)
-{
-	std::string instruction;
-
-	instruction = to_string(nextinstr) + string(": ") + x;
-	ICG.push_back(instruction);
-	nextinstr++;
-}
-
-
-void gencode_rel(content_t* & lhs, content_t* arg1, content_t* arg2, const string& op)
-{
-	lhs->data_type = arg1->data_type;
-
-	lhs->truelist = {nextinstr};
-	lhs->falselist = {nextinstr + 1};
-
-	std::string code;
-
-	code = string("if ") + arg1->addr + op + arg2->addr + string(" goto _");
-	gencode(code);
-
-	code = string("goto _");
-	gencode(code);
-}
-
-void gencode_math(content_t* & lhs, content_t* arg1, content_t* arg2, const string& op)
-{
-	lhs->addr = "t" + to_string(temp_var_number);
-	std::string expr = lhs->addr + string(" = ") + arg1->addr + op + arg2->addr;
-	lhs->code = arg1->code + arg2->code + expr;
-
-	temp_var_number++;
-
-	gencode(expr);
-}
-
-void backpatch(vector<int>& v1, int number)
-{
-	for(int i = 0; i<v1.size(); i++)
-	{
-		string instruction = ICG[v1[i]];
-
-		if(instruction.find("_") < instruction.size())
-		{
-			instruction.replace(instruction.find("_"),1,to_string(number));
-			ICG[v1[i]] = instruction;
-		}
-	}
-}
-
-vector<int> merge(vector<int>& v1, vector<int>& v2)
-{
-	vector<int> concat;
-	concat.reserve(v1.size() + v2.size());
-	concat.insert(concat.end(), v1.begin(), v1.end());
-	concat.insert(concat.end(), v2.begin(), v2.end());
-
-	return concat;
-}
-
-void type_check(int left, int right, int flag)
-{
-	if(left != right)
-	{
-		switch(flag)
-		{
-			case 0: yyerror("Type mismatch in arithmetic expression"); break;
-			case 1: yyerror("Type mismatch in assignment expression"); break;
-			case 2: yyerror("Type mismatch in logical expression"); break;
-		}
-	}
-}
-
-void displayICG()
-{
-	ofstream outfile("ICG.code");
-
-	for(int i=0; i<ICG.size();i++)
-	outfile << ICG[i] <<endl;
-
-	outfile << nextinstr << ": exit";
-
-	outfile.close();
-}
 
 void printlist(vector<int> v){
 	for(auto it:v)
@@ -420,16 +274,16 @@ void printlist(vector<int> v){
 
 int main(int argc, char *argv[])
 {
-	 int i;
-	 for(i=0; i<NUM_TABLES;i++)
-	 {
-	  symbol_table_list[i].symbol_table = NULL;
-	  symbol_table_list[i].parent = -1;
-	 }
+	//  int i;
+	//  for(i=0; i<NUM_TABLES;i++)
+	//  {
+	//   symbol_table_list[i].symbol_table = NULL;
+	//   symbol_table_list[i].parent = -1;
+	//  }
 
-	constant_table = create_table();
-  symbol_table_list[0].symbol_table = create_table();
-	yyin = fopen(argv[1], "r");
+	// constant_table = create_table();
+    // symbol_table_list[0].symbol_table = create_table();
+	// yyin = fopen(argv[1], "r");
 
 	if(!yyparse())
 	{
@@ -440,13 +294,7 @@ int main(int argc, char *argv[])
 			printf("\nPARSING FAILED!\n\n\n");
 	}
 
-	displayICG();
-/*
-	printf("SYMBOL TABLES\n\n");
-	display_all();
-	printf("CONSTANT TABLE");
-	display_constant_table(constant_table);*/
-
+	//displayICG();
 }
 
 int yyerror(const char *msg)
