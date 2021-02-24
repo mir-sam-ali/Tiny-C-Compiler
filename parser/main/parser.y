@@ -1,15 +1,8 @@
 %{
-	#include <bits/stdc++.h>
-	// #include "symboltable.h"
-	#include "lex.yy.c"
-
-	using namespace std;
-
-	int yyerror(char *msg);
-
-
-
-	void printlist(vector<int>);
+	#include<stdio.h>
+	#include<string.h>
+	int yylex();
+	int yyerror();
 %}
 
 // %union
@@ -96,7 +89,16 @@
 
 %%
 
- 
+compound_stmt : '{' statements '}' | statements {printf("statements accepted\n");}  ;
+
+statements: statements stmt | ;
+
+/* Generic statement. Can be compound or a single statement */
+stmt:compound_stmt		
+    |single_stmt		
+    ;
+
+
  /* Now we will define a grammar for how types can be specified */
 
 data_type : sign_specifier type_specifier
@@ -107,8 +109,7 @@ sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier :
-    INT                                 
+type_specifier: INT {printf("int accepted\n");}                           
     |SHORT                       
     |LONG                                          
     |LONG_LONG                                  
@@ -116,19 +117,8 @@ type_specifier :
     |BOOLEAN
     ;
 
+/* The function body is covered in braces and has multiple statements. */
 
- /* Generic statement. Can be compound or a single statement */
-stmt:compound_stmt		
-    |single_stmt		
-    ;
-
- /* The function body is covered in braces and has multiple statements. */
-compound_stmt :
-				'{' statements '}' 
-    ;
-
-statements:statements stmt |
-    ;
 
  /* Grammar for what constitutes every individual statement */
 single_stmt :if_block	
@@ -158,7 +148,7 @@ if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
 while_block: WHILE '(' expression ')'  stmt 
 		;
 
-declaration: data_type  declaration_list ';'			
+declaration: data_type  declaration_list ';' {printf("declaration stmt recognized\n");}			
 			 | declaration_list ';'
 			 | unary_expr ';'
 
@@ -211,13 +201,11 @@ unary_expr:
 	| DECREMENT identifier	
 	| INCREMENT identifier
 
-lhs: identifier		
-   | array_access
-	 ;
+lhs: identifier	| array_access;
 
-identifier:IDENTIFIER;
+identifier: IDENTIFIER {printf("identifier recognized\n");};
 
-assign:ASSIGN 			
+assign: ASSIGN 			
     |PLUSEQ 	
     |MINUSEQ 	
     |MULEQ 	
@@ -246,39 +234,36 @@ array_index: constant
 
 %%
 
-void printlist(vector<int> v){
-	for(auto it:v)
-		cout<<it<<" ";
-	cout<<"Next: "<<nextinstr<<endl;
-}
+// int main(int argc, char *argv[])
+// {
+// 	//  int i;
+// 	//  for(i=0; i<NUM_TABLES;i++)
+// 	//  {
+// 	//   symbol_table_list[i].symbol_table = NULL;
+// 	//   symbol_table_list[i].parent = -1;
+// 	//  }
 
-int main(int argc, char *argv[])
-{
-	//  int i;
-	//  for(i=0; i<NUM_TABLES;i++)
-	//  {
-	//   symbol_table_list[i].symbol_table = NULL;
-	//   symbol_table_list[i].parent = -1;
-	//  }
+// 	// constant_table = create_table();
+//     // symbol_table_list[0].symbol_table = create_table();
+// 	// yyin = fopen(argv[1], "r");
 
-	// constant_table = create_table();
-    // symbol_table_list[0].symbol_table = create_table();
-	// yyin = fopen(argv[1], "r");
+// 	if(!yyparse())
+// 	{
+// 		printf("\nPARSING COMPLETE\n\n\n");
+// 	}
+// 	else
+// 	{
+// 			printf("\nPARSING FAILED!\n\n\n");
+// 	}
 
-	if(!yyparse())
-	{
-		printf("\nPARSING COMPLETE\n\n\n");
-	}
-	else
-	{
-			printf("\nPARSING FAILED!\n\n\n");
-	}
+// 	//displayICG();
+// }
 
-	//displayICG();
-}
-
-int yyerror(const char *msg)
-{
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
-	exit(0);
+extern FILE *yyin;
+int main(int argc, char *argv[]){
+	yyin = fopen(argv[1],"r");  
+	while(!feof(yyin))
+		yyparse();
+	fclose(yyin);
+	return 0;
 }

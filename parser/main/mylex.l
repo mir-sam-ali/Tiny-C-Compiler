@@ -80,15 +80,15 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 %%
-"{"																{ printf("\n%s\n",yytext); }
-"}"																{ printf("\n%s\n",yytext); }
-"("																{ printf("\n%s\n",yytext); }
-")"																{ printf("\n%s\n",yytext); }
-";"																{ printf("\n%s\n",yytext); }
+"{"																{ printf("\n%s\n",yytext); return yytext[0];}
+"}"																{ printf("\n%s\n",yytext); return yytext[0];}
+"("																{ printf("\n%s\n",yytext); return yytext[0];}
+")"																{ printf("\n%s\n",yytext); return yytext[0];}
+";"																{ printf("\n%s\n",yytext); return yytext[0];}
 ","																{ printf("\n%s\n",yytext); return COMMA;}
 "."																{ printf("\n%s\n",yytext); return FULL_STOP;}
-"["																{ printf("\n%s\n",yytext); }
-"]"																{ printf("\n%s\n",yytext); }
+"["																{ printf("\n%s\n",yytext); return yytext[0];}
+"]"																{ printf("\n%s\n",yytext); return yytext[0];}
 ":"																{ printf("\n%s\n",yytext); return COLON;}
 "/*"([^*]|"*"+[^/*])*"*/"               						{}
 "//"(.)*                       									{}
