@@ -125,31 +125,12 @@ builder: function
 			 ;
 
  /* This is how a function looks like */
-function: type identifier 	
-			{
-				func_type = current_dtype;
-				is_declaration = 0;
-				current_scope = create_new_scope();
-				gencode($2->lexeme + string(":"));
-			}
-
-		 '(' argument_list ')' 	
-		 	{
-				is_declaration = 0;
-				fill_parameter_list($2,param_list,p_idx);
-				p_idx = 0;
-				is_func = 1;
-				p=1;
-			}
-
-		 compound_stmt	{   is_func = 0;	}
-          
-		;
+function: type identifier '(' argument_list ')' compound_stmt;
  
  /* Now we will define a grammar for how types can be specified */
 
-type : data_type pointer    {is_declaration = 1; }
-     | data_type		    {is_declaration = 1; }
+type : data_type pointer    
+     | data_type		    
 		 ;
 
 pointer: '*' pointer
@@ -164,17 +145,17 @@ sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier :INT                    {current_dtype = INT;}
-    |SHORT INT                         {current_dtype = SHORT;}
-    |SHORT                             {current_dtype = SHORT;}
-    |LONG                              {current_dtype = LONG;}
-	|LONG INT                          {current_dtype = LONG;}
-    |LONG_LONG                         {current_dtype = LONG_LONG;}
-    |LONG_LONG INT                     {current_dtype = LONG_LONG;}
-	|CHAR 							   {current_dtype = CHAR;}
-	|FLOAT 							   {current_dtype = FLOAT;}
-	|VOID							   {current_dtype = VOID;}
-	|CHAR_STAR					 	   {current_dtype = STRING;}
+type_specifier :INT              
+    |SHORT INT                   
+    |SHORT                       
+    |LONG                        
+	|LONG INT                    
+    |LONG_LONG                   
+    |LONG_LONG INT               
+	|CHAR 				
+	|FLOAT 				
+	|VOID				
+	|CHAR_STAR				
     ;
 
  /* grammar rules for argument list */
@@ -188,70 +169,52 @@ arguments : arguments ',' arg
     	;
 
  /* Each arg is a TYPE ID pair */
-arg : type identifier	{
-							param_list[p_idx++] = $2->data_type;
-							gencode(string("arg ") + $2->lexeme);
-						}
+arg : type identifier
     ;
 
  /* Generic statement. Can be compound or a single statement */
-stmt:compound_stmt		{$$ = new content_t(); $$=$1;}
-    |single_stmt		{$$ = new content_t(); $$=$1;}
+stmt:compound_stmt		
+    |single_stmt		
     ;
 
  /* The function body is covered in braces and has multiple statements. */
 compound_stmt :
-				'{' 	
-				
-				{
-					if(!p)current_scope = create_new_scope();
-					else p = 0;
-				}
-				
-				statements
-				
-				'}' 
-				
-				{
-					current_scope = exit_scope();
-					$$ = new content_t();
-					$$ = $3;
-				}
+				'{' statements '}' 
     ;
 
-statements:statements M stmt	{
-									backpatch($1->nextlist,$2);
-									$$ = new content_t();
-									$$->nextlist = $3->nextlist;
-									$$->breaklist = merge($1->breaklist,$3->breaklist);
-									$$->continuelist = merge($1->continuelist,$3->continuelist);
-								}
-
-    |							{	$$ = new content_t();	}
+statements:statements M stmt |
     ;
 
  /* Grammar for what constitutes every individual statement */
-single_stmt :if_block
+single_stmt :if_block	
+
 		    |for_block	
+		
 	    	|while_block 
 	    	|declaration 		
 	    	|function_call ';'	
-			|RETURN ';'	 
+			|RETURN ';'	  
 	
 			|CONTINUE ';'	
+	
 			|BREAK ';'      
 	
 			|RETURN sub_expr ';' 
+							
 	    ;
 
-for_block: FOR '(' expression_stmt M expression_stmt M expression ')' N M stmt ;
+for_block: FOR '(' expression_stmt M expression_stmt M expression ')'  N M stmt 	         
+    		 ;
 
 if_block:IF '(' expression ')' M stmt 	%prec LOWER_THAN_ELSE
+	 		
 
 		|IF '(' expression ')' M stmt  ELSE N M stmt
+			
     ;
 
-while_block: WHILE M '(' expression	')' M stmt
+while_block: WHILE M '(' expression	')' M  stmt 
+			
 		;
 
 declaration: type  declaration_list ';'			
@@ -269,7 +232,7 @@ sub_decl: assignment_expr
 			;
 
 /* This is because we can have empty expession statements inside for loops */
-expression_stmt: expression ';'	 
+expression_stmt: expression ';'	  			
 				| ';'	
     			;
 
