@@ -59,7 +59,7 @@
 %token AND OR LESSTHANEQUAL GREATERTHANEQUAL EQ NEQ
 
  /* Short hand assignment operators */
-%token MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN
+%token MULEQ DIVEQ MODEQ PLUSEQ MINUSEQ
 %token INCREMENT DECREMENT
 
  /* Data types */
@@ -238,11 +238,11 @@ lhs: identifier
 identifier:IDENTIFIER;
 
 assign:'=' 			
-    |ADD_ASSIGN 	
-    |SUB_ASSIGN 	
-    |MUL_ASSIGN 	
-    |DIV_ASSIGN 	
-    |MOD_ASSIGN 	
+    |PLUSEQ 	
+    |MINUSEQ 	
+    |MULEQ 	
+    |DIVEQ 	
+    |MODEQ 	
     ;
 
 arithmetic_expr: arithmetic_expr '+' arithmetic_expr
