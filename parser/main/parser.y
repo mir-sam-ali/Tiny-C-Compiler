@@ -180,8 +180,7 @@ sub_expr:
 		sub_expr GREATERTHAN sub_expr	
 		| sub_expr LESSTHAN sub_expr
 		| sub_expr EQ sub_expr
-		| sub_expr NEQ
-	 sub_expr
+		| sub_expr NEQ sub_expr
 		| sub_expr GREATERTHANEQUAL sub_expr
 		| sub_expr LESSTHANEQUAL sub_expr
 		|sub_expr LOGICAL_AND sub_expr
@@ -227,6 +226,7 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
     	        |identifier
 				|array_access
     		    |constant
+				|array_access
     		 ;
 
 constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ; 			
@@ -235,7 +235,7 @@ constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ;
 array_access: identifier '[' array_index ']';
 
 array_index: constant		
-		   | identifier | arithmetic_expr	;
+		   | identifier	| arithmetic_expr | unary_expr;
 
 %%
 
