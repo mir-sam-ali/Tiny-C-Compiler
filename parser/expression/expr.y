@@ -21,10 +21,10 @@ exp :  ID
 	| '(' exp '-' exp ')'
 	| '(' exp '*' exp ')'
 	| '(' exp '/' exp ')'
+	| '(' exp '%' exp ')'
     | '(' exp ')' 
 	| consttype
-	| '-' ID
-	| '-' consttype
+	| '-' exp
 	;
 
 consttype : NUM
