@@ -98,10 +98,6 @@ int myhash( char *lexeme )
 	size_t i;
 	int hashvalue;
 
-	/* Apply jenkin's myhash function
-	* https://en.wikipedia.org/wiki/Jenkins_hash_function#one-at-a-time
-	*/
-
 	for ( hashvalue = i = 0; i < strlen(lexeme); ++i ) {
         hashvalue += lexeme[i];
         hashvalue += ( hashvalue << 10 );
@@ -110,7 +106,7 @@ int myhash( char *lexeme )
 	hashvalue += ( hashvalue << 3 );
 	hashvalue ^= ( hashvalue >> 11 );
     hashvalue += ( hashvalue << 15 );
-	//cout<<(hashvalue% HASH_TABLE_SIZE + HASH_TABLE_SIZE) % HASH_TABLE_SIZE<<endl;
+
 	return (hashvalue% HASH_TABLE_SIZE + HASH_TABLE_SIZE) % HASH_TABLE_SIZE; // return an index in [0, HASH_TABLE_SIZE)
 }
 
@@ -337,6 +333,4 @@ void display_all()
 			printf("\n\n");
 		}
 
-		// display_symbol_table(symbol_table_list[0].symbol_table);
-		// display_symbol_table(symbol_table_list[1].symbol_table);
 }
