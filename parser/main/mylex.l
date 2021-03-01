@@ -1,4 +1,5 @@
 %{
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
@@ -7,7 +8,10 @@
 
 entry_t** constant_table;
 
+int cmnt_strt = 0;
+
 %}
+
 %option nounput yylineno
 
 

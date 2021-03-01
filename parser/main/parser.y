@@ -1,25 +1,33 @@
 %{
-	#include <stdio.h>
-	#include <string.h>
+	#include <bits/stdc++.h>
 	#include "symboltable.h"
 	#include "lex.yy.c"
-	#define SYMBOL_TABLE symbol_table_list[current_scope].symbol_table
 
 	using namespace std;
-	
-	extern entry_t** constant_table;
 
-	int is_declaration = 0;
-	int rhs = 0;
-	int p=0;
+	void yyerror(char *msg);
+
+	#define SYMBOL_TABLE symbol_table_list[current_scope].symbol_table
+
+  	extern entry_t** constant_table;
 
 	int current_dtype;
 
 	table_t symbol_table_list[NUM_TABLES];
 
-    extern FILE *yyin;
-    int yylex();
-    int yyerror();
+	int is_declaration = 0;
+	int is_loop = 0;
+	int is_func = 0;
+	int func_type;
+
+	int param_list[10];
+	int p_idx = 0;
+	int p=0;
+  	int rhs = 0;
+
+	int nextinstr = 0;
+	int temp_var_number = 0;
+
 %}
 
 %union
@@ -329,7 +337,8 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-int yyerror(){
-  printf("\nSyntaxerror\n");
-  return 0;
+void yyerror(const char *msg)
+{
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
+	// exit(0);
 }
