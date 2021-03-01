@@ -1,6 +1,19 @@
 %{
 	#include <stdio.h>
 	#include <string.h>
+	#include "symboltable.h"
+	#define SYMBOL_TABLE symbol_table_list[current_scope].symbol_table
+
+	extern entry_t** constant_table;
+
+	int is_declaration = 0;
+	int rhs = 0;
+	int p=0;
+
+	int current_dtype;
+
+	table_t symbol_table_list[NUM_TABLES];
+
     extern FILE *yyin;
     int yylex();
     int yyerror();
@@ -8,12 +21,12 @@
 
 %union
 {
-	// int data_type;
-	// entry_t* entry;
-	// content_t* content;
-	// string* op;
-	// vector<int>* nextlist;
-	// int instr;
+	int data_type;
+	entry_t* entry;
+	content_t* content;
+	string* op;
+	vector<int>* nextlist;
+	int instr;
 }
 
 %token IDENTIFIER
@@ -90,9 +103,17 @@
 
 %%
 
-compound_stmt : '{' statements '}' | statements {printf("statements accepted\n");}  ;
+compound_stmt : '{' {
+						if(!p)current_scope = create_new_scope();
+						else p = 0;
+					}
+						statements 
+					'}'
+					{
+						current_scope = exit_scope();
+					} ;
 
-statements: statements stmt | ;
+statements: statements stmt;
 
 /* Generic statement. Can be compound or a single statement */
 stmt:compound_stmt		
@@ -102,20 +123,20 @@ stmt:compound_stmt
 
  /* Now we will define a grammar for how types can be specified */
 
-data_type : sign_specifier type_specifier
-    	| type_specifier
+data_type : sign_specifier type_specifier {is_declaration = 1;}
+    	| type_specifier {is_declaration = 1;}
     	;
 
 sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier: INT {printf("int accepted\n");}                           
-    |SHORT                       
-    |LONG                                          
-    |LONG_LONG                                  
-	|CHAR
-    |BOOLEAN
+type_specifier: INT {current_dtype = INT;}                           
+    |SHORT   {current_dtype = SHORT;}                     
+    |LONG     {current_dtype = LONG;}                                      
+    |LONG_LONG     {current_dtype = LONG_LONG;}                              
+	|CHAR {current_dtype = CHAR;}
+    |BOOLEAN {current_dtype = BOOLEAN;}
     ;
 
 /* The function body is covered in braces and has multiple statements. */
@@ -151,7 +172,7 @@ if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
 while_block: WHILE '(' expression ')'  stmt 
 		;
 
-declaration: data_type  declaration_list ';' {printf("declaration stmt recognized\n");}			
+declaration: data_type  declaration_list ';' {is_declaration = 0;}			
 			 | declaration_list ';'
 			 | unary_expr ';'
 
@@ -192,10 +213,10 @@ sub_expr:
     ;
 
 assignment_expr :
-	lhs assign arithmetic_expr	
-    |lhs assign array_access
-	|lhs assign unary_expr  
-	|unary_expr assign unary_expr		
+	lhs assign arithmetic_expr	  {rhs = 0;}
+    |lhs assign array_access  {rhs = 0;}
+	|lhs assign unary_expr    {rhs = 0;}
+	|unary_expr assign unary_expr	  {rhs = 0;}	
     ;
 
 unary_expr:	
@@ -206,14 +227,30 @@ unary_expr:
 
 lhs: identifier	| array_access;
 
-identifier: IDENTIFIER {printf("identifier recognized\n");};
+identifier: IDENTIFIER {
+                    if(is_declaration && !rhs)
+                    {
+                      $1 = insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
+                      if($1 == NULL) 
+					  	yyerror("Redeclaration of variable");
+                    }
+                    else
+                    {
+                      $1 = search_recursive(yytext);
+                      if($1 == NULL) 
+					  	yyerror("Variable not declared");
+                    }
+                    
+					$$ = $1;
+                }
+    		 ;
 
-assign: ASSIGN 			
-    |PLUSEQ 	
-    |MINUSEQ 	
-    |MULEQ 	
-    |DIVEQ 	
-    |MODEQ 	
+assign: ASSIGN 		{rhs = 1;}	
+    |PLUSEQ 	{rhs = 1;}
+    |MINUSEQ 	{rhs = 1;}
+    |MULEQ 	{rhs = 1;}
+    |DIVEQ 	{rhs = 1;}
+    |MODEQ 	{rhs = 1;}
     ;
 
 arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
@@ -266,9 +303,25 @@ array_index: constant
 
 
 int main(int argc, char *argv[]){
+	int i;
+	for(i=0; i<NUM_TABLES;i++)
+	{
+		symbol_table_list[i].symbol_table = NULL;
+		symbol_table_list[i].parent = -1;
+	}
+
+	constant_table = create_table();
+  	symbol_table_list[0].symbol_table = create_table();
+
     yyin = fopen(argv[1],"r"); 
     	while(!feof(yyin))
 		yyparse();
+	
+	printf("SYMBOL TABLES\n\n");
+	display_all();
+	printf("CONSTANT TABLE");
+	display_constant_table(constant_table);
+	
 	fclose(yyin);
 	return 0;
 }
