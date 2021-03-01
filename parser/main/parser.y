@@ -113,26 +113,22 @@
 
 %%
 
-stmt:compound_stmt		
-    | single_stmt		
-    ;
-	
-statements: statements stmt;
+/* Generic statement. Can be compound or a single statement */
 
-compound_stmt : '{' 
+statements: statements stmt | ;
+
+stmt: single_stmt | compound_stmt;
+
+compound_stmt: '{' 
 					{
 						if(!p)current_scope = create_new_scope();
 						else p = 0;
 					}
 					statements 
 				'}'
-				{
-					current_scope = exit_scope();
-				} ;
-
-
-/* Generic statement. Can be compound or a single statement */
-
+					{
+						current_scope = exit_scope();
+					};
 
  /* Now we will define a grammar for how types can be specified */
 
@@ -156,7 +152,7 @@ type_specifier: INT {current_dtype = INT;}
 
 
  /* Grammar for what constitutes every individual statement */
-single_stmt :if_block	
+single_stmt: if_block	
 
 		    |for_block	
 		
@@ -170,7 +166,7 @@ single_stmt :if_block
 			|BREAK ';'      
 	
 			|RETURN sub_expr ';' 
-							
+	
 	    ;
 
 for_block: FOR '(' for_declaration expression_stmt expression ')'  stmt 	         
@@ -286,32 +282,6 @@ array_index: constant
 		   | identifier	| arithmetic_expr | unary_expr;
 
 %%
-
-// int main(int argc, char *argv[])
-// {
-// 	//  int i;
-// 	//  for(i=0; i<NUM_TABLES;i++)
-// 	//  {
-// 	//   symbol_table_list[i].symbol_table = NULL;
-// 	//   symbol_table_list[i].parent = -1;
-// 	//  }
-
-// 	// constant_table = create_table();
-//     // symbol_table_list[0].symbol_table = create_table();
-// 	// yyin = fopen(argv[1], "r");
-
-// 	if(!yyparse())
-// 	{
-// 		printf("\nPARSING COMPLETE\n\n\n");
-// 	}
-// 	else
-// 	{
-// 			printf("\nPARSING FAILED!\n\n\n");
-// 	}
-
-// 	//displayICG();
-// }
-
 
 int main(int argc, char *argv[]){
 	int i;

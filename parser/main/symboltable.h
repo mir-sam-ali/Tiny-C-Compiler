@@ -255,7 +255,6 @@ void fill_parameter_list(entry_t* entry, int* list, int n)
 	entry->num_params = n;
 }
 
-
 void print_dashes(int n)
 {
   printf("\n");

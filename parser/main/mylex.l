@@ -87,16 +87,16 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 %%
-"{"																{ printf("\n%s\n",yytext); return yytext[0];}
-"}"																{ printf("\n%s\n",yytext); return yytext[0];}
-"("																{ printf("\n%s\n",yytext); return yytext[0];}
-")"																{ printf("\n%s\n",yytext); return yytext[0];}
-";"																{ printf("\n%s\n",yytext); return yytext[0];}
-","																{ printf("\n%s\n",yytext); return COMMA;}
-"."																{ printf("\n%s\n",yytext); return FULL_STOP;}
-"["																{ printf("\n%s\n",yytext); return yytext[0];}
-"]"																{ printf("\n%s\n",yytext); return yytext[0];}
-":"																{ printf("\n%s\n",yytext); return COLON;}
+"{"																{ return yytext[0];}
+"}"																{ return yytext[0];}
+"("																{ return yytext[0];}
+")"																{ return yytext[0];}
+";"																{ return yytext[0];}
+","																{ return COMMA;}
+"."																{ return FULL_STOP;}
+"["																{ return yytext[0];}
+"]"																{ return yytext[0];}
+":"																{ return COLON;}
 "/*"([^*]|"*"+[^/*])*"*/"               						{}
 "//"(.)*                       									{}
 
@@ -104,101 +104,101 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 
-"break"						{ printf("\n%s\n",yytext); return BREAK;}
-"case"						{ printf("\n%s\n",yytext); return CASE;}											
-"char"						{ printf("\n%s\n",yytext); return CHAR;}							
-"const"						{ printf("\n%s\n",yytext); return CONST;}						
-"continue"					{ printf("\n%s\n",yytext); return CONTINUE;}							
-"default"					{ printf("\n%s\n",yytext); return DEFAULT;}	
-"do"						{ printf("\n%s\n",yytext); return DO;}
+"break"						{ return BREAK;}
+"case"						{ return CASE;}											
+"char"						{ return CHAR;}							
+"const"						{ return CONST;}						
+"continue"					{ return CONTINUE;}							
+"default"					{ return DEFAULT;}	
+"do"						{ return DO;}
 
-"else"						{ printf("\n%s\n",yytext); return ELSE;}
-
-
-"for"						{ printf("\n%s\n",yytext); return FOR;}
-
-"if"						{ printf("\n%s\n",yytext); return IF;}
-
-"int"						{ printf("\n%s\n",yytext); return INT;}
-"long long"					{ printf("\n%s\n",yytext); return LONG_LONG;}
-"long"						{ printf("\n%s\n",yytext); return LONG;}
+"else"						{ return ELSE;}
 
 
-"return"					{ printf("\n%s\n",yytext); return RETURN;}
-"short"						{ printf("\n%s\n",yytext); return SHORT;}
-"signed"					{ printf("\n%s\n",yytext); return SIGNED;}
-"boolean"					{ printf("\n%s\n",yytext); return BOOLEAN;}
+"for"						{ return FOR;}
+
+"if"						{ return IF;}
+
+"int"						{ return INT;}
+"long long"					{ return LONG_LONG;}
+"long"						{ return LONG;}
 
 
-"switch"					{ printf("\n%s\n",yytext); return SWITCH;}
+"return"					{ return RETURN;}
+"short"						{ return SHORT;}
+"signed"					{ return SIGNED;}
+"boolean"					{ return BOOLEAN;}
 
 
-"unsigned"					{ printf("\n%s\n",yytext); return UNSIGNED;}
-"void"						{ printf("\n%s\n",yytext); return VOID;}
-
-"while"						{ printf("\n%s\n",yytext); return WHILE;}
+"switch"					{ return SWITCH;}
 
 
+"unsigned"					{ return UNSIGNED;}
+"void"						{ return VOID;}
 
-"++"						{  printf("\n%s\n",yytext); return INCREMENT;}
-"--"						{  printf("\n%s\n",yytext); return DECREMENT;}
-"&"							{  printf("\n%s\n",yytext); return AMPERSAND;}
-"*"							{  printf("\n%s\n",yytext); return STAR;}
-"+"							{  printf("\n%s\n",yytext); return ADDITION;}
-"-"							{  printf("\n%s\n",yytext); return MINUS;}
-"~"							{  printf("\n%s\n",yytext); return NEGATION;}
-"!"							{  printf("\n%s\n",yytext); return EXCLAIMATION;}
-"/" 						{ printf("\n%s\n",yytext); return DIVISION;}
-"%" 						{ printf("\n%s\n",yytext); return MODULO;}
-"<<" 						{ printf("\n%s\n",yytext); return SHIFTLEFT;}
-">>" 						{ printf("\n%s\n",yytext); return SHIFTRIGHT;}
-"<" 						{ printf("\n%s\n",yytext); return LESSTHAN;}
-">" 						{ printf("\n%s\n",yytext); return GREATERTHAN;}
-"<=" 						{ printf("\n%s\n",yytext); return LESSTHANEQUAL;}
-">=" 						{ printf("\n%s\n",yytext); return GREATERTHANEQUAL;}
-"==" 						{ printf("\n%s\n",yytext); return EQ;}
-"!=" 						{ printf("\n%s\n",yytext); return NEQ;}
-"^" 						{ printf("\n%s\n",yytext); return BITXOR;}
-"|" 						{ printf("\n%s\n",yytext); return BITOR;}
-"&&" 						{ printf("\n%s\n",yytext); return AND;}
-"||" 						{ printf("\n%s\n",yytext); return OR;}
-"?" 						{ printf("\n%s\n",yytext); return QUESTION;}
-"=" 						{ printf("\n%s\n",yytext); return ASSIGN;}
-"*=" 						{ printf("\n%s\n",yytext); return MULEQ;}
-"/=" 						{ printf("\n%s\n",yytext); return DIVEQ;}
-"%=" 						{ printf("\n%s\n",yytext); return MODEQ;}
-"+=" 						{ printf("\n%s\n",yytext); return PLUSEQ;}
-"-=" 						{ printf("\n%s\n",yytext); return MINUSEQ;}
-"<<=" 						{ printf("\n%s\n",yytext); return SHIFTLEQ;}
-">>=" 						{ printf("\n%s\n",yytext); return SHIFTREQ;}
-"&=" 						{ printf("\n%s\n",yytext); return BITANDEQ;}
-"^=" 						{ printf("\n%s\n",yytext); return BITXOREQ;}
-"|=" 						{ printf("\n%s\n",yytext); return BITOREQ;}
-"#" 						{ printf("\n%s\n",yytext); return HASH;}
+"while"						{ return WHILE;}
 
 
 
+"++"						{  return INCREMENT;}
+"--"						{  return DECREMENT;}
+"&"							{  return AMPERSAND;}
+"*"							{  return STAR;}
+"+"							{  return ADDITION;}
+"-"							{  return MINUS;}
+"~"							{  return NEGATION;}
+"!"							{  return EXCLAIMATION;}
+"/" 						{ return DIVISION;}
+"%" 						{ return MODULO;}
+"<<" 						{ return SHIFTLEFT;}
+">>" 						{ return SHIFTRIGHT;}
+"<" 						{ return LESSTHAN;}
+">" 						{ return GREATERTHAN;}
+"<=" 						{ return LESSTHANEQUAL;}
+">=" 						{ return GREATERTHANEQUAL;}
+"==" 						{ return EQ;}
+"!=" 						{ return NEQ;}
+"^" 						{ return BITXOR;}
+"|" 						{ return BITOR;}
+"&&" 						{ return AND;}
+"||" 						{ return OR;}
+"?" 						{ return QUESTION;}
+"=" 						{ return ASSIGN;}
+"*=" 						{ return MULEQ;}
+"/=" 						{ return DIVEQ;}
+"%=" 						{ return MODEQ;}
+"+=" 						{ return PLUSEQ;}
+"-=" 						{ return MINUSEQ;}
+"<<=" 						{ return SHIFTLEQ;}
+">>=" 						{ return SHIFTREQ;}
+"&=" 						{ return BITANDEQ;}
+"^=" 						{ return BITXOREQ;}
+"|=" 						{ return BITOREQ;}
+"#" 						{ return HASH;}
 
-{OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { printf("\n%s\n",yytext); return INTEGER_LITERAL;}
 
 
-"true"															{ printf("\n%s\n",yytext); return TRUE;}
-"false"                  										{ printf("\n%s\n",yytext); return FALSE;}
 
-"printf"					{ printf("\n%s\n",yytext); return PRINTF;}
-"scanf"						{ printf("\n%s\n",yytext); return SCANF;}
-"gets"						{ printf("\n%s\n",yytext); return GETS;}
-"puts"						{ printf("\n%s\n",yytext); return PUTS;}
-"sizeof"					{ printf("\n%s\n",yytext); return SIZEOF;}
-"loop"						{ printf("\n%s\n",yytext); return LOOP;}
-"sum"						{ printf("\n%s\n",yytext); return SUM;}
-"max"						{ printf("\n%s\n",yytext); return MAX;}	
-"min"						{ printf("\n%s\n",yytext); return MIN;}
+{OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { return INTEGER_LITERAL;}
 
 
-\"([^\\\"]|{EscapeSequence})*+\"                         		{ printf("\n%s\n",yytext); return STRING_LITERAL;}
-{CHARACTER_CONSTANT}                          					{ printf("\n%s\n",yytext); return CHAR_LITERAL;}
-{C_LETTER}({C_LETTER}|{DIGIT})*   								{printf("\n\n TOKEN_NAME: Identifier\t\t\t VALUE: %s",yytext); return IDENTIFIER;}
+"true"															{ return TRUE;}
+"false"                  										{ return FALSE;}
+
+"printf"					{ return PRINTF;}
+"scanf"						{ return SCANF;}
+"gets"						{ return GETS;}
+"puts"						{ return PUTS;}
+"sizeof"					{ return SIZEOF;}
+"loop"						{ return LOOP;}
+"sum"						{ return SUM;}
+"max"						{ return MAX;}	
+"min"						{ return MIN;}
+
+
+\"([^\\\"]|{EscapeSequence})*+\"                         		{ return STRING_LITERAL;}
+{CHARACTER_CONSTANT}                          					{ return CHAR_LITERAL;}
+{C_LETTER}({C_LETTER}|{DIGIT})*   								{ return IDENTIFIER;}
 \n|\t                               							{}
 .                                								{}
 %%
