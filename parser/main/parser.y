@@ -2,8 +2,11 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "symboltable.h"
+	#include "lex.yy.c"
 	#define SYMBOL_TABLE symbol_table_list[current_scope].symbol_table
 
+	using namespace std;
+	
 	extern entry_t** constant_table;
 
 	int is_declaration = 0;
@@ -56,7 +59,6 @@
 %token TRUE FALSE
 %token PRINTF SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
 
-
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
@@ -103,22 +105,25 @@
 
 %%
 
-compound_stmt : '{' {
+stmt:compound_stmt		
+    | single_stmt		
+    ;
+	
+statements: statements stmt;
+
+compound_stmt : '{' 
+					{
 						if(!p)current_scope = create_new_scope();
 						else p = 0;
 					}
-						statements 
-					'}'
-					{
-						current_scope = exit_scope();
-					} ;
+					statements 
+				'}'
+				{
+					current_scope = exit_scope();
+				} ;
 
-statements: statements stmt;
 
 /* Generic statement. Can be compound or a single statement */
-stmt:compound_stmt		
-    |single_stmt		
-    ;
 
 
  /* Now we will define a grammar for how types can be specified */
@@ -230,18 +235,16 @@ lhs: identifier	| array_access;
 identifier: IDENTIFIER {
                     if(is_declaration && !rhs)
                     {
-                      $1 = insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
-                      if($1 == NULL) 
-					  	yyerror("Redeclaration of variable");
+                      insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
+                    //   if($1 == NULL) 
+					//   	yyerror("Redeclaration of variable");
                     }
                     else
                     {
-                      $1 = search_recursive(yytext);
-                      if($1 == NULL) 
-					  	yyerror("Variable not declared");
+                      search_recursive(yytext);
+                    //   if($1 == NULL) 
+					//   	yyerror("Variable not declared");
                     }
-                    
-					$$ = $1;
                 }
     		 ;
 
@@ -321,7 +324,7 @@ int main(int argc, char *argv[]){
 	display_all();
 	printf("CONSTANT TABLE");
 	display_constant_table(constant_table);
-	
+
 	fclose(yyin);
 	return 0;
 }

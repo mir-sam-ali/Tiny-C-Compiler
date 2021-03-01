@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+
 #include "y.tab.h"
+
+entry_t** constant_table;
+
 %}
 %option nounput yylineno
 

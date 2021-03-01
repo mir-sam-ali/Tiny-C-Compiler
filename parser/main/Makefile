@@ -1,5 +1,5 @@
 myparser: y.tab.c lex.yy.c y.tab.h
-	gcc y.tab.c lex.yy.c  -g -ll -L -ly  -o myparser
+	g++ y.tab.c lex.yy.c  -g -ll -L -ly  -o myparser
 lex.yy.c: mylex.l
 	lex mylex.l
 y.tab.c: parser.y

@@ -1,9 +1,12 @@
 %{
-//#include "lexer.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "y.tab.h"	
+#include <stdio.h>
+#include <limits.h>
+
+#include "y.tab.h"
+
+entry_t** constant_table;
+
 %}
 %option nounput yylineno
 
