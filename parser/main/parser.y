@@ -1,19 +1,30 @@
 %{
-	#include <stdio.h>
-	#include <string.h>
-    extern FILE *yyin;
-    int yylex();
-    int yyerror();
+	#include <bits/stdc++.h>
+	#include "symboltable.h"
+	#include "lex.yy.c"
+
+	using namespace std;
+
+	void yyerror(char *msg);
+
+	#define SYMBOL_TABLE symbol_table_list[current_scope].symbol_table
+
+  	extern entry_t** constant_table;
+
+	int current_dtype;
+
+	table_t symbol_table_list[NUM_TABLES];
+
+	int is_declaration = 0;
+	int rhs = 0;
+
 %}
 
 %union
 {
-	// int data_type;
-	// entry_t* entry;
-	// content_t* content;
-	// string* op;
-	// vector<int>* nextlist;
-	// int instr;
+	int data_type;
+	entry_t* entry;
+	string* op;
 }
 
 %token IDENTIFIER
@@ -43,7 +54,6 @@
 %token TRUE FALSE
 %token PRINTF SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
 
-
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
@@ -53,29 +63,10 @@
 %type <op> assign;
 
 
-%type <content> lhs
-%type <content> sub_expr
-%type <content> expression
-%type <content> expression_stmt
-%type <content> unary_expr
-%type <content> arithmetic_expr
-%type <content> assignment_expr
-%type <content> array_access
-
-%type <content> if_block
-%type <content> for_block
-%type <content> while_block
-%type <content> compound_stmt
-
-%type <content> statements
-%type <content> single_stmt
-%type <content> stmt
-
-
 %left COMMA
 %right ASSIGN
 %left OR
-%left LOGICAL_AND
+%left AND
 %left EQ NEQ
 %left LESSTHAN GREATERTHAN LESSTHANEQUAL GREATERTHANEQUAL
 %left ADDITION MINUS
@@ -90,39 +81,46 @@
 
 %%
 
-compound_stmt : '{' statements '}' | statements {printf("statements accepted\n");}  ;
+/* Generic statement. Can be compound or a single statement */
 
 statements: statements stmt | ;
 
-/* Generic statement. Can be compound or a single statement */
-stmt:compound_stmt		
-    |single_stmt		
-    ;
+stmt: single_stmt | compound_stmt;
 
+compound_stmt: '{' 
+					{
+						current_scope = create_new_scope();
+						
+					}
+					statements 
+				'}'
+					{
+						current_scope = exit_scope();
+					};
 
  /* Now we will define a grammar for how types can be specified */
 
-data_type : sign_specifier type_specifier
-    	| type_specifier
+data_type : sign_specifier type_specifier {is_declaration = 1;}
+    	| type_specifier {is_declaration = 1;}
     	;
 
 sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier: INT {printf("int accepted\n");}                           
-    |SHORT                       
-    |LONG                                          
-    |LONG_LONG                                  
-	|CHAR
-    |BOOLEAN
+type_specifier: INT {current_dtype = INT;}                           
+    |SHORT   {current_dtype = SHORT;}                     
+    |LONG     {current_dtype = LONG;}                                      
+    |LONG_LONG     {current_dtype = LONG_LONG;}                              
+	|CHAR {current_dtype = CHAR;}
+    |BOOLEAN {current_dtype = BOOLEAN;}
     ;
 
 /* The function body is covered in braces and has multiple statements. */
 
 
  /* Grammar for what constitutes every individual statement */
-single_stmt :if_block	
+single_stmt: if_block	
 
 		    |for_block	
 		
@@ -136,13 +134,19 @@ single_stmt :if_block
 			|BREAK ';'      
 	
 			|RETURN sub_expr ';' 
-							
+	
 	    ;
 
-for_block: FOR '(' for_declaration expression_stmt expression ')'  stmt 	         
+for_block: FOR '('{
+						current_scope = create_new_scope();
+						
+				} for_declaration expression_stmt expression ')' {
+						is_declaration = 0;
+						current_scope = exit_scope();
+					}  stmt 	         
     		 ;
 
-for_declaration: data_type  declaration_list ';'| expression_stmt;
+for_declaration:  declaration  | expression_stmt;
 
 if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
 		|IF '(' expression ')' stmt ELSE stmt	
@@ -151,7 +155,7 @@ if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
 while_block: WHILE '(' expression ')'  stmt 
 		;
 
-declaration: data_type  declaration_list ';' {printf("declaration stmt recognized\n");}			
+declaration: data_type  declaration_list ';' {is_declaration = 0;}			
 			 | declaration_list ';'
 			 | unary_expr ';'
 
@@ -192,10 +196,10 @@ sub_expr:
     ;
 
 assignment_expr :
-	lhs assign arithmetic_expr	
-    |lhs assign array_access
-	|lhs assign unary_expr  
-	|unary_expr assign unary_expr		
+	lhs assign arithmetic_expr	  {rhs = 0;}
+    |lhs assign array_access  {rhs = 0;}
+	|lhs assign unary_expr    {rhs = 0;}
+	|unary_expr assign unary_expr	  {rhs = 0;}	
     ;
 
 unary_expr:	
@@ -206,14 +210,28 @@ unary_expr:
 
 lhs: identifier	| array_access;
 
-identifier: IDENTIFIER {printf("identifier recognized\n");};
+identifier: IDENTIFIER {
+                    if(is_declaration && !rhs)
+                    {
+                      insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
+                    //   if($1 == NULL) 
+					//   	yyerror("Redeclaration of variable");
+                    }
+                    else
+                    {
+                      search_recursive(yytext);
+                    //   if($1 == NULL) 
+					//   	yyerror("Variable not declared");
+                    }
+                }
+    		 ;
 
-assign: ASSIGN 			
-    |PLUSEQ 	
-    |MINUSEQ 	
-    |MULEQ 	
-    |DIVEQ 	
-    |MODEQ 	
+assign: ASSIGN 		{rhs = 1;}	
+    |PLUSEQ 	{rhs = 1;}
+    |MINUSEQ 	{rhs = 1;}
+    |MULEQ 	{rhs = 1;}
+    |DIVEQ 	{rhs = 1;}
+    |MODEQ 	{rhs = 1;}
     ;
 
 arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
@@ -239,41 +257,32 @@ array_index: constant
 
 %%
 
-// int main(int argc, char *argv[])
-// {
-// 	//  int i;
-// 	//  for(i=0; i<NUM_TABLES;i++)
-// 	//  {
-// 	//   symbol_table_list[i].symbol_table = NULL;
-// 	//   symbol_table_list[i].parent = -1;
-// 	//  }
-
-// 	// constant_table = create_table();
-//     // symbol_table_list[0].symbol_table = create_table();
-// 	// yyin = fopen(argv[1], "r");
-
-// 	if(!yyparse())
-// 	{
-// 		printf("\nPARSING COMPLETE\n\n\n");
-// 	}
-// 	else
-// 	{
-// 			printf("\nPARSING FAILED!\n\n\n");
-// 	}
-
-// 	//displayICG();
-// }
-
-
 int main(int argc, char *argv[]){
+	int i;
+	for(i=0; i<NUM_TABLES;i++)
+	{
+		symbol_table_list[i].symbol_table = NULL;
+		symbol_table_list[i].parent = -1;
+	}
+
+	constant_table = create_table();
+  	symbol_table_list[0].symbol_table = create_table();
+
     yyin = fopen(argv[1],"r"); 
     	while(!feof(yyin))
 		yyparse();
+	
+	printf("SYMBOL TABLES\n\n");
+	display_all();
+	printf("CONSTANT TABLE");
+	display_constant_table(constant_table);
+
 	fclose(yyin);
 	return 0;
 }
 
-int yyerror(){
-  printf("\nSyntaxerror\n");
-  return 0;
+void yyerror(const char *msg)
+{
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
+	// exit(0);
 }
