@@ -17,6 +17,7 @@
 
 	int is_declaration = 0;
 	int rhs = 0;
+	int old_is_declaration=0;
 
 %}
 
@@ -57,8 +58,10 @@
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
+%type <entry> IDENTIFIER
 %type <entry> constant
 %type <entry> array_index
+
 
 %type <op> assign;
 
@@ -224,14 +227,15 @@ identifier: IDENTIFIER {
 						}else if(current_dtype == LONG){
 							size = 8;
 						}
-						insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype, size);
-						// if($1 == NULL) 
-						// 	yyerror("Redeclaration of variable");
+						$1=insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype, size);
+						if($1 == NULL) 
+							yyerror("Redeclaration of variable");
                     }
                     else
-                    {	search_recursive(yytext);
-                      	// if($1 == NULL) 
-					  	// 	yyerror("Variable not declared");
+                    {	
+						$1=search_recursive(yytext);
+                      	if($1 == NULL) 
+					  		yyerror("Variable not declared");
                     }
                 }
     		 ;
@@ -262,9 +266,20 @@ constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ;
 
 array_access: identifier arr;
 
-arr: '[' INTEGER_LITERAL ']' arr | '[' INTEGER_LITERAL ']';
+arr: '[' array_index ']' arr | '[' array_index ']';
 
-array_index: constant | identifier	| arithmetic_expr | unary_expr;
+array_index: constant | 
+			{	old_is_declaration=is_declaration;
+				is_declaration=0;
+			}	arithmetic_expr  {
+				is_declaration=old_is_declaration;
+				} | 
+			{	old_is_declaration=is_declaration;
+				is_declaration=0;
+			
+			} unary_expr       {
+				is_declaration=old_is_declaration;};
+			;
 
 %%
 
