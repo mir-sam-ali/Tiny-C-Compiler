@@ -319,6 +319,6 @@ int main(int argc, char *argv[]){
 
 void yyerror(const char *msg)
 {
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg,yylval.lexi );
 	// exit(0);
 }

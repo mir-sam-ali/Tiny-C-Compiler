@@ -2143,7 +2143,6 @@ int main(int argc, char *argv[]){
 		symbol_table_list[i].parent = -1;
 	}
 
-	constant_table = create_table();
   	symbol_table_list[0].symbol_table = create_table();
 
     yyin = fopen(argv[1],"r"); 
@@ -2152,8 +2151,6 @@ int main(int argc, char *argv[]){
 	
 	printf("SYMBOL TABLES\n\n");
 	display_all();
-	printf("CONSTANT TABLE");
-	display_constant_table(constant_table);
 
 	fclose(yyin);
 	return 0;
@@ -2161,7 +2158,7 @@ int main(int argc, char *argv[]){
 
 void yyerror(const char *msg)
 {
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yytext);
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg,yylval.lexi );
 	// exit(0);
 }
 

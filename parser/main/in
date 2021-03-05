@@ -1,17 +1,16 @@
 int array[100], n, d, swap;
 int arr[200][200];
 int i; int j;
-int i;
 char c = 'd';
 for (int c = 0 ; c < n - 1; c++)
 { 
   for (int d = 0 ; d < n - c - 1; d++)
   {
-    if (array[d] > array[d+1]) /* For decreasing order use '<' instead of '>' */
+    if (array[1] > array[2]) /* For decreasing order use '<' instead of '>' */
     {
-      swap       = array[d];
-      array[d]   = array[d+1];
-      array[d+1] = swap;
+      swap       = array[3];
+      array[2]  = array[2];
+      array[2] = swap;
     }
   }
 }
