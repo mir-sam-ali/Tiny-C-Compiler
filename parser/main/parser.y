@@ -260,7 +260,9 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ; 			
     ;
 
-array_access: identifier '[' array_index ']';
+array_access: identifier arr;
+
+arr: '[' INTEGER_LITERAL ']' arr | '[' INTEGER_LITERAL ']';
 
 array_index: constant | identifier	| arithmetic_expr | unary_expr;
 
