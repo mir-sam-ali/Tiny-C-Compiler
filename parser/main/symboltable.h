@@ -20,7 +20,7 @@ struct entry_t
 	char *lexeme;
 	int value;
 	int data_type;
-
+	int size;
 	int array_dimension;
 	int is_constant;
 
@@ -99,7 +99,7 @@ int myhash(char *lexeme)
 }
 
 /* Create an entry for a lexeme, token pair. This will be called from the insert function */
-entry_t *create_entry(char *lexeme, int value, int data_type)
+entry_t *create_entry(char *lexeme, int value, int data_type, int size)
 {
 	entry_t *new_entry;
 
@@ -116,7 +116,7 @@ entry_t *create_entry(char *lexeme, int value, int data_type)
 
 	new_entry->value = value;
 	new_entry->successor = NULL;
-
+	new_entry->size = size;
 	new_entry->array_dimension = -1;
 	new_entry->is_constant = 0;
 
@@ -168,7 +168,7 @@ entry_t *search_recursive(char *lexeme)
 	return finder;
 }
 /* Insert an entry into a myhash table. */
-entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type)
+entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type, int size)
 {
 	// Make sure you pass the current scope symbol table here
 	entry_t *finder = search(hash_table_ptr, lexeme);
@@ -184,7 +184,7 @@ entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type
 	entry_t *head = NULL;
 
 	idx = myhash(lexeme);								// Get the index for this lexeme based on the myhash function
-	new_entry = create_entry(lexeme, value, data_type); // Create an entry using the <lexeme, token> pair
+	new_entry = create_entry(lexeme, value, data_type, size); // Create an entry using the <lexeme, token> pair
 
 	if (new_entry == NULL) // In case there was some error while executing create_entry()
 	{
@@ -228,7 +228,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 
 	print_dashes(100);
 
-	printf(" %-20s %-20s %-20s\n", "lexeme", "data-type", "array_dimension");
+	printf(" %-20s %-20s %-20s\n", "lexeme", "data-type", "size");
 
 	print_dashes(100);
 
@@ -238,7 +238,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 		traverser = hash_table_ptr[i];
 		while (traverser != NULL)
 		{
-			printf(" %-20s %-20d %-20d ", traverser->lexeme, traverser->data_type, traverser->array_dimension);
+			printf(" %-20s %-20d %-20d ", traverser->lexeme, traverser->data_type, traverser->size);
 
 			printf("\n");
 

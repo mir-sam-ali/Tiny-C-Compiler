@@ -245,20 +245,11 @@
   	extern entry_t** constant_table;
 
 	int current_dtype;
-
+	int size;
 	table_t symbol_table_list[NUM_TABLES];
 
 	int is_declaration = 0;
-	int is_loop = 0;
-	
-
-	
-	int p_idx = 0;
-	int p=0;
-  	int rhs = 0;
-
-	int nextinstr = 0;
-	int temp_var_number = 0;
+	int rhs = 0;
 
 
 
@@ -282,14 +273,14 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 33 "parser.y"
+#line 24 "parser.y"
 {
 	int data_type;
 	entry_t* entry;
 	string* op;
 }
 /* Line 193 of yacc.c.  */
-#line 293 "y.tab.c"
+#line 284 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -302,7 +293,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 306 "y.tab.c"
+#line 297 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -627,16 +618,16 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    95,    95,    95,    97,    97,   100,    99,   112,   113,
-     116,   117,   120,   121,   122,   123,   124,   125,   132,   134,
-     136,   137,   139,   141,   143,   145,   149,   152,   149,   158,
-     158,   160,   161,   164,   167,   168,   169,   172,   173,   176,
-     177,   178,   182,   183,   184,   187,   188,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   208,
-     209,   210,   211,   215,   216,   217,   218,   220,   220,   222,
-     238,   239,   240,   241,   242,   243,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   259,   259,   259,
-     259,   262,   264,   265,   265,   265
+       0,    86,    86,    86,    88,    88,    91,    90,   103,   104,
+     107,   108,   111,   112,   113,   114,   115,   116,   123,   125,
+     127,   128,   130,   132,   134,   136,   140,   143,   140,   149,
+     149,   151,   152,   155,   158,   159,   160,   163,   164,   167,
+     168,   169,   173,   174,   175,   178,   179,   184,   185,   186,
+     187,   188,   189,   190,   191,   192,   193,   194,   195,   199,
+     200,   201,   202,   206,   207,   208,   209,   211,   211,   213,
+     239,   240,   241,   242,   243,   244,   247,   248,   249,   250,
+     251,   252,   253,   254,   255,   256,   257,   260,   260,   260,
+     260,   263,   265,   265,   265,   265
 };
 #endif
 
@@ -1708,7 +1699,7 @@ yyreduce:
   switch (yyn)
     {
         case 6:
-#line 100 "parser.y"
+#line 91 "parser.y"
     {
 						current_scope = create_new_scope();
 						
@@ -1716,54 +1707,54 @@ yyreduce:
     break;
 
   case 7:
-#line 106 "parser.y"
+#line 97 "parser.y"
     {
 						current_scope = exit_scope();
 					}
     break;
 
   case 8:
-#line 112 "parser.y"
+#line 103 "parser.y"
     {is_declaration = 1;}
     break;
 
   case 9:
-#line 113 "parser.y"
+#line 104 "parser.y"
     {is_declaration = 1;}
     break;
 
   case 12:
-#line 120 "parser.y"
+#line 111 "parser.y"
     {current_dtype = INT;}
     break;
 
   case 13:
-#line 121 "parser.y"
+#line 112 "parser.y"
     {current_dtype = SHORT;}
     break;
 
   case 14:
-#line 122 "parser.y"
+#line 113 "parser.y"
     {current_dtype = LONG;}
     break;
 
   case 15:
-#line 123 "parser.y"
+#line 114 "parser.y"
     {current_dtype = LONG_LONG;}
     break;
 
   case 16:
-#line 124 "parser.y"
+#line 115 "parser.y"
     {current_dtype = CHAR;}
     break;
 
   case 17:
-#line 125 "parser.y"
+#line 116 "parser.y"
     {current_dtype = BOOLEAN;}
     break;
 
   case 26:
-#line 149 "parser.y"
+#line 140 "parser.y"
     {
 						current_scope = create_new_scope();
 						
@@ -1771,7 +1762,7 @@ yyreduce:
     break;
 
   case 27:
-#line 152 "parser.y"
+#line 143 "parser.y"
     {
 						is_declaration = 0;
 						current_scope = exit_scope();
@@ -1779,81 +1770,91 @@ yyreduce:
     break;
 
   case 34:
-#line 167 "parser.y"
+#line 158 "parser.y"
     {is_declaration = 0;}
     break;
 
   case 59:
-#line 208 "parser.y"
+#line 199 "parser.y"
     {rhs = 0;}
     break;
 
   case 60:
-#line 209 "parser.y"
+#line 200 "parser.y"
     {rhs = 0;}
     break;
 
   case 61:
-#line 210 "parser.y"
+#line 201 "parser.y"
     {rhs = 0;}
     break;
 
   case 62:
-#line 211 "parser.y"
+#line 202 "parser.y"
     {rhs = 0;}
     break;
 
   case 69:
-#line 222 "parser.y"
+#line 213 "parser.y"
     {
                     if(is_declaration && !rhs)
-                    {
-                      insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
-                    //   if($1 == NULL) 
-					//   	yyerror("Redeclaration of variable");
+                    {	
+						if(current_dtype == INT){
+							size = 4;
+						}else if(current_dtype == LONG_LONG){
+							size = 8;
+						}else if(current_dtype == CHAR){
+							size = 1;
+						}else if(current_dtype == SHORT){
+							size = 1;
+						}else if(current_dtype == LONG){
+							size = 8;
+						}
+						insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype, size);
+						// if($1 == NULL) 
+						// 	yyerror("Redeclaration of variable");
                     }
                     else
-                    {
-                      search_recursive(yytext);
-                    //   if($1 == NULL) 
-					//   	yyerror("Variable not declared");
+                    {	search_recursive(yytext);
+                      	// if($1 == NULL) 
+					  	// 	yyerror("Variable not declared");
                     }
                 }
     break;
 
   case 70:
-#line 238 "parser.y"
-    {rhs = 1;}
-    break;
-
-  case 71:
 #line 239 "parser.y"
     {rhs = 1;}
     break;
 
-  case 72:
+  case 71:
 #line 240 "parser.y"
     {rhs = 1;}
     break;
 
-  case 73:
+  case 72:
 #line 241 "parser.y"
     {rhs = 1;}
     break;
 
-  case 74:
+  case 73:
 #line 242 "parser.y"
     {rhs = 1;}
     break;
 
-  case 75:
+  case 74:
 #line 243 "parser.y"
+    {rhs = 1;}
+    break;
+
+  case 75:
+#line 244 "parser.y"
     {rhs = 1;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1857 "y.tab.c"
+#line 1858 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

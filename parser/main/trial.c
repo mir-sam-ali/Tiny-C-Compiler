@@ -3,12 +3,13 @@
 int main()
 {
     int i = 0;
-    int i = 1;
+    // int i = 1;
     printf("%d\n", i);
-    for (int i = 0; i < 10; i++)
-    {
-        printf("%d\n", i);
-        i++;
-        //printf("%d\n", i);
-    }
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     printf("%d\n", i);
+    //     i++;
+    //     //printf("%d\n", i);
+    // }
+    // if(i==0) int j = 0;
 }

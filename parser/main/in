@@ -1,6 +1,6 @@
 int array[100], n, d, swap;
 int i; int j;
-
+char c = 'd';
 for (int c = 0 ; c < n - 1; c++)
 { 
   for (int d = 0 ; d < n - c - 1; d++)

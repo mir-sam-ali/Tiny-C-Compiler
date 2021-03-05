@@ -12,7 +12,7 @@
   	extern entry_t** constant_table;
 
 	int current_dtype;
-
+	int size;
 	table_t symbol_table_list[NUM_TABLES];
 
 	int is_declaration = 0;
@@ -212,16 +212,26 @@ lhs: identifier	| array_access;
 
 identifier: IDENTIFIER {
                     if(is_declaration && !rhs)
-                    {
-                      insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype);
-                    //   if($1 == NULL) 
-					//   	yyerror("Redeclaration of variable");
+                    {	
+						if(current_dtype == INT){
+							size = 4;
+						}else if(current_dtype == LONG_LONG){
+							size = 8;
+						}else if(current_dtype == CHAR){
+							size = 1;
+						}else if(current_dtype == SHORT){
+							size = 1;
+						}else if(current_dtype == LONG){
+							size = 8;
+						}
+						insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype, size);
+						// if($1 == NULL) 
+						// 	yyerror("Redeclaration of variable");
                     }
                     else
-                    {
-                      search_recursive(yytext);
-                    //   if($1 == NULL) 
-					//   	yyerror("Variable not declared");
+                    {	search_recursive(yytext);
+                      	// if($1 == NULL) 
+					  	// 	yyerror("Variable not declared");
                     }
                 }
     		 ;
@@ -252,8 +262,7 @@ constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ;
 
 array_access: identifier '[' array_index ']';
 
-array_index: constant		
-		   | identifier	| arithmetic_expr | unary_expr;
+array_index: constant | identifier	| arithmetic_expr | unary_expr;
 
 %%
 
