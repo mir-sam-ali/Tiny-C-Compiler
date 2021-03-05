@@ -18,6 +18,8 @@
 	int is_declaration = 0;
 	int rhs = 0;
 	int old_is_declaration=0;
+	int arr_size = 1;
+	char lexeme[20];
 
 %}
 
@@ -26,6 +28,8 @@
 	int data_type;
 	entry_t* entry;
 	string* op;
+	int sz;
+	char lexi[20];
 }
 
 %token IDENTIFIER
@@ -60,11 +64,8 @@
 %type <entry> identifier
 %type <entry> IDENTIFIER
 %type <entry> constant
-%type <entry> array_index
-
-
+%type <sz> array_index
 %type <op> assign;
-
 
 %left COMMA
 %right ASSIGN
@@ -75,7 +76,6 @@
 %left ADDITION MINUS
 %left STAR DIVISION MODULO
 %right EXCLAIMATION
-
 
 %nonassoc UMINUS
 %nonassoc LOWER_THAN_ELSE
@@ -227,13 +227,13 @@ identifier: IDENTIFIER {
 						}else if(current_dtype == LONG){
 							size = 8;
 						}
-						$1=insert(SYMBOL_TABLE,yytext,INT_MAX,current_dtype, size);
+						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
                     }
                     else
                     {	
-						$1=search_recursive(yytext);
+						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
                     }
@@ -262,24 +262,37 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
     		 ;
 
 constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ; 			
-    ;
 
-array_access: identifier arr;
+array_access: IDENTIFIER {strcpy(lexeme, yytext);} arr {
+                    if(is_declaration && !rhs)
+                    {	size = arr_size;
+						if(current_dtype == INT){
+							size *= 4;
+						}else if(current_dtype == LONG_LONG){
+							size *= 8;
+						}else if(current_dtype == CHAR){
+							size *= 1;
+						}else if(current_dtype == SHORT){
+							size *= 1;
+						}else if(current_dtype == LONG){
+							size *= 8;
+						}
+						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
+						if($1 == NULL) 
+							yyerror("Redeclaration of variable");
+						arr_size = 1;
+                    }
+                    else
+                    {	
+						$1=search_recursive(yylval.lexi);
+                      	if($1 == NULL) 
+					  		yyerror("Variable not declared");
+                    }
+                };
 
-arr: '[' array_index ']' arr | '[' array_index ']';
+arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
 
-array_index: constant | 
-			{	old_is_declaration=is_declaration;
-				is_declaration=0;
-			}	arithmetic_expr  {
-				is_declaration=old_is_declaration;
-				} | 
-			{	old_is_declaration=is_declaration;
-				is_declaration=0;
-			
-			} unary_expr       {
-				is_declaration=old_is_declaration;};
-			;
+array_index: INTEGER_LITERAL {$$ = atoi(yytext);};
 
 %%
 
@@ -291,7 +304,6 @@ int main(int argc, char *argv[]){
 		symbol_table_list[i].parent = -1;
 	}
 
-	constant_table = create_table();
   	symbol_table_list[0].symbol_table = create_table();
 
     yyin = fopen(argv[1],"r"); 
@@ -300,8 +312,6 @@ int main(int argc, char *argv[]){
 	
 	printf("SYMBOL TABLES\n\n");
 	display_all();
-	printf("CONSTANT TABLE");
-	display_constant_table(constant_table);
 
 	fclose(yyin);
 	return 0;

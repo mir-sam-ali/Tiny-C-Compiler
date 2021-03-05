@@ -198,7 +198,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 \"([^\\\"]|{EscapeSequence})*+\"                         		{ return STRING_LITERAL;}
 {CHARACTER_CONSTANT}                          					{ return CHAR_LITERAL;}
-{C_LETTER}({C_LETTER}|{DIGIT})*   								{ return IDENTIFIER;}
+{C_LETTER}({C_LETTER}|{DIGIT})*   								{ strcpy(yylval.lexi, yytext); return IDENTIFIER;}
 \n|\t                               							{}
 .                                								{}
 %%
