@@ -1,2 +1,0 @@
-if(x>y) then x = y + z;
-if(x!=y) then x = y + z else x = y - z; 

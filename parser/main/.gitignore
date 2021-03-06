@@ -1,6 +1,0 @@
-myparser 
-y.tab.c 
-lex.yy.c 
-y.tab.h 
-y.output 
-y.dot
