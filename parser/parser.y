@@ -20,7 +20,6 @@
 	int old_is_declaration=0;
 	int arr_size = 1;
 	char lexeme[20];
-
 %}
 
 %union
@@ -118,8 +117,6 @@ type_specifier: INT {current_dtype = INT;}
 	|CHAR {current_dtype = CHAR;}
     |BOOLEAN {current_dtype = BOOLEAN;}
     ;
-
-/* The function body is covered in braces and has multiple statements. */
 
 
  /* Grammar for what constitutes every individual statement */
