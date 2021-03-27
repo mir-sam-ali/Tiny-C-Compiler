@@ -617,6 +617,16 @@ arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *=
 
 array_index: INTEGER_LITERAL {$$ = atoi(yytext);};
 
+M: 			{$$ = nextinstr;}
+ ;
+
+N:			{
+				$$ = new content_t;
+				$$->nextlist = {nextinstr};
+				gencode("goto _");
+			}
+	;
+
 %%
 
 void gencode(string x) {
