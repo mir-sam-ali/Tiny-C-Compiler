@@ -85,19 +85,28 @@
 
 /* Generic statement. Can be compound or a single statement */
 
-statements: statements stmt | ;
+statements: statements stmt {
+									backpatch($1->nextlist,$2);
+									$$ = new content_t();
+									$$->nextlist = $3->nextlist;
+									$$->breaklist = merge($1->breaklist,$3->breaklist);
+									$$->continuelist = merge($1->continuelist,$3->continuelist);
+								}| {	$$ = new content_t();	};
 
-stmt: single_stmt | compound_stmt;
+stmt: single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content_t(); $$=$1;};
 
 compound_stmt: '{' 
 					{
-						current_scope = create_new_scope();
+						if(!p)current_scope = create_new_scope();
+						else p = 0;
 						
 					}
 					statements 
 				'}'
 					{
 						current_scope = exit_scope();
+						$$ = new content_t();
+						$$ = $3;
 					};
 
  /* Now we will define a grammar for how types can be specified */
@@ -120,20 +129,40 @@ type_specifier: INT {current_dtype = INT;}
 
 
  /* Grammar for what constitutes every individual statement */
-single_stmt: if_block	
+single_stmt: if_block {
+							$$ = new content_t();
+							$$ = $1;
+							backpatch($$->nextlist, nextinstr);
+						}	
 
-		    |for_block	
+		    |for_block	{
+							$$ = new content_t();
+							$$ = $1;
+							backpatch($$->nextlist, nextinstr);
+						}
 		
-	    	|while_block 
-	    	|declaration 		
+	    	|while_block {
+							$$ = new content_t();
+							$$ = $1;
+							backpatch($$->nextlist, nextinstr);
+						 }
+	    	|declaration {$$ = new content_t();}		
 	    	
-			|RETURN ';'	  
+			|CONTINUE ';' {
+								if(!is_loop)
+									yyerror("Illegal use of continue");
+								$$ = new content_t();
+								$$->continuelist = {nextinstr};
+								gencode("goto _");
+							}
 	
-			|CONTINUE ';'	
+			|BREAK ';' {
+								if(!is_loop) {yyerror("Illegal use of break");}
+								$$ = new content_t();
+								$$->breaklist = {nextinstr};
+								gencode("goto _");
+						    }     
 	
-			|BREAK ';'      
-	
-			|RETURN sub_expr ';' 
 	
 	    ;
 
@@ -141,18 +170,52 @@ for_block: FOR '('{
 						current_scope = create_new_scope();
 						
 				} for_declaration expression_stmt expression ')' {
+						is_loop = 1;
 						is_declaration = 0;
 						current_scope = exit_scope();
-					}  stmt 	         
+					}  stmt {is_loop = 0;}
+					{
+				backpatch($5->truelist,$11);
+				backpatch($12->nextlist,$6);
+				backpatch($12->continuelist, $6);
+				backpatch($10->nextlist, $4);
+				$$ = new content_t();
+				$$->nextlist = merge($5->falselist,$12->breaklist);
+				gencode(string("goto ") + to_string($6));
+			 }	         
     		 ;
 
 for_declaration:  declaration  | expression_stmt;
 
-if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE
-		|IF '(' expression ')' stmt ELSE stmt	
+if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE {
+				backpatch($3->truelist,$5);
+				$$ = new content_t();
+				$$->nextlist = merge($3->falselist,$6->nextlist);
+				$$->breaklist = $6->breaklist;
+				$$->continuelist = $6->continuelist;
+			}
+
+		|IF '(' expression ')' stmt ELSE stmt {
+				backpatch($3->truelist,$5);
+				backpatch($3->falselist,$9);
+
+				$$ = new content_t();
+				vector<int> temp = merge($6->nextlist,$8->nextlist);
+				$$->nextlist = merge(temp,$10->nextlist);
+				$$->breaklist = merge($10->breaklist,$6->breaklist);
+				$$->continuelist = merge($10->continuelist,$6->continuelist);
+			}	
     ;
 
-while_block: WHILE '(' expression ')'  stmt 
+while_block: WHILE '(' expression ')' {is_loop = 1;}  stmt {is_loop = 0;}
+			{
+				backpatch($8->nextlist,$2);
+				backpatch($4->truelist,$6);
+				backpatch($8->continuelist, $2);
+				$$ = new content_t();
+				$$->nextlist = merge($4->falselist,$8->breaklist);
+				gencode(string("goto ") + to_string($2));
+			}
 		;
 
 declaration: data_type  declaration_list ';' {is_declaration = 0;}			
@@ -171,12 +234,24 @@ sub_decl: assignment_expr
 
 /* This is because we can have empty expession statements inside for loops */
 expression_stmt: data_type expression ';'	
-				| expression ';'
-				| ';'	
+				| expression ';' {
+						$$ = new content_t(); 
+						$$->truelist = $1->truelist; 
+						$$->falselist = $1->falselist;
+					}
+				| ';'	{	$$ = new content_t();	}
     			;
 
-expression: expression COMMA sub_expr
-    		| sub_expr	
+expression: expression COMMA sub_expr {
+					$$ = new content_t();
+					$$->truelist = $3->truelist; 
+					$$->falselist = $3->falselist;
+				}
+    		| sub_expr	{
+					$$ = new content_t(); 
+					$$->truelist = $1->truelist; 
+					$$->falselist = $1->falselist;
+				}
 			;
 
 sub_expr:
