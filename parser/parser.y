@@ -180,35 +180,177 @@ expression: expression COMMA sub_expr
 			;
 
 sub_expr:
+		sub_expr '>' sub_expr	
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" > "));
+			}
+		| sub_expr '<' sub_expr
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" < "));
+			}
 
-		sub_expr GREATERTHAN sub_expr	
-		| sub_expr LESSTHAN sub_expr
 		| sub_expr EQ sub_expr
-		| sub_expr NEQ sub_expr
-		| sub_expr GREATERTHANEQUAL sub_expr
-		| sub_expr LESSTHANEQUAL sub_expr
-		|sub_expr AND sub_expr
-		|sub_expr OR sub_expr
-		|EXCLAIMATION sub_expr
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" == "));
+			}
+
+		| sub_expr NOT_EQ sub_expr
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" != "));
+			}
+
+		| sub_expr GR_EQ sub_expr
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" >= "));
+			}
+
+		| sub_expr LS_EQ sub_expr
+			{
+				type_check($1->data_type,$3->data_type,2);
+				$$ = new content_t();
+				gencode_rel($$, $1, $3, string(" <= "));
+			}
+
+		|sub_expr LOGICAL_AND M sub_expr
+			{
+				type_check($1->data_type,$4->data_type,2);
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				backpatch($1->truelist,$3);
+				$$->truelist = $4->truelist;
+				$$->falselist = merge($1->falselist,$4->falselist);
+			}
+
+		|sub_expr LOGICAL_OR M sub_expr
+			{
+				type_check($1->data_type,$4->data_type,2);
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				backpatch($1->falselist,$3);
+				$$->truelist = merge($1->truelist,$4->truelist);
+				$$->falselist = $4->falselist;
+			}
+
+		|'!' sub_expr
+			{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->truelist = $2->falselist;
+				$$->falselist = $2->truelist;
+			}
+
 		|arithmetic_expr
+			{
+				$$ = new content_t(); 
+				$$->data_type = $1->data_type; 
+				$$->addr = $1->addr;
+			}
     	|assignment_expr
+			{
+				$$ = new content_t(); 
+				$$->data_type = $1->data_type;
+			}
 		|unary_expr	
+			{
+				$$ = new content_t(); 
+				$$->data_type = $1->data_type;
+			}
     ;
 
 assignment_expr :
-	lhs assign arithmetic_expr	  {rhs = 0;}
-    |lhs assign array_access  {rhs = 0;}
-	|lhs assign unary_expr    {rhs = 0;}
-	|unary_expr assign unary_expr	  {rhs = 0;}	
+	lhs assign arithmetic_expr	
+			{
+				type_check($1->entry->data_type,$3->data_type,1);
+		 		$$ = new content_t();
+				$$->data_type = $3->data_type;
+		 		$$->code = $1->entry->lexeme + *$2 + $3->addr;
+				gencode($$->code);
+		 		rhs = 0;
+			}
+
+    |lhs assign array_access
+			{
+				type_check($1->entry->data_type,$3->data_type,1);
+	 			$$ = new content_t();
+				$$->data_type = $3->data_type;
+	 			$$->code = $1->entry->lexeme + *$2 + $3->code;
+				gencode($$->code);
+	 			rhs = 0;
+			}
+
+    |lhs assign function_call
+			{
+				type_check($1->entry->data_type,$3,1); 
+				$$ = new content_t(); 
+				$$->data_type = $3;
+			}
+
+	|lhs assign unary_expr  
+	        {
+				type_check($1->entry->data_type,$3->data_type,1);
+			 	$$ = new content_t();
+				$$->data_type = $3->data_type;
+			 	$$->code = $1->entry->lexeme + *$2 + $3->code;
+				gencode($$->code);
+			 	rhs = 0;
+			}
+
+	|unary_expr assign unary_expr		
+			{
+				type_check($1->data_type,$3->data_type,1);
+				$$ = new content_t();
+				$$->data_type = $3->data_type;
+			 	$$->code = $1->code + *$2 + $3->code;
+				gencode($$->code);
+				rhs = 0;
+			}
     ;
 
-unary_expr:	
-	identifier INCREMENT	
- 	| identifier DECREMENT		
-	| DECREMENT identifier	
-	| INCREMENT identifier
+identifier INCREMENT	
+			{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = string($1->lexeme) + string("++");
+				gencode($$->code);
+			}
 
-lhs: identifier	| array_access;
+ 	| identifier DECREMENT		
+	 		{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = string($1->lexeme) + string("--");
+				gencode($$->code);
+			}
+
+	| DECREMENT identifier	
+			{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = string("--") + string($2->lexeme);
+				gencode($$->code);
+			}
+
+	| INCREMENT identifier
+			{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = string("++") + string($2->lexeme);
+				gencode($$->code);
+			};
+
+lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
+   | array_access	{$$ = new content_t(); $$->code = $1->code;}
+	 ;
 
 identifier: IDENTIFIER {
                     if(is_declaration && !rhs)
@@ -237,30 +379,91 @@ identifier: IDENTIFIER {
                 }
     		 ;
 
-assign: ASSIGN 		{rhs = 1;}	
-    |PLUSEQ 	{rhs = 1;}
-    |MINUSEQ 	{rhs = 1;}
-    |MULEQ 	{rhs = 1;}
-    |DIVEQ 	{rhs = 1;}
-    |MODEQ 	{rhs = 1;}
+assign: ASSIGN 		{rhs=1; $$ = new string(" = ");}
+    |PLUSEQ 	{rhs=1; $$ = new string(" += ");}
+    |MINUSEQ 	{rhs=1; $$ = new string(" -= ");}
+    |MULEQ 	{rhs=1; $$ = new string(" *= ");}
+    |DIVEQ 	{rhs=1; $$ = new string(" /= ");}
+    |MODEQ 	{rhs=1; $$ = new string(" %= ");}
     ;
 
-arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
-    			| arithmetic_expr MINUS arithmetic_expr
-    			| arithmetic_expr STAR arithmetic_expr
-			    | arithmetic_expr DIVISION arithmetic_expr
-                | arithmetic_expr MODULO arithmetic_expr
-			    |'(' arithmetic_expr ')'
-    		    |MINUS arithmetic_expr %prec UMINUS	
-    	        |identifier
-				|array_access
-    		    |constant
-				|array_access
+arithmetic_expr: arithmetic_expr '+' arithmetic_expr
+					 {
+						type_check($1->data_type,$3->data_type,0);
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+						gencode_math($$, $1, $3, string(" + "));
+					 }
+
+			| arithmetic_expr '-' arithmetic_expr
+			  		 {
+						type_check($1->data_type,$3->data_type,0);
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+						gencode_math($$, $1, $3, string(" - "));
+					 }
+
+			| arithmetic_expr '*' arithmetic_expr
+					 {
+						type_check($1->data_type,$3->data_type,0);
+						$$ = new content_t();
+		 				$$->data_type = $1->data_type;
+						gencode_math($$, $1, $3, string(" * "));
+					 }
+
+			| arithmetic_expr '/' arithmetic_expr
+					 {
+						type_check($1->data_type,$3->data_type,0);
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+						gencode_math($$, $1, $3, string(" / "));
+					 }
+
+		    | arithmetic_expr '%' arithmetic_expr
+					 {
+						type_check($1->data_type,$3->data_type,0);
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+						gencode_math($$, $1, $3, string(" % "));
+				 	 }
+
+			|'(' arithmetic_expr ')'
+					 {
+						$$ = new content_t();
+						$$->data_type = $2->data_type;
+						$$->addr = $2->addr;
+						$$->code = $2->code;
+					 }
+
+    		|'-' arithmetic_expr %prec UMINUS	
+					 {
+						$$ = new content_t();
+						$$->data_type = $2->data_type;
+						$$->addr = "t" + to_string(temp_var_number);
+						std::string expr = $$->addr + " = " + "minus " + $2->addr;
+						$$->code = $2->code + expr;
+						temp_var_number++;
+				 	 }
+
+    	    |identifier
+					 {
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+	 					$$->addr = $1->lexeme;
+			   		 }
+
+    		|constant
+					 {
+						$$ = new content_t();
+						$$->data_type = $1->data_type;
+						$$->addr = to_string($1->value);
+					 }
+			| array_access
     		 ;
 
-constant: INTEGER_LITERAL | CHAR_LITERAL | TRUE | FALSE ; 			
+constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
 
-array_access: IDENTIFIER {strcpy(lexeme, yytext);} arr {
+array_access: IDENTIFIER arr {
                     if(is_declaration && !rhs)
                     {	size = arr_size;
 						if(current_dtype == INT){

@@ -1,5 +1,5 @@
 myparser: y.tab.c lex.yy.c y.tab.h
-	g++ -std=c++11 -g y.tab.c -ll -L -ly -o myparser
+	g++ -std=c++11 -w -Wno-yacc -g y.tab.c -ll -L -ly -o myparser
 lex.yy.c: lexer/mylex.l
 	lex lexer/mylex.l
 y.tab.c: parser/parser.y
