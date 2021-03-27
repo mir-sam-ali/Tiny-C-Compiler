@@ -133,7 +133,7 @@
 
 /* Generic statement. Can be compound or a single statement */
 
-statements: statements stmt {
+statements: statements M stmt {
 									backpatch($1->nextlist,$2);
 									$$ = new content_t();
 									$$->nextlist = $3->nextlist;
@@ -217,11 +217,11 @@ single_stmt: if_block {
 for_block: FOR '('{
 						current_scope = create_new_scope();
 						
-				} for_declaration expression_stmt expression ')' {
+				} for_declaration expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
 						current_scope = exit_scope();
-					}  stmt {is_loop = 0;}
+					} N M stmt {is_loop = 0;}
 					{
 				backpatch($5->truelist,$11);
 				backpatch($12->nextlist,$6);
@@ -233,9 +233,9 @@ for_block: FOR '('{
 			 }	         
     		 ;
 
-for_declaration:  declaration  | expression_stmt;
+for_declaration:  declaration  | expression_stmt M ;
 
-if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE {
+if_block:IF '(' expression ')' M stmt %prec LOWER_THAN_ELSE {
 				backpatch($3->truelist,$5);
 				$$ = new content_t();
 				$$->nextlist = merge($3->falselist,$6->nextlist);
@@ -243,7 +243,7 @@ if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE {
 				$$->continuelist = $6->continuelist;
 			}
 
-		|IF '(' expression ')' stmt ELSE stmt {
+		|IF '(' expression ')' M stmt ELSE N M stmt {
 				backpatch($3->truelist,$5);
 				backpatch($3->falselist,$9);
 
@@ -255,7 +255,7 @@ if_block:IF '(' expression ')' stmt %prec LOWER_THAN_ELSE {
 			}	
     ;
 
-while_block: WHILE '(' expression ')' {is_loop = 1;}  stmt {is_loop = 0;}
+while_block: WHILE M '(' expression ')' M {is_loop = 1;}  stmt {is_loop = 0;}
 			{
 				backpatch($8->nextlist,$2);
 				backpatch($4->truelist,$6);
