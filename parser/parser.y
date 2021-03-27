@@ -16,19 +16,42 @@
 	table_t symbol_table_list[NUM_TABLES];
 
 	int is_declaration = 0;
+	int is_loop = 0;
+	int is_func = 0;
+	int func_type;
+
+	int param_list[10];
+	int p_idx = 0;
+	int p=0;
 	int rhs = 0;
 	int old_is_declaration=0;
 	int arr_size = 1;
 	char lexeme[20];
+
+	void type_check(int,int,int);
+	vector<int> merge(vector<int>& v1, vector<int>& v2);
+	void backpatch(vector<int>&, int);
+	void gencode(string);
+	void gencode_math(content_t* & lhs, content_t* arg1, content_t* arg2, const string& op);
+	void gencode_rel(content_t* & lhs, content_t* arg1, content_t* arg2, const string& op);
+	void printlist(vector<int>);
+
+	int nextinstr = 0;
+	int temp_var_number = 0;
+
+	vector<string> ICG;
 %}
 
 %union
 {
 	int data_type;
 	entry_t* entry;
+	content_t* content;
 	string* op;
 	int sz;
 	char lexi[20];
+	vector<int>* nextlist;
+	int instr;
 }
 
 %token IDENTIFIER
@@ -65,6 +88,31 @@
 %type <entry> constant
 %type <sz> array_index
 %type <op> assign;
+%type <data_type> function_call
+
+//%type <entry> array_index
+//%token <entry> DEC_CONSTANT HEX_CONSTANT CHAR_CONSTANT FLOAT_CONSTANT STRING
+
+%type <content> lhs
+%type <content> sub_expr
+%type <content> expression
+%type <content> expression_stmt
+%type <content> unary_expr
+%type <content> arithmetic_expr
+%type <content> assignment_expr
+%type <content> array_access
+
+%type <content> if_block
+%type <content> for_block
+%type <content> while_block
+%type <content> compound_stmt
+
+%type <content> statements
+%type <content> single_stmt
+%type <content> stmt
+
+%type <instr> M
+%type <content> N
 
 %left COMMA
 %right ASSIGN
