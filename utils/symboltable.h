@@ -26,6 +26,20 @@ struct entry_t
 	struct entry_t *successor;
 };
 
+struct content_t
+{
+	vector<int> truelist;
+	vector<int> falselist;
+	vector<int> nextlist;
+	vector<int> breaklist;
+	vector<int> continuelist;
+	string addr;
+	string code;
+
+	entry_t *entry;
+	int data_type;
+};
+
 struct table_t
 {
 	entry_t **symbol_table;
@@ -165,7 +179,7 @@ entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type
 	entry_t *new_entry = NULL;
 	entry_t *head = NULL;
 
-	idx = myhash(lexeme);								// Get the index for this lexeme based on the myhash function
+	idx = myhash(lexeme);									  // Get the index for this lexeme based on the myhash function
 	new_entry = create_entry(lexeme, value, data_type, size); // Create an entry using the <lexeme, token> pair
 
 	if (new_entry == NULL)

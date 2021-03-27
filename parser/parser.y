@@ -57,7 +57,7 @@
 %token IDENTIFIER
 
  /* Constants */
-%token INTEGER_LITERAL STRING_LITERAL CHAR_LITERAL
+// %token INTEGER_LITERAL STRING_LITERAL CHAR_LITERAL
 
  /* Logical and Relational operators */
 %token AND OR LESSTHANEQUAL GREATERTHANEQUAL EQ NEQ AMPERSAND 
@@ -78,7 +78,7 @@
 %token SHIFTLEFT SHIFTRIGHT LESSTHAN GREATERTHAN 
 %token BITXOR BITOR QUESTION ASSIGN  SHIFTLEQ SHIFTREQ BITANDEQ BITXOREQ BITOREQ HASH
 
-%token TRUE FALSE
+// %token TRUE FALSE
 %token PRINTF SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
 
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
@@ -88,11 +88,13 @@
 %type <entry> constant
 %type <sz> array_index
 %type <op> assign;
-%type <data_type> function_call
+
+
 
 //%type <entry> array_index
-//%token <entry> DEC_CONSTANT HEX_CONSTANT CHAR_CONSTANT FLOAT_CONSTANT STRING
+%token <entry> INTEGER_LITERAL CHAR_LITERAL TRUE FALSE STRING_LITERAL
 
+%type <content> for_declaration
 %type <content> lhs
 %type <content> sub_expr
 %type <content> expression
@@ -110,6 +112,7 @@
 %type <content> statements
 %type <content> single_stmt
 %type <content> stmt
+
 
 %type <instr> M
 %type <content> N
@@ -217,7 +220,7 @@ single_stmt: if_block {
 for_block: FOR '('{
 						current_scope = create_new_scope();
 						
-				} for_declaration expression_stmt M expression ')' {
+				} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
 						current_scope = exit_scope();
@@ -233,7 +236,7 @@ for_block: FOR '('{
 			 }	         
     		 ;
 
-for_declaration:  declaration  | expression_stmt M ;
+for_declaration:  declaration  | expression_stmt ;
 
 if_block:IF '(' expression ')' M stmt %prec LOWER_THAN_ELSE {
 				backpatch($3->truelist,$5);
@@ -323,28 +326,28 @@ sub_expr:
 				gencode_rel($$, $1, $3, string(" == "));
 			}
 
-		| sub_expr NOT_EQ sub_expr
+		| sub_expr NEQ sub_expr
 			{
 				type_check($1->data_type,$3->data_type,2);
 				$$ = new content_t();
 				gencode_rel($$, $1, $3, string(" != "));
 			}
 
-		| sub_expr GR_EQ sub_expr
+		| sub_expr GREATERTHANEQUAL sub_expr
 			{
 				type_check($1->data_type,$3->data_type,2);
 				$$ = new content_t();
 				gencode_rel($$, $1, $3, string(" >= "));
 			}
 
-		| sub_expr LS_EQ sub_expr
+		| sub_expr LESSTHANEQUAL sub_expr
 			{
 				type_check($1->data_type,$3->data_type,2);
 				$$ = new content_t();
 				gencode_rel($$, $1, $3, string(" <= "));
 			}
 
-		|sub_expr LOGICAL_AND M sub_expr
+		|sub_expr AND M sub_expr
 			{
 				type_check($1->data_type,$4->data_type,2);
 				$$ = new content_t();
@@ -354,7 +357,7 @@ sub_expr:
 				$$->falselist = merge($1->falselist,$4->falselist);
 			}
 
-		|sub_expr LOGICAL_OR M sub_expr
+		|sub_expr OR M sub_expr
 			{
 				type_check($1->data_type,$4->data_type,2);
 				$$ = new content_t();
@@ -411,13 +414,6 @@ assignment_expr :
 	 			rhs = 0;
 			}
 
-    |lhs assign function_call
-			{
-				type_check($1->entry->data_type,$3,1); 
-				$$ = new content_t(); 
-				$$->data_type = $3;
-			}
-
 	|lhs assign unary_expr  
 	        {
 				type_check($1->entry->data_type,$3->data_type,1);
@@ -436,10 +432,10 @@ assignment_expr :
 			 	$$->code = $1->code + *$2 + $3->code;
 				gencode($$->code);
 				rhs = 0;
-			}
-    ;
+			};
 
-identifier INCREMENT	
+
+unary_expr: identifier INCREMENT	
 			{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
