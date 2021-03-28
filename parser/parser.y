@@ -54,7 +54,8 @@
 	int instr;
 }
 
-%token IDENTIFIER
+%token<entry> IDENTIFIER
+%token <entry> INTEGER_LITERAL CHAR_LITERAL TRUE FALSE STRING_LITERAL
 
  /* Constants */
 // %token INTEGER_LITERAL STRING_LITERAL CHAR_LITERAL
@@ -84,7 +85,7 @@
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
-%type <entry> IDENTIFIER
+
 %type <entry> constant
 %type <sz> array_index
 %type <op> assign;
@@ -92,7 +93,7 @@
 
 
 //%type <entry> array_index
-%token <entry> INTEGER_LITERAL CHAR_LITERAL TRUE FALSE STRING_LITERAL
+
 
 %type <content> for_declaration
 %type <content> lhs
@@ -145,7 +146,7 @@ statements: statements M stmt {
 									$$->continuelist = merge($1->continuelist,$3->continuelist);
 								}| {	$$ = new content_t();	};
 
-stmt: single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content_t(); $$=$1;};
+stmt:single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content_t(); $$=$1;};
 
 compound_stmt: '{' 
 					{
@@ -171,7 +172,7 @@ sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier: INT {current_dtype = INT;}                           
+type_specifier: INT {current_dtype = INT; printf("int statement\n");}                           
     |SHORT   {current_dtype = SHORT;}                     
     |LONG     {current_dtype = LONG;}                                      
     |LONG_LONG     {current_dtype = LONG_LONG;}                              
@@ -268,18 +269,20 @@ while_block: WHILE M '(' expression ')' M {is_loop = 1;}  stmt {is_loop = 0;}
 			}
 		;
 
-declaration: data_type  declaration_list ';' {is_declaration = 0;}			
+declaration: {printf("declaration statement\n");} data_type  declaration_list ';' {is_declaration = 0;}			
 			 | declaration_list ';'
 			 | unary_expr ';'
 
 
-declaration_list: declaration_list COMMA sub_decl
-					|sub_decl
+declaration_list:  declaration_list COMMA sub_decl
+					| {printf("declaration list statement\n");}  sub_decl
 					;
 
-sub_decl: assignment_expr
-    		|identifier
-    		|array_access
+sub_decl: {printf("sub_dec statement\n");} assignment_expr
+    		|
+			{printf("ind statement\n");} identifier
+    		|
+			{printf("arr statement\n");} array_access
 			;
 
 /* This is because we can have empty expession statements inside for loops */
@@ -395,6 +398,8 @@ sub_expr:
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{
+				printf("Assignment statement\n");
+				printf("%d\n",$1->entry->data_type);
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
@@ -466,13 +471,14 @@ unary_expr: identifier INCREMENT
 				gencode($$->code);
 			};
 
-lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
+lhs: identifier		{ printf("lhs statement\n"); $$ = new content_t(); $$->entry = $1;}
    | array_access	{$$ = new content_t(); $$->code = $1->code;}
 	 ;
 
 identifier: IDENTIFIER {
                     if(is_declaration && !rhs)
                     {	
+						printf("storing variable: %s\n",yylval.lexi);
 						if(current_dtype == INT){
 							size = 4;
 						}else if(current_dtype == LONG_LONG){
@@ -485,6 +491,7 @@ identifier: IDENTIFIER {
 							size = 8;
 						}
 						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
+						printf("%d\n",$1->data_type);
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
                     }
@@ -494,10 +501,12 @@ identifier: IDENTIFIER {
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
                     }
+					$$ = $1;
+					printf("Completed\n");
                 }
     		 ;
 
-assign: ASSIGN 		{rhs=1; $$ = new string(" = ");}
+assign: ASSIGN 		{printf("=\n");rhs=1; $$ = new string(" = ");}
     |PLUSEQ 	{rhs=1; $$ = new string(" += ");}
     |MINUSEQ 	{rhs=1; $$ = new string(" -= ");}
     |MULEQ 	{rhs=1; $$ = new string(" *= ");}
@@ -572,6 +581,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 
     		|constant
 					 {
+						printf("Constant\n");
 						$$ = new content_t();
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
@@ -579,7 +589,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 			| array_access
     		 ;
 
-constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
+constant: INTEGER_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
 
 array_access: IDENTIFIER arr {
                     if(is_declaration && !rhs)
