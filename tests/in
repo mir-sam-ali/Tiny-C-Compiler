@@ -1,7 +1,7 @@
 int  n, d, swap;
 int sam=10;
 char c = 'd';
-
+boolean deep=true;
 
 int i; int j;
 

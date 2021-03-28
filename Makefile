@@ -1,3 +1,5 @@
+test: myparser
+	./myparser tests/in
 myparser: y.tab.c lex.yy.c y.tab.h
 	g++ -std=c++11 -w -Wno-yacc -g y.tab.c -ll -L -ly -o myparser
 lex.yy.c: parser/mylex.l

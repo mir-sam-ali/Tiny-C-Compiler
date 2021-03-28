@@ -182,8 +182,8 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 {OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { printf("INTEGER_LITERAL\n");yylval.entry = insert(constant_table,yytext,atoi(yytext),INT,4); return INTEGER_LITERAL;}
 
 
-"true"															{ return TRUE;}
-"false"                  										{ return FALSE;}
+"true"															{ yylval.entry = insert(constant_table,yytext,1,BOOLEAN,1); return TRUE;}
+"false"                  										{ yylval.entry = insert(constant_table,yytext,1,BOOLEAN,1); return FALSE;}
 
 "printf"					{ return PRINTF;}
 "scanf"						{ return SCANF;}
