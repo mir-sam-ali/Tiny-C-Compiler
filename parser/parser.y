@@ -589,7 +589,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 			| array_access
     		 ;
 
-constant: INTEGER_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
+constant: INTEGER_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1;} | TRUE {$1=new entry_t() ;$1->is_constant=1; $$ = $1;} | FALSE {$1=new entry_t() ;$1->is_constant=1; $$ = $1;}; 			
 
 array_access: IDENTIFIER arr {
                     if(is_declaration && !rhs)
