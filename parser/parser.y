@@ -275,14 +275,14 @@ declaration: {printf("declaration statement\n");} data_type  declaration_list ';
 
 
 declaration_list:  declaration_list COMMA sub_decl
-					| {printf("declaration list statement\n");}  sub_decl
+					| sub_decl
 					;
 
-sub_decl: {printf("sub_dec statement\n");} assignment_expr
+sub_decl:	assignment_expr  {printf("Assignment statement\n");} 
     		|
-			{printf("ind statement\n");} identifier
+			identifier 	{printf("ind statement\n");} 
     		|
-			{printf("arr statement\n");} array_access
+			array_access {printf("arr statement\n");} 
 			;
 
 /* This is because we can have empty expession statements inside for loops */
