@@ -1,4 +1,6 @@
 int array[100], n, d, swap;
+
+/*
 int arr[200][200];
 int i; int j;
 char c = 'd';
@@ -14,3 +16,4 @@ for (int c = 0 ; c < n - 1; c++)
     }
   }
 }
+*/

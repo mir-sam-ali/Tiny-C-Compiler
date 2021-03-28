@@ -114,8 +114,9 @@
 %type <content> stmt
 
 
-%type <instr> M
+
 %type <content> N
+%type <instr> M 
 
 %left COMMA
 %right ASSIGN
@@ -217,24 +218,22 @@ single_stmt: if_block {
 	
 	    ;
 
-for_block: FOR '('{
-						current_scope = create_new_scope();
-						
-				} for_declaration M expression_stmt M expression ')' {
+for_block: FOR '(' {current_scope = create_new_scope();} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
 						current_scope = exit_scope();
 					} N M stmt {is_loop = 0;}
 					{
-				backpatch($5->truelist,$11);
-				backpatch($12->nextlist,$6);
-				backpatch($12->continuelist, $6);
-				backpatch($10->nextlist, $4);
+				backpatch($6->truelist,$12);
+				backpatch($13->nextlist,$7);
+				backpatch($13->continuelist, $7);
+				backpatch($11->nextlist, $5);
 				$$ = new content_t();
-				$$->nextlist = merge($5->falselist,$12->breaklist);
-				gencode(string("goto ") + to_string($6));
+				$$->nextlist = merge($6->falselist,$13->breaklist);
+				gencode(string("goto ") + to_string($7));
 			 }	         
     		 ;
+			 
 
 for_declaration:  declaration  | expression_stmt ;
 
