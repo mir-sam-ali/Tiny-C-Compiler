@@ -203,7 +203,7 @@ entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type
 		hash_table_ptr[idx] = new_entry;
 	}
 
-	printf("in insert! Symbol table :%p, entry: %p, text: %s\n", hash_table_ptr, hash_table_ptr[idx], lexeme);
+	// printf("in insert! Symbol table :%p, entry: %p, text: %s\n", hash_table_ptr, hash_table_ptr[idx], lexeme);
 	// display_symbol_table(hash_table_ptr);
 	return hash_table_ptr[idx];
 }

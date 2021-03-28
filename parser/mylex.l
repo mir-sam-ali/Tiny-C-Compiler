@@ -122,7 +122,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "int"						{ return INT;}
 "long long"					{ return LONG_LONG;}
 "long"						{ return LONG;}
-
+"string"					{return STRING;}
 
 "return"					{ return RETURN;}
 "short"						{ return SHORT;}
@@ -179,7 +179,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 
-{OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { return INTEGER_LITERAL;}
+{OctalIntegerLiteral}|{HexIntegerLiteral}|{DecimalIntegerLiteral} { printf("INTEGER_LITERAL\n");yylval.entry = insert(constant_table,yytext,atoi(yytext),INT,4); return INTEGER_LITERAL;}
 
 
 "true"															{ return TRUE;}
@@ -197,7 +197,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 \"([^\\\"]|{EscapeSequence})*+\"                         		{ return STRING_LITERAL;}
-{CHARACTER_CONSTANT}                          					{ return CHAR_LITERAL;}
+{CHARACTER_CONSTANT}                          					{ yylval.entry = insert(constant_table,yytext,yytext[1],CHAR,1); return CHAR_LITERAL;}
 {C_LETTER}({C_LETTER}|{DIGIT})*   								{ strcpy(yylval.lexi, yytext); return IDENTIFIER;}
 \n|\t                               							{}
 .                                								{}

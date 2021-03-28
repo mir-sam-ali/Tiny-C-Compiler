@@ -68,7 +68,7 @@
 %token INCREMENT DECREMENT
 
  /* Data types */
-%token SHORT INT LONG LONG_LONG SIGNED UNSIGNED CONST CHAR BOOLEAN VOID 
+%token SHORT INT LONG LONG_LONG SIGNED UNSIGNED CONST CHAR BOOLEAN VOID STRING
 
  /* Keywords */
 %token IF FOR WHILE CONTINUE BREAK RETURN CASE DEFAULT DO ELSE SWITCH
@@ -172,7 +172,7 @@ sign_specifier : SIGNED
     		| UNSIGNED
     		;
 
-type_specifier: INT {current_dtype = INT; printf("int statement\n");}                           
+type_specifier: INT {current_dtype = INT;}                           
     |SHORT   {current_dtype = SHORT;}                     
     |LONG     {current_dtype = LONG;}                                      
     |LONG_LONG     {current_dtype = LONG_LONG;}                              
@@ -269,7 +269,7 @@ while_block: WHILE M '(' expression ')' M {is_loop = 1;}  stmt {is_loop = 0;}
 			}
 		;
 
-declaration: {printf("declaration statement\n");} data_type  declaration_list ';' {is_declaration = 0;}			
+declaration: data_type  declaration_list ';' {is_declaration = 0;}			
 			 | declaration_list ';'
 			 | unary_expr ';'
 
@@ -278,11 +278,11 @@ declaration_list:  declaration_list COMMA sub_decl
 					| sub_decl
 					;
 
-sub_decl:	assignment_expr  {printf("Assignment statement\n");} 
+sub_decl:	assignment_expr  
     		|
-			identifier 	{printf("ind statement\n");} 
+			identifier 	
     		|
-			array_access {printf("arr statement\n");} 
+			array_access 
 			;
 
 /* This is because we can have empty expession statements inside for loops */
@@ -398,8 +398,8 @@ sub_expr:
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{
-				printf("Assignment statement\n");
-				printf("%d\n",$1->entry->data_type);
+				printf("%d\t%d\n",$1->entry->data_type,$3->data_type);
+				
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
@@ -471,14 +471,14 @@ unary_expr: identifier INCREMENT
 				gencode($$->code);
 			};
 
-lhs: identifier		{ printf("lhs statement\n"); $$ = new content_t(); $$->entry = $1;}
+lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
    | array_access	{$$ = new content_t(); $$->code = $1->code;}
 	 ;
 
 identifier: IDENTIFIER {
                     if(is_declaration && !rhs)
                     {	
-						printf("storing variable: %s\n",yylval.lexi);
+						
 						if(current_dtype == INT){
 							size = 4;
 						}else if(current_dtype == LONG_LONG){
@@ -491,7 +491,7 @@ identifier: IDENTIFIER {
 							size = 8;
 						}
 						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
-						printf("%d\n",$1->data_type);
+						
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
                     }
@@ -502,11 +502,11 @@ identifier: IDENTIFIER {
 					  		yyerror("Variable not declared");
                     }
 					$$ = $1;
-					printf("Completed\n");
+					
                 }
     		 ;
 
-assign: ASSIGN 		{printf("=\n");rhs=1; $$ = new string(" = ");}
+assign: ASSIGN 		{rhs=1; $$ = new string(" = ");}
     |PLUSEQ 	{rhs=1; $$ = new string(" += ");}
     |MINUSEQ 	{rhs=1; $$ = new string(" -= ");}
     |MULEQ 	{rhs=1; $$ = new string(" *= ");}
@@ -581,7 +581,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 
     		|constant
 					 {
-						printf("Constant\n");
+						
 						$$ = new content_t();
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
@@ -589,7 +589,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 			| array_access
     		 ;
 
-constant: INTEGER_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1=new entry_t() ;$1->is_constant=1; $$ = $1;} | TRUE {$1=new entry_t() ;$1->is_constant=1; $$ = $1;} | FALSE {$1=new entry_t() ;$1->is_constant=1; $$ = $1;}; 			
+constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
 
 array_access: IDENTIFIER arr {
                     if(is_declaration && !rhs)
@@ -616,6 +616,7 @@ array_access: IDENTIFIER arr {
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
                     }
+					//$$=$1;
                 };
 
 arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
@@ -725,7 +726,7 @@ int main(int argc, char *argv[]){
 		symbol_table_list[i].symbol_table = NULL;
 		symbol_table_list[i].parent = -1;
 	}
-
+	constant_table = create_table();
   	symbol_table_list[0].symbol_table = create_table();
 
     yyin = fopen(argv[1],"r"); 
@@ -734,6 +735,9 @@ int main(int argc, char *argv[]){
 	
 	printf("SYMBOL TABLES\n\n");
 	display_all();
+
+	printf("CONSTANT TABLE");
+	display_constant_table(constant_table);
 
 	fclose(yyin);
 	return 0;
