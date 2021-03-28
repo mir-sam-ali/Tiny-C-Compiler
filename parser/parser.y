@@ -219,21 +219,23 @@ single_stmt: if_block {
 	
 	    ;
 
-for_block: FOR '(' {current_scope = create_new_scope();} for_declaration M expression_stmt M expression ')' {
+for_block: FOR '(' 
+					{
+						current_scope = create_new_scope();
+					} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
 						current_scope = exit_scope();
 					} N M stmt {is_loop = 0;}
 					{
-				backpatch($6->truelist,$12);
-				backpatch($13->nextlist,$7);
-				backpatch($13->continuelist, $7);
-				backpatch($11->nextlist, $5);
-				$$ = new content_t();
-				$$->nextlist = merge($6->falselist,$13->breaklist);
-				gencode(string("goto ") + to_string($7));
-			 }	         
-    		 ;
+						backpatch($6->truelist,$12);
+						backpatch($13->nextlist,$7);
+						backpatch($13->continuelist, $7);
+						backpatch($11->nextlist, $5);
+						$$ = new content_t();
+						$$->nextlist = merge($6->falselist,$13->breaklist);
+						gencode(string("goto ") + to_string($7));
+			 		};
 			 
 
 for_declaration:  declaration  | expression_stmt ;
@@ -397,9 +399,7 @@ sub_expr:
 
 assignment_expr :
 	lhs assign arithmetic_expr	
-			{
-				printf("%d\t%d\n",$1->entry->data_type,$3->data_type);
-				
+			{	
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
@@ -605,6 +605,7 @@ array_access: IDENTIFIER arr {
 						}else if(current_dtype == LONG){
 							size *= 8;
 						}
+						printf("%s\n", yylval.lexi);
 						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
@@ -621,10 +622,9 @@ array_access: IDENTIFIER arr {
 
 arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
 
-array_index: INTEGER_LITERAL {$$ = atoi(yytext);};
+array_index: INTEGER_LITERAL {$$ = atoi(yytext);} ;
 
-M: 			{$$ = nextinstr;}
- ;
+M: 			{$$ = nextinstr;} ;
 
 N:			{
 				$$ = new content_t;
@@ -738,7 +738,7 @@ int main(int argc, char *argv[]){
 
 	printf("CONSTANT TABLE");
 	display_constant_table(constant_table);
-
+	displayICG();
 	fclose(yyin);
 	return 0;
 }

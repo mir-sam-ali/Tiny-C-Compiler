@@ -166,9 +166,6 @@ entry_t *search_recursive(char *lexeme)
 
 entry_t *insert(entry_t **hash_table_ptr, char *lexeme, int value, int data_type, int size)
 {
-
-	printf("Inserting...\n");
-
 	entry_t *finder = search(hash_table_ptr, lexeme);
 	if (finder != NULL)
 	{
