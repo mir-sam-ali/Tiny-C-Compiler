@@ -222,7 +222,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 
 	print_dashes(100);
 
-	printf(" %-20s %-20s %-20s\n", "lexeme", "data-type", "size");
+	printf(" %-20s %-20s %-20s %-20s\n", "lexeme", "data-type", "size", "value");
 
 	print_dashes(100);
 
@@ -232,7 +232,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 		traverser = hash_table_ptr[i];
 		while (traverser != NULL)
 		{
-			printf(" %-20s %-20d %-20d ", traverser->lexeme, traverser->data_type, traverser->size);
+			printf(" %-20s %-20d %-20d %-20d", traverser->lexeme, traverser->data_type, traverser->size, traverser->value);
 
 			printf("\n");
 
@@ -250,7 +250,7 @@ void display_constant_table(entry_t **hash_table_ptr)
 
 	print_dashes(25);
 
-	printf(" %-10s %-10s \n", "lexeme", "data-type");
+	printf(" %-10s %-10s %-10s \n", "lexeme", "data-type", "isConstant");
 
 	print_dashes(25);
 
@@ -259,7 +259,7 @@ void display_constant_table(entry_t **hash_table_ptr)
 		traverser = hash_table_ptr[i];
 		while (traverser != NULL)
 		{
-			printf(" %-10s %-10d \n", traverser->lexeme, traverser->data_type);
+			printf(" %-10s %-10d %-10d\n", traverser->lexeme, traverser->data_type, traverser->is_constant);
 			traverser = traverser->successor;
 		}
 	}

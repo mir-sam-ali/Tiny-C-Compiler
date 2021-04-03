@@ -183,7 +183,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 
 
 "true"															{ yylval.entry = insert(constant_table,yytext,1,BOOLEAN,1); return TRUE;}
-"false"                  										{ yylval.entry = insert(constant_table,yytext,1,BOOLEAN,1); return FALSE;}
+"false"                  										{ yylval.entry = insert(constant_table,yytext,0,BOOLEAN,1); return FALSE;}
 
 "printf"					{ return PRINTF;}
 "scanf"						{ return SCANF;}
