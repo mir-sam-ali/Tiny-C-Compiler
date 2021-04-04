@@ -2,6 +2,7 @@
 	#include <bits/stdc++.h>
 	#include "utils/symboltable.h"
 	#include "lex.yy.c"
+	#include <fstream>
 
 	using namespace std;
 
@@ -714,14 +715,34 @@ void type_check(int left, int right, int flag) {
 }
 
 void displayICG() {
-	ofstream outfile("ICG.code");
+	printf("\n==============Intermediate Code==============\n");
+	fstream file;
 
-	for(int i=0; i<ICG.size();i++)
-	outfile << ICG[i] <<endl;
+	file.open("ICG.code", ios::in);
 
-	outfile << nextinstr << ": exit";
+	if (file.is_open()){
+      string tp;
+      while(getline(file, tp)){
+         cout << tp << "\n"; //print the data of the string
+      }
+      file.close();
+   	}
+   	else{
+   		printf("cannot display output file\n");
+   	}
 
-	outfile.close();
+
+	// ofstream outfile("ICG.code");
+
+	// for(int i=0; i<ICG.size();i++) {
+	//	outfile << ICG[i] <<endl;
+	// }
+
+	// outfile << nextinstr << ": exit";
+
+
+	printf("=============================================\n");
+	// outfile.close();
 }
 
 void printlist(vector<int> v) {
