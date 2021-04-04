@@ -1,5 +1,13 @@
 0: i = 0
 1: j = 1
 2: n = 10
-3: i = 0
-4: exit
+3: k = 0
+4: if j < n goto 8
+5: goto 12
+6: k++
+7: goto 4
+8: if i < j goto 10
+9: goto 11
+10: j += 4
+11: goto 6
+12: exit

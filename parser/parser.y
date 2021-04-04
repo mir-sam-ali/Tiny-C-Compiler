@@ -235,6 +235,7 @@ for_block: FOR '('
 						$$ = new content_t();
 						$$->nextlist = merge($6->falselist,$13->breaklist);
 						gencode(string("goto ") + to_string($7));
+						
 			 		};
 			 
 
@@ -310,14 +311,15 @@ expression: expression COMMA sub_expr {
 			;
 
 sub_expr:
-		sub_expr '>' sub_expr	
+		sub_expr GREATERTHAN sub_expr	
 			{
 				type_check($1->data_type,$3->data_type,2);
 				$$ = new content_t();
 				gencode_rel($$, $1, $3, string(" > "));
 			}
-		| sub_expr '<' sub_expr
+		| sub_expr LESSTHAN sub_expr
 			{
+				
 				type_check($1->data_type,$3->data_type,2);
 				$$ = new content_t();
 				gencode_rel($$, $1, $3, string(" < "));
@@ -381,25 +383,31 @@ sub_expr:
 
 		|arithmetic_expr
 			{
+				
 				$$ = new content_t(); 
 				$$->data_type = $1->data_type; 
 				$$->addr = $1->addr;
 			}
     	|assignment_expr
 			{
+				
+
 				$$ = new content_t(); 
 				$$->data_type = $1->data_type;
 			}
 		|unary_expr	
 			{
+				
 				$$ = new content_t(); 
 				$$->data_type = $1->data_type;
 			}
+			
     ;
 
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{	
+				
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
@@ -470,6 +478,7 @@ unary_expr: identifier INCREMENT
 				$$->code = string("++") + string($2->lexeme);
 				gencode($$->code);
 			};
+	
 
 lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
    | array_access	{$$ = new content_t(); $$->code = $1->code;}
@@ -514,7 +523,7 @@ assign: ASSIGN 		{rhs=1; $$ = new string(" = ");}
     |MODEQ 	{rhs=1; $$ = new string(" %= ");}
     ;
 
-arithmetic_expr: arithmetic_expr '+' arithmetic_expr
+arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 					 {
 						type_check($1->data_type,$3->data_type,0);
 						$$ = new content_t();
@@ -522,7 +531,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						gencode_math($$, $1, $3, string(" + "));
 					 }
 
-			| arithmetic_expr '-' arithmetic_expr
+			| arithmetic_expr MINUS arithmetic_expr
 			  		 {
 						type_check($1->data_type,$3->data_type,0);
 						$$ = new content_t();
@@ -530,7 +539,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						gencode_math($$, $1, $3, string(" - "));
 					 }
 
-			| arithmetic_expr '*' arithmetic_expr
+			| arithmetic_expr STAR arithmetic_expr
 					 {
 						type_check($1->data_type,$3->data_type,0);
 						$$ = new content_t();
@@ -538,7 +547,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						gencode_math($$, $1, $3, string(" * "));
 					 }
 
-			| arithmetic_expr '/' arithmetic_expr
+			| arithmetic_expr DIVISION arithmetic_expr
 					 {
 						type_check($1->data_type,$3->data_type,0);
 						$$ = new content_t();
@@ -546,7 +555,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						gencode_math($$, $1, $3, string(" / "));
 					 }
 
-		    | arithmetic_expr '%' arithmetic_expr
+		    | arithmetic_expr MODULO arithmetic_expr
 					 {
 						type_check($1->data_type,$3->data_type,0);
 						$$ = new content_t();
@@ -562,8 +571,9 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						$$->code = $2->code;
 					 }
 
-    		|'-' arithmetic_expr %prec UMINUS	
+    		|MINUS arithmetic_expr %prec UMINUS	
 					 {
+						 
 						$$ = new content_t();
 						$$->data_type = $2->data_type;
 						$$->addr = "t" + to_string(temp_var_number);
@@ -574,6 +584,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 
     	    |identifier
 					 {
+						
 						$$ = new content_t();
 						$$->data_type = $1->data_type;
 	 					$$->addr = $1->lexeme;
@@ -586,7 +597,7 @@ arithmetic_expr: arithmetic_expr '+' arithmetic_expr
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
 					 }
-			| array_access
+			| array_access{printf("array access");}
     		 ;
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
