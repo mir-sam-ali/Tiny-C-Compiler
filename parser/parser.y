@@ -20,6 +20,8 @@
 	int is_func = 0;
 	int func_type;
 
+	int is_array_index=0;
+
 	int param_list[10];
 	int p_idx = 0;
 	int p=0;
@@ -474,7 +476,13 @@ lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
 	 ;
 
 identifier: IDENTIFIER {
-                    if(is_declaration && !rhs)
+					if(is_array_index){
+						$1=search_recursive(yylval.lexi);
+                      	if($1 == NULL) 
+					  		yyerror("Variable not declared");
+						
+					}
+                    else if(is_declaration && !rhs)
                     {	
 						
 						if(current_dtype == INT){
@@ -638,60 +646,61 @@ array_access: identifier arr
 					$1->size*=$2->array_dimension;
 				}
 
-arr: arr '[' array_index ']' {
+arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			$$ = new content_t();
+			if(!$4){
+				exit(0);
+			}
+
 			if(is_declaration)
 			{
-						if($3->value <= 0)
+						if($4->value <= 0)
 							yyerror("size of array is not positive");
-						else if($3->is_constant){
-							$$->array_dimension = $1->array_dimension * $3->value;
+						else if($4->is_constant){
+							$$->array_dimension = $1->array_dimension * $4->value;
 						}
 			}
-			else if($3->is_constant)
+			else if($4->is_constant)
 			{
-				if($3->value > $1->array_dimension)
+				if($4->value > $1->array_dimension)
 					yyerror("Array index out of bound");
-				if($3->value < 0)
+				if($4->value < 0)
 					yyerror("Array index cannot be negative");
 			}
 
 			
-			if($3->is_constant)
-				$$->code = string($1->code) + string("[") + to_string($3->value) + string("]");
+			if($4->is_constant)
+				$$->code = string($1->code) + string("[") + to_string($4->value) + string("]");
 			else
-				$$->code = string($1->code) + string("[") + string($3->lexeme) + string("]");
+				$$->code = string($1->code) + string("[") + string($4->lexeme) + string("]");
 		}
 		| 
-		'[' array_index ']' {
+		'[' {is_array_index=1;} array_index {is_array_index=0;} ']' {
 			
 			$$ = new content_t();
 
-			// if(!$2->is_constant){
-			// 	entry_t* temp = search_recursive($2->lexeme);
-			// 	if(!temp){
-			// 		yyerror("Variable Not Declared");
-			// 	}
-			// }
+			if(!$3){
+				exit(0);
+			}
 
 			if(is_declaration)
 					{
-						if($2->value <= 0)
+						if($3->value <= 0)
 							yyerror("size of array is not positive");
-						else if($2->is_constant)
-							$$->array_dimension = $2->value;
+						else if($3->is_constant)
+							$$->array_dimension = $3->value;
 			}
-			else if($2->is_constant)
+			else if($3->is_constant)
 			{
-				if($2->value < 0)
+				if($3->value < 0)
 					yyerror("Array index cannot be negative");
 			}
 			
 			
-			if($2->is_constant)
-				$$->code = string("[") + to_string($2->value) + string("]");
+			if($3->is_constant)
+				$$->code = string("[") + to_string($3->value) + string("]");
 			else
-				$$->code = string("[") + string($2->lexeme) + string("]");
+				$$->code = string("[") + string($3->lexeme) + string("]");
 		};
 
 array_index: constant		{$$ = $1;}
