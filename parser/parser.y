@@ -731,18 +731,7 @@ void displayICG() {
    		printf("cannot display output file\n");
    	}
 
-
-	// ofstream outfile("ICG.code");
-
-	// for(int i=0; i<ICG.size();i++) {
-	//	outfile << ICG[i] <<endl;
-	// }
-
-	// outfile << nextinstr << ": exit";
-
-
 	printf("=============================================\n");
-	// outfile.close();
 }
 
 void printlist(vector<int> v) {
