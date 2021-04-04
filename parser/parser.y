@@ -50,7 +50,7 @@
 	content_t* content;
 	string* op;
 	int sz;
-	char lexi[20];
+	char lexi[32];
 	vector<int>* nextlist;
 	int instr;
 }
@@ -86,16 +86,9 @@
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
-
 %type <entry> constant
-%type <sz> array_index
 %type <op> assign;
-
-
-
-//%type <entry> array_index
-
-
+%type <entry> array_index
 %type <content> for_declaration
 %type <content> lhs
 %type <content> sub_expr
@@ -105,19 +98,15 @@
 %type <content> arithmetic_expr
 %type <content> assignment_expr
 %type <content> array_access
-
 %type <content> if_block
 %type <content> for_block
 %type <content> while_block
 %type <content> compound_stmt
-
 %type <content> statements
 %type <content> single_stmt
 %type <content> stmt
-
-
-
 %type <content> N
+%type <content> arr
 %type <instr> M 
 
 %left COMMA
@@ -603,6 +592,7 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
 
+/*
 array_access: IDENTIFIER arr {
                     if(is_declaration && !rhs)
                     {	size = arr_size;
@@ -635,6 +625,64 @@ array_access: IDENTIFIER arr {
 arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
 
 array_index: INTEGER_LITERAL {$$ = atoi(yytext);} ;
+*/
+
+array_access: identifier arr					
+				{	
+					$$ = new content_t();
+					$$->data_type = $1->data_type;
+					
+					$$->code = $2->code;
+					$$->entry = $1;
+				}
+
+arr: arr '[' array_index ']' {
+			if(is_declaration)
+			{
+						if($3->value <= 0)
+							yyerror("size of array is not positive");
+						else if($3->is_constant)
+							$1->array_dimension = $3->value;
+			}
+			else if($3->is_constant)
+			{
+				if($3->value > $1->array_dimension)
+					yyerror("Array index out of bound");
+				if($3->value < 0)
+					yyerror("Array index cannot be negative");
+			}
+
+			$$ = new content_t();
+			if($3->is_constant)
+				$$->code = string($1->code) + string("[") + to_string($3->value) + string("]");
+			else
+				$$->code = string($1->code) + string("[") + string($3->lexeme) + string("]");
+		}
+		| 
+		'[' array_index ']' {
+			if(is_declaration)
+					{
+						if($2->value <= 0)
+							yyerror("size of array is not positive");
+						else if($2->is_constant)
+							$$->array_dimension = $2->value;
+			}
+			else if($2->is_constant)
+			{
+				if($2->value < 0)
+					yyerror("Array index cannot be negative");
+			}
+
+			$$ = new content_t();
+			if($2->is_constant)
+				$$->code = string("[") + to_string($2->value) + string("]");
+			else
+				$$->code = string("[") + string($2->lexeme) + string("]");
+		};
+
+array_index: constant		{$$ = $1;}
+		   | identifier		{$$ = $1;}
+					 ;
 
 M: 			{$$ = nextinstr;} ;
 

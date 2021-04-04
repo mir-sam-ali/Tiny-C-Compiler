@@ -111,31 +111,20 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "continue"					{ return CONTINUE;}							
 "default"					{ return DEFAULT;}	
 "do"						{ return DO;}
-
 "else"						{ return ELSE;}
-
-
 "for"						{ return FOR;}
-
 "if"						{ return IF;}
-
 "int"						{ return INT;}
 "long long"					{ return LONG_LONG;}
 "long"						{ return LONG;}
-"string"					{return STRING;}
-
+"string"					{ return STRING;}
 "return"					{ return RETURN;}
 "short"						{ return SHORT;}
 "signed"					{ return SIGNED;}
 "boolean"					{ return BOOLEAN;}
-
-
 "switch"					{ return SWITCH;}
-
-
 "unsigned"					{ return UNSIGNED;}
 "void"						{ return VOID;}
-
 "while"						{ return WHILE;}
 
 
