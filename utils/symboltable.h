@@ -35,7 +35,7 @@ struct content_t
 	vector<int> continuelist;
 	string addr;
 	string code;
-
+	int array_dimension;
 	entry_t *entry;
 	int data_type;
 };
