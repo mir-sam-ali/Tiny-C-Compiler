@@ -493,6 +493,8 @@ identifier: IDENTIFIER {
 						
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
+						
+						
                     }
                     else
                     {	
@@ -590,7 +592,7 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 			| array_access{printf("array access");}
     		 ;
 
-constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1; } | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
+constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
 
 /*
 array_access: IDENTIFIER arr {
@@ -634,15 +636,18 @@ array_access: identifier arr
 					
 					$$->code = $2->code;
 					$$->entry = $1;
+					$1->size*=$2->array_dimension;
 				}
 
 arr: arr '[' array_index ']' {
+			$$ = new content_t();
 			if(is_declaration)
 			{
 						if($3->value <= 0)
 							yyerror("size of array is not positive");
-						else if($3->is_constant)
-							$1->array_dimension = $3->value;
+						else if($3->is_constant){
+							$$->array_dimension = $1->array_dimension * $3->value;
+						}
 			}
 			else if($3->is_constant)
 			{
@@ -652,7 +657,7 @@ arr: arr '[' array_index ']' {
 					yyerror("Array index cannot be negative");
 			}
 
-			$$ = new content_t();
+			
 			if($3->is_constant)
 				$$->code = string($1->code) + string("[") + to_string($3->value) + string("]");
 			else
@@ -660,6 +665,16 @@ arr: arr '[' array_index ']' {
 		}
 		| 
 		'[' array_index ']' {
+			
+			$$ = new content_t();
+
+			// if(!$2->is_constant){
+			// 	entry_t* temp = search_recursive($2->lexeme);
+			// 	if(!temp){
+			// 		yyerror("Variable Not Declared");
+			// 	}
+			// }
+
 			if(is_declaration)
 					{
 						if($2->value <= 0)
@@ -672,8 +687,8 @@ arr: arr '[' array_index ']' {
 				if($2->value < 0)
 					yyerror("Array index cannot be negative");
 			}
-
-			$$ = new content_t();
+			
+			
 			if($2->is_constant)
 				$$->code = string("[") + to_string($2->value) + string("]");
 			else
