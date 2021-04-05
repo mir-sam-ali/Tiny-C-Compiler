@@ -190,7 +190,7 @@ single_stmt: if_block {
 							$$ = $1;
 							backpatch($$->nextlist, nextinstr);
 						 }
-	    	|declaration {$$ = new content_t(); {printf("single stmt Completed\n");}}		
+	    	|declaration {$$ = new content_t(); }		
 	    	
 			|CONTINUE ';' {
 								if(!is_loop)
@@ -269,14 +269,14 @@ declaration: data_type  declaration_list ';' {is_declaration = 0;}
 
 
 declaration_list:  declaration_list COMMA sub_decl
-					| sub_decl {printf("Sub Dec Completed\n");}
+					| sub_decl 
 					;
 
 sub_decl:	assignment_expr  
     		|
 			identifier 	
     		|
-			array_access {printf("Array Access Completed\n");}
+			array_access
 			;
 
 /* This is because we can have empty expession statements inside for loops */
@@ -398,11 +398,10 @@ sub_expr:
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{	
-				printf("Assign\n");
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
-		 		$$->code = $1->entry->lexeme + *$2 + $3->addr;
+		 		$$->code = $1->code + *$2 + $3->addr;
 				gencode($$->code);
 		 		rhs = 0;
 			}
@@ -412,7 +411,7 @@ assignment_expr :
 				type_check($1->entry->data_type,$3->data_type,1);
 	 			$$ = new content_t();
 				$$->data_type = $3->data_type;
-	 			$$->code = $1->entry->lexeme + *$2 + $3->code;
+	 			$$->code = $1->code + *$2 + $3->code;
 				gencode($$->code);
 	 			rhs = 0;
 			}
@@ -422,7 +421,7 @@ assignment_expr :
 				type_check($1->entry->data_type,$3->data_type,1);
 			 	$$ = new content_t();
 				$$->data_type = $3->data_type;
-			 	$$->code = $1->entry->lexeme + *$2 + $3->code;
+			 	$$->code = $1->code + *$2 + $3->code;
 				gencode($$->code);
 			 	rhs = 0;
 			}
@@ -472,8 +471,8 @@ unary_expr: identifier INCREMENT
 	
 	
 
-lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
-   | array_access	{ printf("Here");$$ = new content_t(); $$=$1;}
+lhs: identifier		{$$ = new content_t(); $$->entry = $1; $$->code = string($1->lexeme);}
+   | array_access	{ $$ = new content_t(); $$=$1;}
 	 ;
 
 identifier: IDENTIFIER {
@@ -597,7 +596,7 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
 					 }
-			| array_access{printf("array access");}
+			| array_access
     		 ;
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
@@ -641,12 +640,11 @@ array_access: identifier arr
 				{	
 					$$ = new content_t();
 					$$->data_type = $1->data_type;
-					
 					$$->code = string($1->lexeme)+$2->code;
 					$$->entry = $1;
-					$1->size*=$2->array_dimension;
-					cout<<$1->size<<endl;
-					cout<<$$->code<<endl;
+					if(is_declaration){
+						$1->size*=$2->array_dimension;
+					}
 				}
 
 arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
