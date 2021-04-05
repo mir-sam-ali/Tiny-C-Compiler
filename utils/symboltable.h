@@ -148,11 +148,13 @@ entry_t *search(entry_t **hash_table_ptr, char *lexeme)
 
 entry_t *search_recursive(char *lexeme)
 {
+
 	int idx = current_scope;
 	entry_t *finder = NULL;
 
 	while (idx != -1)
 	{
+		//printf("%d\n", idx);
 		finder = search(symbol_table_list[idx].symbol_table, lexeme);
 
 		if (finder != NULL)

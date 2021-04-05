@@ -216,7 +216,7 @@ for_block: FOR '('
 					} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
-						current_scope = exit_scope();
+						
 					} N M stmt {is_loop = 0;}
 					{
 						backpatch($6->truelist,$12);
@@ -226,6 +226,7 @@ for_block: FOR '('
 						$$ = new content_t();
 						$$->nextlist = merge($6->falselist,$13->breaklist);
 						gencode(string("goto ") + to_string($7));
+						current_scope = exit_scope();
 						
 			 		};
 			 
@@ -477,6 +478,8 @@ lhs: identifier		{$$ = new content_t(); $$->entry = $1; $$->code = string($1->le
 
 identifier: IDENTIFIER {
 					if(is_array_index){
+						// printf("%s\n",yylval.lexi);
+						// display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
