@@ -1,2 +1,4 @@
-int x=1;
-int hell[x];
+int sam[10];
+sam[0]=1;
+
+

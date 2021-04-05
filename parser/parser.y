@@ -653,7 +653,12 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			}
 
 			if(is_declaration)
-			{
+			{			
+						if(!$4->is_constant){
+							yyerror("Size of Array should be an Integer Literal.");
+							exit(0);
+						}
+						
 						if($4->value <= 0)
 							yyerror("size of array is not positive");
 						else if($4->is_constant){
@@ -685,6 +690,10 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 
 			if(is_declaration)
 					{
+						if(!$3->is_constant){
+							yyerror("Size of Array should be an Integer Literal.");
+							exit(0);
+						}
 						if($3->value <= 0)
 							yyerror("size of array is not positive");
 						else if($3->is_constant)
