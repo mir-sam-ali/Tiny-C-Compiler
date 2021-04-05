@@ -190,7 +190,7 @@ single_stmt: if_block {
 							$$ = $1;
 							backpatch($$->nextlist, nextinstr);
 						 }
-	    	|declaration {$$ = new content_t();}		
+	    	|declaration {$$ = new content_t(); {printf("single stmt Completed\n");}}		
 	    	
 			|CONTINUE ';' {
 								if(!is_loop)
@@ -269,14 +269,14 @@ declaration: data_type  declaration_list ';' {is_declaration = 0;}
 
 
 declaration_list:  declaration_list COMMA sub_decl
-					| sub_decl
+					| sub_decl {printf("Sub Dec Completed\n");}
 					;
 
 sub_decl:	assignment_expr  
     		|
 			identifier 	
     		|
-			array_access 
+			array_access {printf("Array Access Completed\n");}
 			;
 
 /* This is because we can have empty expession statements inside for loops */
@@ -398,7 +398,7 @@ sub_expr:
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{	
-				
+				printf("Assign\n");
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
@@ -470,9 +470,10 @@ unary_expr: identifier INCREMENT
 				gencode($$->code);
 			};
 	
+	
 
 lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
-   | array_access	{$$ = new content_t(); $$->code = $1->code;}
+   | array_access	{ printf("Here");$$ = new content_t(); $$=$1;}
 	 ;
 
 identifier: IDENTIFIER {
@@ -641,9 +642,11 @@ array_access: identifier arr
 					$$ = new content_t();
 					$$->data_type = $1->data_type;
 					
-					$$->code = $2->code;
+					$$->code = string($1->lexeme)+$2->code;
 					$$->entry = $1;
 					$1->size*=$2->array_dimension;
+					cout<<$1->size<<endl;
+					cout<<$$->code<<endl;
 				}
 
 arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
