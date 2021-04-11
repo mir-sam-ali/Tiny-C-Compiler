@@ -599,7 +599,12 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
 					 }
-			| array_access
+			| array_access{
+					
+					$$ = new content_t();
+					$$ = $1;
+					$$->addr=$1->code;
+			}
     		 ;
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
@@ -648,6 +653,8 @@ array_access: identifier arr
 					if(is_declaration){
 						$1->size*=$2->array_dimension;
 					}
+
+					
 				}
 
 arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {

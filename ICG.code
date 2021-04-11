@@ -19,7 +19,7 @@
 18: goto 14
 19: t2 = j + 1
 20: k = t2
-21: if  >  goto 23
+21: if arr[j] > arr[k] goto 23
 22: goto 26
 23: temp = arr[j]
 24: arr[j] = arr[k]
