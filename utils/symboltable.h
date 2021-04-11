@@ -155,7 +155,12 @@ entry_t *search_recursive(char *lexeme)
 	while (idx != -1)
 	{
 		//printf("%d\n", idx);
-		finder = search(symbol_table_list[idx].symbol_table, lexeme);
+		char id = idx + '0';
+		char* temp_lex;
+		temp_lex = (char*)malloc(strlen(lexeme)*sizeof(char));
+		strcpy(temp_lex, lexeme);
+		strcat(temp_lex, &id);
+		finder = search(symbol_table_list[idx].symbol_table, temp_lex);
 
 		if (finder != NULL)
 			return finder;

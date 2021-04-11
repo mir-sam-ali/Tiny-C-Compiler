@@ -1,6 +1,7 @@
 %{
 	#include <bits/stdc++.h>
 	#include "utils/symboltable.h"
+	#include <string.h>
 	#include "lex.yy.c"
 
 	using namespace std;
@@ -478,8 +479,6 @@ lhs: identifier		{$$ = new content_t(); $$->entry = $1; $$->code = string($1->le
 
 identifier: IDENTIFIER {
 					if(is_array_index){
-						// printf("%s\n",yylval.lexi);
-						// display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
@@ -499,15 +498,18 @@ identifier: IDENTIFIER {
 						}else if(current_dtype == LONG){
 							size = 8;
 						}
+						char temp = current_scope+'0';
+						strcat(yylval.lexi, &temp);
+
 						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
 						
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
 						
-						
                     }
                     else
                     {	
+						
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
@@ -608,41 +610,6 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
     		 ;
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
-
-/*
-array_access: IDENTIFIER arr {
-                    if(is_declaration && !rhs)
-                    {	size = arr_size;
-						if(current_dtype == INT){
-							size *= 4;
-						}else if(current_dtype == LONG_LONG){
-							size *= 8;
-						}else if(current_dtype == CHAR){
-							size *= 1;
-						}else if(current_dtype == SHORT){
-							size *= 1;
-						}else if(current_dtype == LONG){
-							size *= 8;
-						}
-						printf("%s\n", yylval.lexi);
-						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
-						if($1 == NULL) 
-							yyerror("Redeclaration of variable");
-						arr_size = 1;
-                    }
-                    else
-                    {	
-						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
-					  		yyerror("Variable not declared");
-                    }
-					//$$=$1;
-                };
-
-arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
-
-array_index: INTEGER_LITERAL {$$ = atoi(yytext);} ;
-*/
 
 array_access: identifier arr					
 				{	
@@ -815,6 +782,10 @@ void displayICG() {
 
 	outfile.close();
 }
+
+// void displayVars() {
+// 	ofstream outfile("")
+// }
 
 void printlist(vector<int> v) {
 	for(auto it:v)
