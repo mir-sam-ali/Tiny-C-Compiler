@@ -783,10 +783,6 @@ void displayICG() {
 	outfile.close();
 }
 
-// void displayVars() {
-// 	ofstream outfile("")
-// }
-
 void printlist(vector<int> v) {
 	for(auto it:v)
 		cout<<it<<" ";

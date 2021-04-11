@@ -222,7 +222,7 @@ void print_dashes(int n)
 	printf("\n");
 }
 
-void display_symbol_table(entry_t **hash_table_ptr)
+void display_symbol_table(entry_t **hash_table_ptr, std::ofstream& file)
 {
 	int i;
 	entry_t *traverser;
@@ -240,7 +240,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 		while (traverser != NULL)
 		{
 			printf(" %-20s %-20d %-20d %-20d", traverser->lexeme, traverser->data_type, traverser->size, traverser->value);
-
+			file << traverser->lexeme << " " << traverser->data_type << " " << traverser->size << endl;
 			printf("\n");
 
 			traverser = traverser->successor;
@@ -277,13 +277,16 @@ void display_constant_table(entry_t **hash_table_ptr)
 void display_all()
 {
 	int i;
+	ofstream outfile("ICG.vars");
+
 	for (i = 0; i <= table_index; i++)
 	{
 		printf("Scope: %d\n", i);
-		display_symbol_table(symbol_table_list[i].symbol_table);
+		display_symbol_table(symbol_table_list[i].symbol_table, outfile);
 		printf("\n\n");
 	}
 
 	// display_symbol_table(symbol_table_list[0].symbol_table);
 	// display_symbol_table(symbol_table_list[1].symbol_table);
 }
+
