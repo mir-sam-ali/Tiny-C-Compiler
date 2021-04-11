@@ -509,7 +509,6 @@ identifier: IDENTIFIER {
                     }
                     else
                     {	
-						
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
@@ -630,7 +629,7 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 				exit(0);
 			}
 
-			if(is_declaration)
+			if(is_declaration && !rhs)
 			{			
 						if(!$4->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");
@@ -666,7 +665,7 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 				exit(0);
 			}
 
-			if(is_declaration)
+			if(is_declaration && !rhs)
 					{
 						if(!$3->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");

@@ -7,4 +7,4 @@ lex.yy.c: parser/mylex.l
 y.tab.c: parser/parser.y
 	yacc -d parser/parser.y -v
 clean:
-	rm -f myparser y.tab.c lex.yy.c y.tab.h y.output y.dot
+	rm -f myparser y.tab.c lex.yy.c y.tab.h y.output y.dot ICG.code ICG.vars
