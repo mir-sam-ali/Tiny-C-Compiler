@@ -1,13 +1,31 @@
 0: i = 0
-1: j = 1
-2: n = 10
-3: k = 0
-4: if j < n goto 8
-5: goto 12
-6: k++
-7: goto 4
-8: if i < j goto 10
-9: goto 11
-10: j += 4
-11: goto 6
-12: exit
+1: if i < 5 goto 5
+2: goto 8
+3: i = i + 1
+4: goto 1
+5: t0 = 5 - i
+6: arr[i] = t0
+7: goto 3
+8: i = 0
+9: if i < 4 goto 13
+10: goto 28
+11: i = i + 1
+12: goto 9
+13: j = 1
+14: t1 = 5 - i
+15: if j < t1 goto 19
+16: goto 27
+17: j = j + 1 
+18: goto 14
+19: t2 = j + 1
+20: k = t2
+21: t1 = arr[j]
+22: t2 = arr[k]
+23: if t1 > t2 goto 23
+24: goto 26
+25: temp = arr[j]
+26: arr[j] = arr[k]
+27: arr[k] = temp
+28: goto 17
+29: goto 11
+30: exit

@@ -1,4 +1,5 @@
-i
-j
-n
-k
+i int 1
+arr int 5
+j int 1
+k int 1
+temp int 1
