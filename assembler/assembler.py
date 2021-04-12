@@ -180,6 +180,20 @@ class Assembler:
         
         return res
 
+    def assemble(self):
+        res = ""
+        for line in self.temp:
+            instruction = line.split(" ")
+            if instruction[1] == "if":
+                res += self.process_if_stmt(instruction)
+            elif instruction[1] == "goto":
+                res += f"{instruction[0]} j {instruction[2]}"
+            elif instruction[1] == "exit":
+                res += f"{instruction[0]} jr $ra"
+            else:
+                res += self.process_assignments(instruction)
+        return res
+
 
     def process_instructions(self):
         # converting
@@ -191,7 +205,7 @@ class Assembler:
             # text part
             f.write("\n.text\n")
             f.write("main:\n")
-            # f.write(self.assemble())
+            f.write(self.assemble())
         
             f.close()
 
