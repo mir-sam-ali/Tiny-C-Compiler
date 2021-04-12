@@ -13,10 +13,10 @@ L0:
 	li $t5, 0
 	sw $t5, 0($s4)
 L1:
-	la $t4, i1
-	lw $t4, 0($t4)
-	li $t5, 5
-	slt $t6, $t4, $t5
+	la $t5, i1
+	lw $t5, 0($t5)
+	li $t6, 5
+	slt $t6, $t5, $t6
 	bne $t6, $zero, L6
 L2: j L9
 L3:
@@ -49,12 +49,12 @@ L9:
 	li $t5, 0
 	sw $t5, 0($s4)
 L10:
-	la $t4, i3
-	lw $t4, 0($t4)
-	li $t5, 4
-	slt $t6, $t4, $t5
+	la $t5, i3
+	lw $t5, 0($t5)
+	li $t6, 4
+	slt $t6, $t5, $t6
 	bne $t6, $zero, L15
-L11: j L33
+L11: j L31
 L12:
 	la $t5, i3
 	lw $t5, 0($t5)
@@ -67,7 +67,7 @@ L13:
 L14: j L10
 L15:
 	la $s4, j5
-	li $t5, 1
+	li $t5, 0
 	sw $t5, 0($s4)
 L16:
 	li $t5, 5
@@ -76,11 +76,11 @@ L16:
 	sub $t6, $t5, $t6
 	addi $t3, $t6, 0
 L17:
-	la $t4, j5
-	lw $t4, 0($t4)
-	slt $t6, $t4, $t3
+	la $t5, j5
+	lw $t5, 0($t5)
+	slt $t6, $t5, $t3
 	bne $t6, $zero, L22
-L18: j L32
+L18: j L30
 L19:
 	la $t5, j5
 	lw $t5, 0($t5)
@@ -108,21 +108,17 @@ L24:
 	la $t5, arr0
 	add $t5, $t5, $t4
 	lw $t5, 0($t5)
-	addi $t0, $t5, 0
-L25:
-	la $t4, k6
-	lw $t4, 0($t4)
-	li $t5, 4
-	mul $t4, $t4, $t5
-	la $t5, arr0
-	add $t5, $t5, $t4
-	lw $t5, 0($t5)
-	addi $t1, $t5, 0
+	la $t6, k6
+	lw $t6, 0($t6)
+	li $t4, 4
+	mul $t4, $t4, $t6
+	la $t6, arr0
+	add $t6, $t6, $t4
+	lw $t6, 0($t6)
+	slt $t6, $t6, $t5
+	bne $t6, $zero, L26
+L25: j L29
 L26:
-	slt $t6, $t1, $t0
-	bne $t6, $zero, L28
-L27: j L31
-L28:
 	la $s4, temp7
 	la $t4, j5
 	lw $t4, 0($t4)
@@ -132,7 +128,7 @@ L28:
 	add $t5, $t5, $t4
 	lw $t5, 0($t5)
 	sw $t5, 0($s4)
-L29:
+L27:
 	la $t4, j5
 	lw $t4, 0($t4)
 	li $t5, 4
@@ -147,7 +143,7 @@ L29:
 	add $t5, $t5, $t4
 	lw $t5, 0($t5)
 	sw $t5, 0($s4)
-L30:
+L28:
 	la $t4, k6
 	lw $t4, 0($t4)
 	li $t5, 4
@@ -157,6 +153,6 @@ L30:
 	la $t5, temp7
 	lw $t5, 0($t5)
 	sw $t5, 0($s4)
-L31: j L19
-L32: j L12
-L33: jr $ra
+L29: j L19
+L30: j L12
+L31: jr $ra

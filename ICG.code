@@ -9,26 +9,24 @@
 8: goto 3
 9: i3 = 0
 10: if i3 < 4 goto 15
-11: goto 33
+11: goto 31
 12: t2 = i3 + 1
 13: i3 = t2
 14: goto 10
 15: j5 = 0
 16: t3 = 5 - i3
 17: if j5 < t3 goto 22
-18: goto 32
+18: goto 30
 19: t4 = j5 + 1
 20: j5 = t4
 21: goto 16
 22: t5 = j5 + 1
 23: k6 = t5
-24: t0 = arr0[j5]
-25: t1 = arr0[k6]
-26: if t0 > t1 goto 28
-27: goto 31
-28: temp7 = arr0[j5]
-29: arr0[j5] = arr0[k6]
-30: arr0[k6] = temp7
-31: goto 19
-32: goto 12
-33: exit
+24: if arr0[j5] > arr0[k6] goto 26
+25: goto 29
+26: temp7 = arr0[j5]
+27: arr0[j5] = arr0[k6]
+28: arr0[k6] = temp7
+29: goto 19
+30: goto 12
+31: exit

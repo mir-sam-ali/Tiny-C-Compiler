@@ -37,28 +37,71 @@ class Assembler:
     def process_if_stmt(self, instruction):
         res = f"L{instruction[0]}\n"
 
-        # store constants in registyers
+        instruction[2] = instruction[2].split("[")
+        if len(instruction[2]) == 1:
+            instruction[2] = instruction[2][0]
+            if instruction[2][-1] == "\n":
+                instruction[2] = instruction[2][:-1]
+        else:
+            instruction[2][1] = instruction[2][1][:-1]
+
         try:
             instruction[2] = int(instruction[2])
-            res += f"\tli $t4, {instruction[2]}\n"
-            instruction[2] = "$t4"
+            res += f"\tli $t5, {instruction[2]}\n"
+            instruction[2] = "$t5"
         except:
-            if instruction[2] in self.variables.keys():
-                res += f"\tla $t4, {instruction[2]}\n"
-                res += f"\tlw $t4, 0($t4)\n"
-                instruction[2] = "$t4"
+            if type(instruction[2]) != list and instruction[2] in self.variables.keys():
+                res += f"\tla $t5, {instruction[2]}\n"
+                res += f"\tlw $t5, 0($t5)\n"
+                instruction[2] = "$t5"
+            elif type(instruction[2]) == list:
+                try:
+                    instruction[2][1] = int(instruction[2][1])
+                    res += f"\tli $t4, {instruction[2][1]}\n"
+                except:
+                    res += f"\tla $t4, {instruction[2][1]}\n"
+                    res += f"\tlw $t4, 0($t4)\n"
+                
+                res += f'\tli $t5, 4\n'
+                res += f"\tmul $t4, $t4, $t5\n"
+                res += f"\tla $t5, {instruction[2][0]}\n"
+                res += f"\tadd $t5, $t5, $t4\n"
+                res += f"\tlw $t5, 0($t5)\n"
+                instruction[2] = "$t5"
             else:
                 instruction[2] = f"${instruction[2]}"
 
+        instruction[4] = instruction[4].split("[")
+        if len(instruction[4]) == 1:
+            instruction[4] = instruction[4][0]
+            if instruction[4][-1] == "\n":
+                instruction[4] = instruction[4][:-1]
+        else:
+            instruction[4][1] = instruction[4][1][:-1]
+
         try:
             instruction[4] = int(instruction[4])
-            res += f"\tli $t5, {instruction[4]}\n"
-            instruction[4] = "$t5"
+            res += f"\tli $t6, {instruction[4]}\n"
+            instruction[4] = "$t6"
         except:
-            if instruction[4] in self.variables.keys():
-                res += f"\tla $t5, {instruction[4]}\n"
-                res += f"\tlw $t5, 0($t5)\n"
-                instruction[4] = "$t5"
+            if type(instruction[4]) != list and instruction[4] in self.variables.keys():
+                res += f"\tla $t6, {instruction[4]}\n"
+                res += f"\tlw $t6, 0($t6)\n"
+                instruction[4] = "$t6"
+            elif type(instruction[4]) == list:
+                try:
+                    instruction[4][1] = int(instruction[4][1])
+                    res += f"\tli $t6, {instruction[4][1]}\n"
+                except:
+                    res += f"\tla $t6, {instruction[4][1]}\n"
+                    res += f"\tlw $t6, 0($t6)\n"
+                
+                res += f'\tli $t4, 4\n'
+                res += f"\tmul $t4, $t4, $t6\n"
+                res += f"\tla $t6, {instruction[4][0]}\n"
+                res += f"\tadd $t6, $t6, $t4\n"
+                res += f"\tlw $t6, 0($t6)\n"
+                instruction[4] = "$t6"
             else:
                 instruction[4] = f"${instruction[4]}"
 
