@@ -3,7 +3,7 @@ arr: .word 1 2 3 4 5
 
 .text
 main:
-la $t1 arr
+la $t1, arr
 
 lw $t2, 4($t1)
 
