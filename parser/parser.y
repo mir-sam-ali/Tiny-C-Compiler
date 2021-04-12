@@ -469,7 +469,31 @@ unary_expr: identifier INCREMENT
 				$$->data_type = $2->data_type;
 				$$->code = string("++") + string($2->lexeme);
 				gencode($$->code);
-			};
+			}
+	| array_access INCREMENT{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = $1->code+string("++");
+				gencode($$->code);
+	}
+	| array_access DECREMENT{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = $1->code+string("--");
+				gencode($$->code);
+	}
+	| INCREMENT array_access{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = $2->code+string("++");
+				gencode($$->code);
+	}
+	| DECREMENT array_access{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = $2->code+string("--");
+				gencode($$->code);
+	};
 	
 	
 
@@ -632,7 +656,7 @@ array_access: identifier arr
 					$$->data_type = $1->data_type;
 					$$->code = string($1->lexeme)+$2->code;
 					$$->entry = $1;
-					if(is_declaration){
+					if(is_declaration && !rhs){
 						$1->size*=$2->array_dimension;
 					}
 
