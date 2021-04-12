@@ -156,10 +156,11 @@ entry_t *search_recursive(char *lexeme)
 	{
 		//printf("%d\n", idx);
 		char id = idx + '0';
-		char* temp_lex;
-		temp_lex = (char*)malloc(strlen(lexeme)*sizeof(char));
+		char *temp_lex;
+		temp_lex = (char *)calloc(strlen(lexeme), sizeof(char));
 		strcpy(temp_lex, lexeme);
 		strcat(temp_lex, &id);
+		//printf("%s\n", temp_lex);
 		finder = search(symbol_table_list[idx].symbol_table, temp_lex);
 
 		if (finder != NULL)
@@ -222,7 +223,7 @@ void print_dashes(int n)
 	printf("\n");
 }
 
-void display_symbol_table(entry_t **hash_table_ptr, std::ofstream& file)
+void display_symbol_table(entry_t **hash_table_ptr, std::ofstream &file)
 {
 	int i;
 	entry_t *traverser;
@@ -289,4 +290,3 @@ void display_all()
 	// display_symbol_table(symbol_table_list[0].symbol_table);
 	// display_symbol_table(symbol_table_list[1].symbol_table);
 }
-

@@ -479,6 +479,7 @@ lhs: identifier		{$$ = new content_t(); $$->entry = $1; $$->code = string($1->le
 
 identifier: IDENTIFIER {
 					if(is_array_index){
+						// display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
@@ -498,10 +499,24 @@ identifier: IDENTIFIER {
 						}else if(current_dtype == LONG){
 							size = 8;
 						}
+						string temp_lex;
+						temp_lex.assign(yylval.lexi);
+						// cout<<temp_lex<<endl;
 						char temp = current_scope+'0';
-						strcat(yylval.lexi, &temp);
+						temp_lex+=temp;
+						// cout<<temp_lex<<endl;
+						// strcat(yylval.lexi, &temp);
 
-						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
+						int n = temp_lex.length();
+					
+						// declaring character array
+						char char_array[n + 1];
+					
+						// copying the contents of the
+						// string to char array
+						strcpy(char_array, temp_lex.c_str());
+
+						$1=insert(SYMBOL_TABLE,char_array,INT_MAX,current_dtype, size);
 						
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
@@ -509,6 +524,7 @@ identifier: IDENTIFIER {
                     }
                     else
                     {	
+						// display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
