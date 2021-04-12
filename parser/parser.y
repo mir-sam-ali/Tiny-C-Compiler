@@ -443,7 +443,7 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = string($1->lexeme) + string("++");
+				$$->code = string($1->lexeme) + string(" = ") + string($1->lexeme) + string(" + ") + string("1");
 				gencode($$->code);
 			}
 
@@ -451,7 +451,7 @@ unary_expr: identifier INCREMENT
 	 		{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = string($1->lexeme) + string("--");
+				$$->code = string($1->lexeme) + string(" = ") + string($1->lexeme) + string(" - ") + string("1");
 				gencode($$->code);
 			}
 
@@ -459,7 +459,7 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = string("--") + string($2->lexeme);
+				$$->code = string($2->lexeme) + string(" = ") + string($2->lexeme) + string(" - ") + string("1");
 				gencode($$->code);
 			}
 
@@ -467,31 +467,31 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = string("++") + string($2->lexeme);
+				$$->code = string($2->lexeme) + string(" = ") + string($2->lexeme) + string(" + ") + string("1");
 				gencode($$->code);
 			}
 	| array_access INCREMENT{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = $1->code+string("++");
+				$$->code = $1->code+string(" = ")+$1->code+string(" + ")+string("1");
 				gencode($$->code);
 	}
 	| array_access DECREMENT{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = $1->code+string("--");
+				$$->code = $1->code+string(" = ")+$1->code+string(" - ")+string("1");
 				gencode($$->code);
 	}
 	| INCREMENT array_access{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = $2->code+string("++");
+				$$->code = $2->code+string(" = ")+$2->code+string(" + ")+string("1");
 				gencode($$->code);
 	}
 	| DECREMENT array_access{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = $2->code+string("--");
+				$$->code = $2->code+string(" = ")+$2->code+string(" - ")+string("1");
 				gencode($$->code);
 	};
 	

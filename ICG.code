@@ -1,33 +1,33 @@
 0: i1 = 0
-1: if i1 < 5 goto 6
-2: goto 10
-3: t0 = i1 + 1
-4: i1 = t0
-5: goto 1
-6: t1 = 5 - i1
-7: arr0[i1] = t1
-8: arr0[i1]++
-9: goto 3
-10: i3 = 0
-11: if i3 < 4 goto 16
-12: goto 32
-13: t2 = i3 + 1
-14: i3 = t2
-15: goto 11
-16: j5 = 1
-17: t3 = 5 - i3
-18: if j5 < t3 goto 23
-19: goto 31
-20: t4 = j5 + 1
-21: j5 = t4
-22: goto 17
-23: t5 = j5 + 1
-24: k6 = t5
+1: if i1 < 5 goto 5
+2: goto 11
+3: i1 = i1 + 1
+4: goto 1
+5: t0 = 5 - i1
+6: arr0[i1] = t0
+7: temp2 = 1
+8: arr0[i1] = arr0[i1] + 1
+9: temp2 = arr0[i1] = arr0[i1] + 1
+10: goto 3
+11: i3 = 0
+12: if i3 < 4 goto 17
+13: goto 32
+14: t1 = i3 + 1
+15: i3 = t1
+16: goto 12
+17: j5 = 1
+18: t2 = 5 - i3
+19: if j5 < t2 goto 23
+20: goto 31
+21: j5 = j5 + 1
+22: goto 18
+23: t3 = j5 + 1
+24: k6 = t3
 25: if arr0[j5] > arr0[k6] goto 27
 26: goto 30
 27: temp7 = arr0[j5]
 28: arr0[j5] = arr0[k6]
 29: arr0[k6] = temp7
-30: goto 20
-31: goto 13
+30: goto 21
+31: goto 14
 32: exit
