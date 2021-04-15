@@ -83,7 +83,7 @@
 %token BITXOR BITOR QUESTION ASSIGN  SHIFTLEQ SHIFTREQ BITANDEQ BITXOREQ BITOREQ HASH
 
 // %token TRUE FALSE
-%token PRINTF SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
+%token PRINT SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
 
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
@@ -109,6 +109,9 @@
 %type <content> stmt
 %type <content> N
 %type <content> arr
+%type <content> print_statement
+%type <content> print_var
+%type <content> var
 %type <instr> M 
 
 %left COMMA
@@ -206,10 +209,49 @@ single_stmt: if_block {
 								$$ = new content_t();
 								$$->breaklist = {nextinstr};
 								gencode("goto _");
-						    }     
+						    } 
+			|print_statement ';'{
+				// print
+				$$= new content_t();
+				$$= $1;
+				gencode($1->code);
+			}    
 	
 	
 	    ;
+
+print_statement: PRINT '(' print_var ')'{
+				$$= new content_t();
+				$$->code = string("print ") + $3->code; 
+		};
+
+print_var: print_var COMMA var{
+			$$= new content_t();
+			$$->code = $1->code + string(" ") + $3->code;
+
+		}  
+		   | var{
+			   
+			   $$=new content_t();
+			   $$->code = $1->code;
+
+		   } ;
+
+var: identifier {
+		$$ = new content_t();
+		$$->code = string($1->lexeme) ;
+	}
+	| array_access{
+		$$ = new content_t();
+		$$->code = $1->code ;
+	}
+	| STRING_LITERAL {
+		$$ = new content_t();
+
+		$$->code = string(yylval.lexi);
+		
+} ; 
+
 
 for_block: FOR '(' 
 					{

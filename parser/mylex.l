@@ -174,7 +174,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "true"															{ yylval.entry = insert(constant_table,yytext,1,BOOLEAN,1); return TRUE;}
 "false"                  										{ yylval.entry = insert(constant_table,yytext,0,BOOLEAN,1); return FALSE;}
 
-"printf"					{ return PRINTF;}
+"print"						{ return PRINT;}
 "scanf"						{ return SCANF;}
 "gets"						{ return GETS;}
 "puts"						{ return PUTS;}
@@ -185,7 +185,7 @@ CHARACTER_CONSTANT			'{C_CHAR_SEQUENCE}'
 "min"						{ return MIN;}
 
 
-\"([^\\\"]|{EscapeSequence})*+\"                         		{ return STRING_LITERAL;}
+\"([^\\\"]|{EscapeSequence})*+\"                         		{ strcpy(yylval.lexi, yytext); return STRING_LITERAL;}
 {CHARACTER_CONSTANT}                          					{ yylval.entry = insert(constant_table,yytext,yytext[1],CHAR,1); return CHAR_LITERAL;}
 {C_LETTER}({C_LETTER}|{DIGIT})*   								{ strcpy(yylval.lexi, yytext); return IDENTIFIER;}
 \n|\t                               							{}
