@@ -148,12 +148,20 @@ entry_t *search(entry_t **hash_table_ptr, char *lexeme)
 
 entry_t *search_recursive(char *lexeme)
 {
+
 	int idx = current_scope;
 	entry_t *finder = NULL;
 
 	while (idx != -1)
 	{
-		finder = search(symbol_table_list[idx].symbol_table, lexeme);
+		//printf("%d\n", idx);
+		char id = idx + '0';
+		char *temp_lex;
+		temp_lex = (char *)calloc(strlen(lexeme), sizeof(char));
+		strcpy(temp_lex, lexeme);
+		strcat(temp_lex, &id);
+		//printf("%s\n", temp_lex);
+		finder = search(symbol_table_list[idx].symbol_table, temp_lex);
 
 		if (finder != NULL)
 			return finder;
@@ -215,7 +223,7 @@ void print_dashes(int n)
 	printf("\n");
 }
 
-void display_symbol_table(entry_t **hash_table_ptr)
+void display_symbol_table(entry_t **hash_table_ptr, std::ofstream &file)
 {
 	int i;
 	entry_t *traverser;
@@ -233,7 +241,7 @@ void display_symbol_table(entry_t **hash_table_ptr)
 		while (traverser != NULL)
 		{
 			printf(" %-20s %-20d %-20d %-20d", traverser->lexeme, traverser->data_type, traverser->size, traverser->value);
-
+			file << traverser->lexeme << " " << traverser->data_type << " " << traverser->size << endl;
 			printf("\n");
 
 			traverser = traverser->successor;
@@ -270,10 +278,12 @@ void display_constant_table(entry_t **hash_table_ptr)
 void display_all()
 {
 	int i;
+	ofstream outfile("ICG.vars");
+
 	for (i = 0; i <= table_index; i++)
 	{
 		printf("Scope: %d\n", i);
-		display_symbol_table(symbol_table_list[i].symbol_table);
+		display_symbol_table(symbol_table_list[i].symbol_table, outfile);
 		printf("\n\n");
 	}
 

@@ -1,0 +1,38 @@
+0: i1 = 0
+1: if i1 < 5 goto 5
+2: goto 8
+3: i1 = i1 + 1
+4: goto 1
+5: t0 = 5 - i1
+6: arr0[i1] = t0
+7: goto 3
+8: i3 = 0
+9: if i3 < 4 goto 14
+10: goto 29
+11: t1 = i3 + 1
+12: i3 = t1
+13: goto 9
+14: j5 = 0
+15: t2 = 5 - i3
+16: if j5 < t2 goto 20
+17: goto 28
+18: j5 = j5 + 1
+19: goto 15
+20: t3 = j5 + 1
+21: k6 = t3
+22: if arr0[j5] > arr0[k6] goto 24
+23: goto 27
+24: temp7 = arr0[j5]
+25: arr0[j5] = arr0[k6]
+26: arr0[k6] = temp7
+27: goto 18
+28: goto 11
+29: print "Sorted Array\n"
+30: i8 = 0
+31: if i8 < 5 goto 35
+32: goto 37
+33: i8 = i8 + 1
+34: goto 31
+35: print arr0[i8] "\n"
+36: goto 33
+37: exit

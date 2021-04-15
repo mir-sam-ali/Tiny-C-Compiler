@@ -1,6 +1,7 @@
 %{
 	#include <bits/stdc++.h>
 	#include "utils/symboltable.h"
+	#include <string.h>
 	#include "lex.yy.c"
 
 	using namespace std;
@@ -19,6 +20,8 @@
 	int is_loop = 0;
 	int is_func = 0;
 	int func_type;
+
+	int is_array_index=0;
 
 	int param_list[10];
 	int p_idx = 0;
@@ -80,7 +83,7 @@
 %token BITXOR BITOR QUESTION ASSIGN  SHIFTLEQ SHIFTREQ BITANDEQ BITXOREQ BITOREQ HASH
 
 // %token TRUE FALSE
-%token PRINTF SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
+%token PRINT SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
 
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
@@ -106,6 +109,9 @@
 %type <content> stmt
 %type <content> N
 %type <content> arr
+%type <content> print_statement
+%type <content> print_var
+%type <content> var
 %type <instr> M 
 
 %left COMMA
@@ -188,7 +194,7 @@ single_stmt: if_block {
 							$$ = $1;
 							backpatch($$->nextlist, nextinstr);
 						 }
-	    	|declaration {$$ = new content_t();}		
+	    	|declaration {$$ = new content_t(); }		
 	    	
 			|CONTINUE ';' {
 								if(!is_loop)
@@ -203,10 +209,49 @@ single_stmt: if_block {
 								$$ = new content_t();
 								$$->breaklist = {nextinstr};
 								gencode("goto _");
-						    }     
+						    } 
+			|print_statement ';'{
+				// print
+				$$= new content_t();
+				$$= $1;
+				gencode($1->code);
+			}    
 	
 	
 	    ;
+
+print_statement: PRINT '(' print_var ')'{
+				$$= new content_t();
+				$$->code = string("print ") + $3->code; 
+		};
+
+print_var: print_var COMMA var{
+			$$= new content_t();
+			$$->code = $1->code + string(" ") + $3->code;
+
+		}  
+		   | var{
+			   
+			   $$=new content_t();
+			   $$->code = $1->code;
+
+		   } ;
+
+var: identifier {
+		$$ = new content_t();
+		$$->code = string($1->lexeme) ;
+	}
+	| array_access{
+		$$ = new content_t();
+		$$->code = $1->code ;
+	}
+	| STRING_LITERAL {
+		$$ = new content_t();
+
+		$$->code = string(yylval.lexi);
+		
+} ; 
+
 
 for_block: FOR '(' 
 					{
@@ -214,7 +259,7 @@ for_block: FOR '('
 					} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
-						current_scope = exit_scope();
+						
 					} N M stmt {is_loop = 0;}
 					{
 						backpatch($6->truelist,$12);
@@ -224,6 +269,7 @@ for_block: FOR '('
 						$$ = new content_t();
 						$$->nextlist = merge($6->falselist,$13->breaklist);
 						gencode(string("goto ") + to_string($7));
+						current_scope = exit_scope();
 						
 			 		};
 			 
@@ -267,14 +313,14 @@ declaration: data_type  declaration_list ';' {is_declaration = 0;}
 
 
 declaration_list:  declaration_list COMMA sub_decl
-					| sub_decl
+					| sub_decl 
 					;
 
 sub_decl:	assignment_expr  
     		|
 			identifier 	
     		|
-			array_access 
+			array_access
 			;
 
 /* This is because we can have empty expession statements inside for loops */
@@ -396,11 +442,10 @@ sub_expr:
 assignment_expr :
 	lhs assign arithmetic_expr	
 			{	
-				
 				type_check($1->entry->data_type,$3->data_type,1);
 		 		$$ = new content_t();
 				$$->data_type = $3->data_type;
-		 		$$->code = $1->entry->lexeme + *$2 + $3->addr;
+		 		$$->code = $1->code + *$2 + $3->addr;
 				gencode($$->code);
 		 		rhs = 0;
 			}
@@ -410,7 +455,7 @@ assignment_expr :
 				type_check($1->entry->data_type,$3->data_type,1);
 	 			$$ = new content_t();
 				$$->data_type = $3->data_type;
-	 			$$->code = $1->entry->lexeme + *$2 + $3->code;
+	 			$$->code = $1->code + *$2 + $3->code;
 				gencode($$->code);
 	 			rhs = 0;
 			}
@@ -420,7 +465,7 @@ assignment_expr :
 				type_check($1->entry->data_type,$3->data_type,1);
 			 	$$ = new content_t();
 				$$->data_type = $3->data_type;
-			 	$$->code = $1->entry->lexeme + *$2 + $3->code;
+			 	$$->code = $1->code + *$2 + $3->code;
 				gencode($$->code);
 			 	rhs = 0;
 			}
@@ -440,7 +485,7 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = string($1->lexeme) + string("++");
+				$$->code = string($1->lexeme) + string(" = ") + string($1->lexeme) + string(" + ") + string("1");
 				gencode($$->code);
 			}
 
@@ -448,7 +493,7 @@ unary_expr: identifier INCREMENT
 	 		{
 				$$ = new content_t();
 				$$->data_type = $1->data_type;
-				$$->code = string($1->lexeme) + string("--");
+				$$->code = string($1->lexeme) + string(" = ") + string($1->lexeme) + string(" - ") + string("1");
 				gencode($$->code);
 			}
 
@@ -456,7 +501,7 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = string("--") + string($2->lexeme);
+				$$->code = string($2->lexeme) + string(" = ") + string($2->lexeme) + string(" - ") + string("1");
 				gencode($$->code);
 			}
 
@@ -464,17 +509,49 @@ unary_expr: identifier INCREMENT
 			{
 				$$ = new content_t();
 				$$->data_type = $2->data_type;
-				$$->code = string("++") + string($2->lexeme);
+				$$->code = string($2->lexeme) + string(" = ") + string($2->lexeme) + string(" + ") + string("1");
 				gencode($$->code);
-			};
+			}
+	| array_access INCREMENT{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = $1->code+string(" = ")+$1->code+string(" + ")+string("1");
+				gencode($$->code);
+	}
+	| array_access DECREMENT{
+				$$ = new content_t();
+				$$->data_type = $1->data_type;
+				$$->code = $1->code+string(" = ")+$1->code+string(" - ")+string("1");
+				gencode($$->code);
+	}
+	| INCREMENT array_access{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = $2->code+string(" = ")+$2->code+string(" + ")+string("1");
+				gencode($$->code);
+	}
+	| DECREMENT array_access{
+				$$ = new content_t();
+				$$->data_type = $2->data_type;
+				$$->code = $2->code+string(" = ")+$2->code+string(" - ")+string("1");
+				gencode($$->code);
+	};
+	
 	
 
-lhs: identifier		{$$ = new content_t(); $$->entry = $1;}
-   | array_access	{$$ = new content_t(); $$->code = $1->code;}
+lhs: identifier		{$$ = new content_t(); $$->entry = $1; $$->code = string($1->lexeme);}
+   | array_access	{ $$ = new content_t(); $$=$1;}
 	 ;
 
 identifier: IDENTIFIER {
-                    if(is_declaration && !rhs)
+					if(is_array_index){
+						// display_all();
+						$1=search_recursive(yylval.lexi);
+                      	if($1 == NULL) 
+					  		yyerror("Variable not declared");
+						
+					}
+                    else if(is_declaration && !rhs)
                     {	
 						
 						if(current_dtype == INT){
@@ -488,15 +565,32 @@ identifier: IDENTIFIER {
 						}else if(current_dtype == LONG){
 							size = 8;
 						}
-						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
+						string temp_lex;
+						temp_lex.assign(yylval.lexi);
+						// cout<<temp_lex<<endl;
+						char temp = current_scope+'0';
+						temp_lex+=temp;
+						// cout<<temp_lex<<endl;
+						// strcat(yylval.lexi, &temp);
+
+						int n = temp_lex.length();
+					
+						// declaring character array
+						char char_array[n + 1];
+					
+						// copying the contents of the
+						// string to char array
+						strcpy(char_array, temp_lex.c_str());
+
+						$1=insert(SYMBOL_TABLE,char_array,INT_MAX,current_dtype, size);
 						
 						if($1 == NULL) 
 							yyerror("Redeclaration of variable");
 						
-						
                     }
                     else
                     {	
+						// display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");
@@ -588,110 +682,93 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 						$$->data_type = $1->data_type;
 						$$->addr = to_string($1->value);
 					 }
-			| array_access{printf("array access");}
+			| array_access{
+					
+					$$ = new content_t();
+					$$ = $1;
+					$$->addr=$1->code;
+			}
     		 ;
 
 constant: INTEGER_LITERAL {$1->is_constant=1; $$ = $1;} | CHAR_LITERAL {$1->is_constant=1; $$ = $1;} | TRUE {$1->is_constant=1; $$ = $1;} | FALSE {$1->is_constant=1; $$ = $1;}; 			
-
-/*
-array_access: IDENTIFIER arr {
-                    if(is_declaration && !rhs)
-                    {	size = arr_size;
-						if(current_dtype == INT){
-							size *= 4;
-						}else if(current_dtype == LONG_LONG){
-							size *= 8;
-						}else if(current_dtype == CHAR){
-							size *= 1;
-						}else if(current_dtype == SHORT){
-							size *= 1;
-						}else if(current_dtype == LONG){
-							size *= 8;
-						}
-						printf("%s\n", yylval.lexi);
-						$1=insert(SYMBOL_TABLE,yylval.lexi,INT_MAX,current_dtype, size);
-						if($1 == NULL) 
-							yyerror("Redeclaration of variable");
-						arr_size = 1;
-                    }
-                    else
-                    {	
-						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
-					  		yyerror("Variable not declared");
-                    }
-					//$$=$1;
-                };
-
-arr: '[' array_index ']' arr {arr_size *= $2;}| '[' array_index ']' {arr_size *= $2;} ;
-
-array_index: INTEGER_LITERAL {$$ = atoi(yytext);} ;
-*/
 
 array_access: identifier arr					
 				{	
 					$$ = new content_t();
 					$$->data_type = $1->data_type;
-					
-					$$->code = $2->code;
+					$$->code = string($1->lexeme)+$2->code;
 					$$->entry = $1;
-					$1->size*=$2->array_dimension;
+					if(is_declaration && !rhs){
+						$1->size*=$2->array_dimension;
+					}
+
+					
 				}
 
-arr: arr '[' array_index ']' {
+arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			$$ = new content_t();
-			if(is_declaration)
+			if(!$4){
+				exit(0);
+			}
+
+			if(is_declaration && !rhs)
+			{			
+						if(!$4->is_constant){
+							yyerror("Size of Array should be an Integer Literal.");
+							exit(0);
+						}
+						
+						if($4->value <= 0)
+							yyerror("size of array is not positive");
+						else if($4->is_constant){
+							$$->array_dimension = $1->array_dimension * $4->value;
+						}
+			}
+			else if($4->is_constant)
 			{
+				if($4->value > $1->array_dimension)
+					yyerror("Array index out of bound");
+				if($4->value < 0)
+					yyerror("Array index cannot be negative");
+			}
+
+			
+			if($4->is_constant)
+				$$->code = string($1->code) + string("[") + to_string($4->value) + string("]");
+			else
+				$$->code = string($1->code) + string("[") + string($4->lexeme) + string("]");
+		}
+		| 
+		'[' {is_array_index=1;} array_index {is_array_index=0;} ']' {
+			
+			$$ = new content_t();
+
+			if(!$3){
+				exit(0);
+			}
+
+			if(is_declaration && !rhs)
+					{
+						if(!$3->is_constant){
+							yyerror("Size of Array should be an Integer Literal.");
+							exit(0);
+						}
 						if($3->value <= 0)
 							yyerror("size of array is not positive");
-						else if($3->is_constant){
-							$$->array_dimension = $1->array_dimension * $3->value;
-						}
+						else if($3->is_constant)
+							$$->array_dimension = $3->value;
 			}
 			else if($3->is_constant)
 			{
-				if($3->value > $1->array_dimension)
-					yyerror("Array index out of bound");
 				if($3->value < 0)
 					yyerror("Array index cannot be negative");
 			}
-
+			
 			
 			if($3->is_constant)
-				$$->code = string($1->code) + string("[") + to_string($3->value) + string("]");
+				$$->code = string("[") + to_string($3->value) + string("]");
 			else
-				$$->code = string($1->code) + string("[") + string($3->lexeme) + string("]");
-		}
-		| 
-		'[' array_index ']' {
-			
-			$$ = new content_t();
-
-			// if(!$2->is_constant){
-			// 	entry_t* temp = search_recursive($2->lexeme);
-			// 	if(!temp){
-			// 		yyerror("Variable Not Declared");
-			// 	}
-			// }
-
-			if(is_declaration)
-					{
-						if($2->value <= 0)
-							yyerror("size of array is not positive");
-						else if($2->is_constant)
-							$$->array_dimension = $2->value;
-			}
-			else if($2->is_constant)
-			{
-				if($2->value < 0)
-					yyerror("Array index cannot be negative");
-			}
-			
-			
-			if($2->is_constant)
-				$$->code = string("[") + to_string($2->value) + string("]");
-			else
-				$$->code = string("[") + string($2->lexeme) + string("]");
+				$$->code = string("[") + string($3->lexeme) + string("]");
 		};
 
 array_index: constant		{$$ = $1;}
