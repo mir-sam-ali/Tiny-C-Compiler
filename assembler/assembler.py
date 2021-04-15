@@ -1,7 +1,8 @@
 import sys
+import re
 
 class Assembler:
-    def __init__(self, ICG_file, variable_file='variables'):
+    def __init__(self, ICG_file, variable_file='ICG.vars'):
         # reading ICG file
         self.temp = []
         with open(ICG_file, "r") as f :
@@ -26,13 +27,27 @@ class Assembler:
         with open('output.asm', 'w') as f:
             f.write('')
             f.close()
+        
+        # data part
+        self.data_part = ""
+        # text part
+        self.text_part = ""
+        # print strings
+        self.print_stmts = {}
+        self.nb_print_stmts = 0
+
+    def write_to_data(self):
+        # writing print strings to data
+        for k, v in self.print_stmts.items():
+            self.data_part += f"{v}: .asciiz {k}\n"
 
     def placeholders(self):
-        res = ""
+        res = ".data\n"
         for k, v in self.variables.items():
+            v['size'] = v['size']//4
             if v['type'] == '279':
                 res += f"{k}: .word {'0 '*(v['size']-1)}0\n"
-        return res
+        self.data_part = res
 
     def process_if_stmt(self, instruction):
         res = f"L{instruction[0]}\n"
@@ -245,6 +260,55 @@ class Assembler:
         
         return res
 
+    def process_print_stmt(self, instruction):
+        # split correctly
+        stmts = re.findall(r'\".*?\"', instruction)
+        for stmt in stmts:
+            if stmt not in self.print_stmts.keys():
+                self.print_stmts[stmt] = f"prompt{self.nb_print_stmts}"
+                self.nb_print_stmts += 1
+            instruction = instruction.replace(stmt, self.print_stmts[stmt])
+
+        instruction = instruction.split(" ")
+        res = f"L{instruction[0]}\n"
+        
+        for i in range(2, len(instruction)):
+            
+            instruction[i] = instruction[i].replace("\n", "")
+
+            if instruction[i] in list(self.print_stmts.values()):
+                res += "\tli $v0, 4\n"
+                res += f"\tla $a0, {instruction[i]}\n"
+            else:
+                res += "\tli $v0, 1\n"
+                instruction[i] = instruction[i].split("[")
+                if len(instruction[i]) == 1:
+                    instruction[i] = instruction[i][0]
+                    if instruction[i][-1] == "\n":
+                        instruction[i] = instruction[i][:-1]
+                else:
+                    instruction[i][1] = instruction[i][1][:-1]
+
+                if type(instruction[i]) != list and instruction[i] in self.variables.keys():
+                    res += f"\tla $a0, {instruction[i]}\n"
+                elif type(instruction[i]) == list:
+                    try:
+                        instruction[i][1] = int(instruction[i][1])
+                        res += f"\tli $t4, {instruction[i][1]}\n"
+                    except:
+                        res += f"\tla $t4, {instruction[i][1]}\n"
+                        res += f"\tlw $t4, 0($t4)\n"
+                        
+                    res += f'\tli $t5, 4\n'
+                    res += f"\tmul $t4, $t4, $t5\n"
+                    res += f"\tla $t5, {instruction[i][0]}\n"
+                    res += f"\tadd $t5, $t5, $t4\n"
+                    res += f"\tlw $t5, 0($t5)\n"
+                    res += f"\tmove $a0, $t5\n"
+            
+            res += "\tsyscall\n"
+        return res
+
     def assemble(self):
         res = ""
         for line in self.temp:
@@ -255,22 +319,27 @@ class Assembler:
                 res += f"L{instruction[0]} j L{instruction[2]}"
             elif instruction[1] == "exit":
                 res += f"L{instruction[0]} jr $ra"
+            elif instruction[1] == "print":
+                res += self.process_print_stmt(" ".join(instruction))
             else:
                 res += self.process_assignments(instruction)
-        return res
+
+        self.text_part = res
 
 
     def process_instructions(self):
         # converting
+        self.placeholders()
+        self.assemble()
+        self.write_to_data()
+
         with open('output.asm', "a") as f:
             # data part
-            f.write(".data\n")
-            f.write(self.placeholders())
-
+            f.write(self.data_part)
             # text part
             f.write("\n.text\n")
             f.write("main:\n")
-            f.write(self.assemble())
+            f.write(self.text_part)
         
             f.close()
 

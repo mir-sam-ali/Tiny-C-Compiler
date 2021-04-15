@@ -1,11 +1,12 @@
 .data
-arr: .word 1 2 3 4 5
+prompt2: .word 100
 
 .text
 main:
 L0:
-    la $t1, arr
-    lw $t2, 4($t1)
-    lw $t0, 8($t1)
-    mul $s0, $t0, $t2
-    jr $ra
+	li $v0, 1
+	la $t1, prompt2
+	lw $t1, 0($t1)
+	move $a0, $t1 
+	syscall 
+	
