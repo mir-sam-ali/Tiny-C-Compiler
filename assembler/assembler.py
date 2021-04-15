@@ -317,7 +317,7 @@ class Assembler:
                 res += self.process_if_stmt(instruction)
             elif instruction[1] == "goto":
                 res += f"L{instruction[0]} j L{instruction[2]}"
-            elif instruction[1] == "exit":
+            elif instruction[1] == "exit" or instruction[1] == "exit\n":
                 res += f"L{instruction[0]} jr $ra"
             elif instruction[1] == "print":
                 res += self.process_print_stmt(" ".join(instruction))

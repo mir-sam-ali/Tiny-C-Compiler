@@ -7,7 +7,8 @@ k6: .word 0
 temp7: .word 0
 i8: .word 0
 prompt0: .asciiz "Sorted Array\n"
-prompt1: .asciiz "\n"
+prompt1: .asciiz ", "
+prompt2: .asciiz "\n"
 
 .text
 main:
@@ -165,7 +166,7 @@ L30:
 L31:
 	la $t5, i8
 	lw $t5, 0($t5)
-	li $t6, 5
+	li $t6, 4
 	slt $t6, $t5, $t6
 	bne $t6, $zero, L35
 L32: j L37
@@ -192,4 +193,17 @@ L35:
 	la $a0, prompt1
 	syscall
 L36: j L33
-L37: jr $ra
+L37:
+	li $v0, 1
+	li $t4, 5
+	li $t5, 4
+	mul $t4, $t4, $t5
+	la $t5, arr0
+	add $t5, $t5, $t4
+	lw $t5, 0($t5)
+	move $a0, $t5
+	syscall
+	li $v0, 4
+	la $a0, prompt2
+	syscall
+L38: jr $ra
