@@ -260,7 +260,7 @@ for_block: FOR '('
 					} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
-						
+						printf("Here\n");
 					} N M stmt {is_loop = 0;}
 					{
 						backpatch($6->truelist,$12);
@@ -591,7 +591,7 @@ identifier: IDENTIFIER {
                     }
                     else
                     {	
-						// display_all();
+						display_all();
 						$1=search_recursive(yylval.lexi);
                       	if($1 == NULL) 
 					  		yyerror("Variable not declared");

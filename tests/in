@@ -1,37 +1,39 @@
+int i, j;
+int res[4][4]; // To store result
+int mat1[4][4];
+int mat2[4][4];
 
 
-int arr[10];
-for(int i=0;i<10;i++){
-    arr[i]=(i+1)*5;
+for(i=0;i<4;i++){
+    for(j=0;j<4;j++){
+        mat1[i][j]=(i+1);
+    }
 }
 
-int l=0,r=9;
-int x=20;
-int index = -x+1;
-while (l <= r) {
-        int m = l + (r - l) / 2;
-  
-        // Check if x is present at mid
-        if (arr[m] == x)
-        {
-            index= m;
-            break;
-        }
-  
-        // If x greater, ignore left half
-        if (arr[m] < x)
-            l = m + 1;
-  
-        // If x is smaller, ignore right half
-        else
-            r = m - 1;
-    }
 
-if(index==-1){
-    print(x," Not Found\n");
-}else{
-    print("Index: ");
-    print(index);
+
+for(i=0;i<4;i++){
+    for(j=0;j<4;j++){
+        mat2[i][j]=(i+1);
+    }
+}
+
+
+ 
+int N=4;
+int k=0;
+
+
+for (int z = 0; z < 4; z++) {
+    
+}
+
+/*
+
+print("Result matrix is \n");
+for (i = 0; i < N; i++) {
+    for (j = 0; j < N; j++)
+        print(res[i][j]," ");
     print("\n");
 }
-  
+*/
