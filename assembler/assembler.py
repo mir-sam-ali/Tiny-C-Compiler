@@ -3,6 +3,15 @@ import re
 
 class Assembler:
     def __init__(self, ICG_file, variable_file='ICG.vars'):
+        # datatypes and sizes
+        self.datatypes_sizes = {
+            '278': 4,
+            '279': 4,
+            '280': 8,
+            '281': 16,
+            '285': 1
+        }
+
         # reading ICG file
         self.temp = []
         with open(ICG_file, "r") as f :
@@ -17,9 +26,8 @@ class Assembler:
             for var in f:
                 var = var.split(" ")
                 self.variables[var[0]] = {
-                    'register': None,
-                    'type': var[1],
-                    'size': int(var[2].replace('\n', ''))
+                    'size': self.datatypes_sizes[var[1]],
+                    'arr_size': int(int(var[2].replace('\n', ''))/self.datatypes_sizes[var[1]])
                 }
             f.close()
 
@@ -44,9 +52,7 @@ class Assembler:
     def placeholders(self):
         res = ".data\n"
         for k, v in self.variables.items():
-            v['size'] = v['size']//4
-            if v['type'] == '279':
-                res += f"{k}: .word {'0 '*(v['size']-1)}0\n"
+            res += f"{k}: .word {'0 '*(v['arr_size']-1)}0\n"
         self.data_part = res
 
     def process_if_stmt(self, instruction):
@@ -131,7 +137,7 @@ class Assembler:
             res += f"\tslt $t7, {instruction[4]}, {instruction[2]}\n"
             res += f"\tbne $t7, $zero, L{instruction[6]}"
         elif instruction[3] == ">=":
-            res += f"\tslt $t7, {instruction[2]}, {instruction[4]}\n"
+            res += f"\tslt $t7, {instruction[4]}, {instruction[2]}\n"
             res += f"\tbne $t7, $zero, L{instruction[6]}"
             res += f"\tbeq {instruction[2]}, {instruction[4]}, L{instruction[6]}" 
         elif instruction[3] == "==":
@@ -283,7 +289,6 @@ class Assembler:
                 res += "\tli $v0, 4\n"
                 res += f"\tla $a0, {instruction[i]}\n"
             else:
-                res += "\tli $v0, 1\n"
                 instruction[i] = instruction[i].split("[")
                 if len(instruction[i]) == 1:
                     instruction[i] = instruction[i][0]
@@ -293,8 +298,16 @@ class Assembler:
                     instruction[i][1] = instruction[i][1][:-1]
 
                 if type(instruction[i]) != list and instruction[i] in self.variables.keys():
+                    if self.variables[instruction[i]]['size'] == 1:
+                        res += "\tli $v0, 11\n"
+                    else:
+                        res += "\tli $v0, 1\n"
                     res += f"\tlw $a0, {instruction[i]}\n"
                 elif type(instruction[i]) == list:
+                    if self.variables[instruction[i][0]]['size'] == 1:
+                        res += "\tli $v0, 11\n"
+                    else:
+                        res += "\tli $v0, 11\n"
                     try:
                         instruction[i][1] = int(instruction[i][1])
                         res += f"\tli $t4, {instruction[i][1]}\n"
