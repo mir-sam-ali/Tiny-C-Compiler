@@ -1,12 +1,12 @@
 .data
-prompt2: .word 100
+arr: .byte "61" "62" "63"
 
 .text
 main:
 L0:
-	li $v0, 1
-	la $t1, prompt2
-	lw $t1, 0($t1)
-	move $a0, $t1 
-	syscall 
-	
+	la $t0, arr
+	lb $t0, 0($t0)
+	la $t1, arr
+	addi $t0, $t0, 1
+	lb $t1, 0($t1)
+	slt $s0, $t1, $t0

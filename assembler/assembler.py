@@ -121,18 +121,18 @@ class Assembler:
                 instruction[4] = f"${instruction[4]}"
 
         if instruction[3] == "<":
-            res += f"\tslt $t6, {instruction[2]}, {instruction[4]}\n"
-            res += f"\tbne $t6, $zero, L{instruction[6]}"
+            res += f"\tslt $t7, {instruction[2]}, {instruction[4]}\n"
+            res += f"\tbne $t7, $zero, L{instruction[6]}"
         elif instruction[3] == "<=":
-            res += f"\tslt $t6, {instruction[2]}, {instruction[4]}\n"
-            res += f"\tbne $t6, $zero, L{instruction[6]}\n"
+            res += f"\tslt $t7, {instruction[2]}, {instruction[4]}\n"
+            res += f"\tbne $t7, $zero, L{instruction[6]}"
             res += f"\tbeq {instruction[2]}, {instruction[4]}, L{instruction[6]}" 
         elif instruction[3] == ">":
-            res += f"\tslt $t6, {instruction[4]}, {instruction[2]}\n"
-            res += f"\tbne $t6, $zero, L{instruction[6]}"
+            res += f"\tslt $t7, {instruction[4]}, {instruction[2]}\n"
+            res += f"\tbne $t7, $zero, L{instruction[6]}"
         elif instruction[3] == ">=":
-            res += f"\tslt $t6, {instruction[2]}, {instruction[4]}\n"
-            res += f"\tbne $t6, $zero, L{instruction[6]}\n"
+            res += f"\tslt $t7, {instruction[2]}, {instruction[4]}\n"
+            res += f"\tbne $t7, $zero, L{instruction[6]}"
             res += f"\tbeq {instruction[2]}, {instruction[4]}, L{instruction[6]}" 
         elif instruction[3] == "==":
             res += f"\tbeq {instruction[2]}, {instruction[4]}, L{instruction[6]}" 
@@ -244,9 +244,12 @@ class Assembler:
 
             if instruction[4] == '+':
                 res += f"\tadd $t6, {instruction[3]}, {instruction[5]}\n"
-
             elif instruction[4] == '-':
                 res += f"\tsub $t6, {instruction[3]}, {instruction[5]}\n"
+            elif instruction[4] == '*':
+                res += f"\tmul $t6, {instruction[3]}, {instruction[5]}\n"
+            else:
+                res += f"\tdiv $t6, {instruction[3]}, {instruction[5]}\n"
         
             if is_temp:
                 res += f"\taddi {instruction[1]}, $t6, 0\n"
@@ -290,7 +293,7 @@ class Assembler:
                     instruction[i][1] = instruction[i][1][:-1]
 
                 if type(instruction[i]) != list and instruction[i] in self.variables.keys():
-                    res += f"\tla $a0, {instruction[i]}\n"
+                    res += f"\tlw $a0, {instruction[i]}\n"
                 elif type(instruction[i]) == list:
                     try:
                         instruction[i][1] = int(instruction[i][1])
@@ -303,8 +306,7 @@ class Assembler:
                     res += f"\tmul $t4, $t4, $t5\n"
                     res += f"\tla $t5, {instruction[i][0]}\n"
                     res += f"\tadd $t5, $t5, $t4\n"
-                    res += f"\tlw $t5, 0($t5)\n"
-                    res += f"\tmove $a0, $t5\n"
+                    res += f"\tlw $a0, 0($t5)\n"
             
             res += "\tsyscall\n"
         return res
@@ -343,6 +345,8 @@ class Assembler:
         
             f.close()
 
-
 if __name__ == "__main__":
-    Assembler(sys.argv[1]).process_instructions()
+    if len(sys.argv) > 1:
+        Assembler(sys.argv[1], sys.argv[2]).process_instructions()
+    else:
+        Assembler("ICG.code", "ICG.vars").process_instructions()

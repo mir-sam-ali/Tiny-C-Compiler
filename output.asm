@@ -20,8 +20,8 @@ L1:
 	la $t5, i1
 	lw $t5, 0($t5)
 	li $t6, 5
-	slt $t6, $t5, $t6
-	bne $t6, $zero, L5
+	slt $t7, $t5, $t6
+	bne $t7, $zero, L5
 L2: j L8
 L3:
 	la $s4, i1
@@ -54,8 +54,8 @@ L9:
 	la $t5, i3
 	lw $t5, 0($t5)
 	li $t6, 4
-	slt $t6, $t5, $t6
-	bne $t6, $zero, L14
+	slt $t7, $t5, $t6
+	bne $t7, $zero, L14
 L10: j L29
 L11:
 	la $t5, i3
@@ -80,8 +80,8 @@ L15:
 L16:
 	la $t5, j5
 	lw $t5, 0($t5)
-	slt $t6, $t5, $t2
-	bne $t6, $zero, L20
+	slt $t7, $t5, $t2
+	bne $t7, $zero, L20
 L17: j L28
 L18:
 	la $s4, j5
@@ -115,8 +115,8 @@ L22:
 	la $t6, arr0
 	add $t6, $t6, $t4
 	lw $t6, 0($t6)
-	slt $t6, $t6, $t5
-	bne $t6, $zero, L24
+	slt $t7, $t6, $t5
+	bne $t7, $zero, L24
 L23: j L27
 L24:
 	la $s4, temp7
@@ -167,8 +167,8 @@ L31:
 	la $t5, i8
 	lw $t5, 0($t5)
 	li $t6, 4
-	slt $t6, $t5, $t6
-	bne $t6, $zero, L35
+	slt $t7, $t5, $t6
+	bne $t7, $zero, L35
 L32: j L37
 L33:
 	la $s4, i8
@@ -186,8 +186,7 @@ L35:
 	mul $t4, $t4, $t5
 	la $t5, arr0
 	add $t5, $t5, $t4
-	lw $t5, 0($t5)
-	move $a0, $t5
+	lw $a0, 0($t5)
 	syscall
 	li $v0, 4
 	la $a0, prompt1
@@ -200,8 +199,7 @@ L37:
 	mul $t4, $t4, $t5
 	la $t5, arr0
 	add $t5, $t5, $t4
-	lw $t5, 0($t5)
-	move $a0, $t5
+	lw $a0, 0($t5)
 	syscall
 	li $v0, 4
 	la $a0, prompt2
