@@ -1,39 +1,28 @@
-int i, j;
-int res[4][4]; // To store result
-int mat1[4][4];
-int mat2[4][4];
+int arr[5];
+for (int i = 0; i < 5; i++)
+{
+    arr[i] = 5 - i;
+}
 
 
-for(i=0;i<4;i++){
-    for(j=0;j<4;j++){
-        mat1[i][j]=(i+1);
+for (int i = 0; i < 4; i = i + 1)
+{
+    for (int j = 0; j < 5 - i; j++)
+    {
+        int k = j + 1;
+        if (arr[j] > arr[k])
+        {
+            int temp = arr[j];
+            arr[j] = arr[k];
+            arr[k] = temp;
+            
+        }
     }
 }
 
+print("Sorted Array\n");
 
-
-for(i=0;i<4;i++){
-    for(j=0;j<4;j++){
-        mat2[i][j]=(i+1);
-    }
+for (int i = 0; i < 5; i++)
+{
+    print(arr[i], "\n");
 }
-
-
- 
-int N=4;
-int k=0;
-
-
-for (int z = 0; z < 4; z++) {
-    
-}
-
-/*
-
-print("Result matrix is \n");
-for (i = 0; i < N; i++) {
-    for (j = 0; j < N; j++)
-        print(res[i][j]," ");
-    print("\n");
-}
-*/

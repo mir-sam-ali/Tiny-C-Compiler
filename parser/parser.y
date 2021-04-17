@@ -140,6 +140,8 @@ statements: statements M stmt {
 									$$->nextlist = $3->nextlist;
 									$$->breaklist = merge($1->breaklist,$3->breaklist);
 									$$->continuelist = merge($1->continuelist,$3->continuelist);
+									
+									
 								}| {	$$ = new content_t();	};
 
 stmt:single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content_t(); $$=$1;};
@@ -147,8 +149,6 @@ stmt:single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content
 compound_stmt: '{' 
 					{
 						current_scope = create_new_scope();
-						
-						
 					}
 					statements 
 				'}'
@@ -188,6 +188,7 @@ single_stmt: if_block {
 							$$ = new content_t();
 							$$ = $1;
 							backpatch($$->nextlist, nextinstr);
+							
 						}
 		
 	    	|while_block {
@@ -198,8 +199,10 @@ single_stmt: if_block {
 	    	|declaration {$$ = new content_t(); }		
 	    	
 			|CONTINUE ';' {
-								if(!is_loop)
+								if(!is_loop){
 									yyerror("Illegal use of continue");
+									
+									}
 								$$ = new content_t();
 								$$->continuelist = {nextinstr};
 								gencode("goto _");
@@ -260,9 +263,10 @@ for_block: FOR '('
 					} for_declaration M expression_stmt M expression ')' {
 						is_loop = 1;
 						is_declaration = 0;
-						printf("Here\n");
+						
 					} N M stmt {is_loop = 0;}
 					{
+						
 						backpatch($6->truelist,$12);
 						backpatch($13->nextlist,$7);
 						backpatch($13->continuelist, $7);
@@ -548,8 +552,10 @@ identifier: IDENTIFIER {
 					if(is_array_index){
 						// display_all();
 						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
+                      	if($1 == NULL) {
 					  		yyerror("Variable not declared");
+							
+							}
 						
 					}
                     else if(is_declaration && !rhs)
@@ -585,16 +591,19 @@ identifier: IDENTIFIER {
 
 						$1=insert(SYMBOL_TABLE,char_array,INT_MAX,current_dtype, size);
 						
-						if($1 == NULL) 
+						if($1 == NULL){
 							yyerror("Redeclaration of variable");
+							
+						}
 						
                     }
                     else
                     {	
-						display_all();
+						//display_all();
 						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
+                      	if($1 == NULL){
 					  		yyerror("Variable not declared");
+						  }
                     }
 					$$ = $1;
 					
@@ -715,21 +724,23 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			{			
 						if(!$4->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");
-							exit(0);
 						}
 						
-						if($4->value <= 0)
+						if($4->value <= 0){
 							yyerror("size of array is not positive");
+						}
 						else if($4->is_constant){
 							$$->array_dimension = $1->array_dimension * $4->value;
 						}
 			}
 			else if($4->is_constant)
 			{
-				if($4->value > $1->array_dimension)
+				if($4->value > $1->array_dimension){
 					yyerror("Array index out of bound");
-				if($4->value < 0)
+				}
+				if($4->value < 0){
 					yyerror("Array index cannot be negative");
+				}
 			}
 
 			
@@ -751,17 +762,18 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 					{
 						if(!$3->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");
-							exit(0);
 						}
-						if($3->value <= 0)
+						if($3->value <= 0){
 							yyerror("size of array is not positive");
+							}
 						else if($3->is_constant)
 							$$->array_dimension = $3->value;
 			}
 			else if($3->is_constant)
 			{
-				if($3->value < 0)
+				if($3->value < 0){
 					yyerror("Array index cannot be negative");
+					}
 			}
 			
 			
@@ -845,8 +857,8 @@ void type_check(int left, int right, int flag) {
 		switch(flag)
 		{
 			case 0: yyerror("Type mismatch in arithmetic expression"); break;
-			case 1: yyerror("Type mismatch in assignment expression"); break;
-			case 2: yyerror("Type mismatch in logical expression"); break;
+			case 1: yyerror("Type mismatch in assignment expression");  break;
+			case 2: yyerror("Type mismatch in logical expression");  break;
 		}
 	}
 }
@@ -882,6 +894,7 @@ int main(int argc, char *argv[]){
     	while(!feof(yyin))
 		yyparse();
 	
+
 	printf("SYMBOL TABLES\n\n");
 	display_all();
 
@@ -894,6 +907,6 @@ int main(int argc, char *argv[]){
 
 void yyerror(const char *msg)
 {
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg,yylval.lexi );
-	// exit(0);
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yylval.lexi );
+	exit(0);
 }
