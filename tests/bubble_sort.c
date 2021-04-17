@@ -5,7 +5,7 @@ for (int i = 0; i < 5; i++)
 }
 for (int i = 0; i < 4; i = i + 1)
 {
-    for (int j = 0; j < 5 - i; j++)
+    for (int j = 0; j < 4 - i; j++)
     {
         int k = j + 1;
         if (arr[j] > arr[k])

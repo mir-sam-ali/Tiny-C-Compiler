@@ -1,0 +1,36 @@
+0: arr0[0] = 98
+1: arr0[1] = 99
+2: arr0[2] = 100
+3: arr0[3] = 97
+4: arr0[4] = 101
+5: i1 = 0
+6: if i1 < 4 goto 11
+7: goto 27
+8: t0 = i1 + 1
+9: i1 = t0
+10: goto 6
+11: j3 = 0
+12: t1 = 4 - i1
+13: if j3 < t1 goto 18
+14: goto 26
+15: t2 = j3 + 1
+16: j3 = t2
+17: goto 12
+18: t3 = j3 + 1
+19: k4 = t3
+20: if arr0[j3] > arr0[k4] goto 22
+21: goto 25
+22: temp5 = arr0[j3]
+23: arr0[j3] = arr0[k4]
+24: arr0[k4] = temp5
+25: goto 15
+26: goto 8
+27: i6 = 0
+28: if i6 < 5 goto 32
+29: goto 34
+30: i6 = i6 + 1
+31: goto 28
+32: print arr0[i6] " "
+33: goto 30
+34: print "\n"
+35: exit
