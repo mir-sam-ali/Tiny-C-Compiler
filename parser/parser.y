@@ -18,14 +18,13 @@
 
 	int is_declaration = 0;
 	int is_loop = 0;
-	int is_func = 0;
-	int func_type;
+	
 
 	int is_array_index=0;
 
-	int param_list[10];
-	int p_idx = 0;
-	int p=0;
+	
+	
+	
 	int rhs = 0;
 	int old_is_declaration=0;
 	int arr_size = 1;
@@ -92,6 +91,8 @@
 %type <op> assign;
 %type <entry> array_index
 %type <content> for_declaration
+%type <content> declaration
+%type <content> declaration_list
 %type <content> lhs
 %type <content> sub_expr
 %type <content> expression
@@ -145,8 +146,8 @@ stmt:single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content
 
 compound_stmt: '{' 
 					{
-						if(!p)current_scope = create_new_scope();
-						else p = 0;
+						current_scope = create_new_scope();
+						
 						
 					}
 					statements 
@@ -323,7 +324,7 @@ sub_decl:	assignment_expr
 			array_access
 			;
 
-/* This is because we can have empty expession statements inside for loops */
+
 expression_stmt: data_type expression ';'	
 				| expression ';' {
 						$$ = new content_t(); 
@@ -700,10 +701,8 @@ array_access: identifier arr
 					$$->entry = $1;
 					if(is_declaration && !rhs){
 						$1->size*=$2->array_dimension;
-					}
-
-					
-				}
+					}	
+				};
 
 arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			$$ = new content_t();
@@ -738,7 +737,7 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			else
 				$$->code = string($1->code) + string("[") + string($4->lexeme) + string("]");
 		}
-		| 
+		| /* empty */
 		'[' {is_array_index=1;} array_index {is_array_index=0;} ']' {
 			
 			$$ = new content_t();
@@ -775,14 +774,12 @@ array_index: constant		{$$ = $1;}
 		   | identifier		{$$ = $1;}
 					 ;
 
-M: 			{$$ = nextinstr;} ;
+M:  {$$ = nextinstr;};
 
-N:			{
-				$$ = new content_t;
+N:  {				$$ = new content_t;
 				$$->nextlist = {nextinstr};
 				gencode("goto _");
-			}
-	;
+			};
 
 %%
 
