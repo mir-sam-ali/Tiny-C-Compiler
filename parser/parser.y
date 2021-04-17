@@ -663,8 +663,9 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 						$$ = new content_t();
 						$$->data_type = $2->data_type;
 						$$->addr = "t" + to_string(temp_var_number);
-						std::string expr = $$->addr + " = " + "minus " + $2->addr;
-						$$->code = $2->code + expr;
+						std::string expr = $$->addr + " = " + "-" + $2->addr;
+						$$->code = expr;
+						gencode($$->code);
 						temp_var_number++;
 				 	 }
 
