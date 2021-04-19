@@ -18,14 +18,13 @@
 
 	int is_declaration = 0;
 	int is_loop = 0;
-	int is_func = 0;
-	int func_type;
+	
 
 	int is_array_index=0;
 
-	int param_list[10];
-	int p_idx = 0;
-	int p=0;
+	
+	
+	
 	int rhs = 0;
 	int old_is_declaration=0;
 	int arr_size = 1;
@@ -92,6 +91,8 @@
 %type <op> assign;
 %type <entry> array_index
 %type <content> for_declaration
+%type <content> declaration
+%type <content> declaration_list
 %type <content> lhs
 %type <content> sub_expr
 %type <content> expression
@@ -139,15 +140,15 @@ statements: statements M stmt {
 									$$->nextlist = $3->nextlist;
 									$$->breaklist = merge($1->breaklist,$3->breaklist);
 									$$->continuelist = merge($1->continuelist,$3->continuelist);
+									
+									
 								}| {	$$ = new content_t();	};
 
 stmt:single_stmt {$$ = new content_t(); $$=$1;}| compound_stmt {$$ = new content_t(); $$=$1;};
 
 compound_stmt: '{' 
 					{
-						if(!p)current_scope = create_new_scope();
-						else p = 0;
-						
+						current_scope = create_new_scope();
 					}
 					statements 
 				'}'
@@ -187,6 +188,7 @@ single_stmt: if_block {
 							$$ = new content_t();
 							$$ = $1;
 							backpatch($$->nextlist, nextinstr);
+							
 						}
 		
 	    	|while_block {
@@ -197,8 +199,10 @@ single_stmt: if_block {
 	    	|declaration {$$ = new content_t(); }		
 	    	
 			|CONTINUE ';' {
-								if(!is_loop)
+								if(!is_loop){
 									yyerror("Illegal use of continue");
+									
+									}
 								$$ = new content_t();
 								$$->continuelist = {nextinstr};
 								gencode("goto _");
@@ -262,6 +266,7 @@ for_block: FOR '('
 						
 					} N M stmt {is_loop = 0;}
 					{
+						
 						backpatch($6->truelist,$12);
 						backpatch($13->nextlist,$7);
 						backpatch($13->continuelist, $7);
@@ -323,7 +328,7 @@ sub_decl:	assignment_expr
 			array_access
 			;
 
-/* This is because we can have empty expession statements inside for loops */
+
 expression_stmt: data_type expression ';'	
 				| expression ';' {
 						$$ = new content_t(); 
@@ -547,8 +552,10 @@ identifier: IDENTIFIER {
 					if(is_array_index){
 						// display_all();
 						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
+                      	if($1 == NULL) {
 					  		yyerror("Variable not declared");
+							
+							}
 						
 					}
                     else if(is_declaration && !rhs)
@@ -584,16 +591,19 @@ identifier: IDENTIFIER {
 
 						$1=insert(SYMBOL_TABLE,char_array,INT_MAX,current_dtype, size);
 						
-						if($1 == NULL) 
+						if($1 == NULL){
 							yyerror("Redeclaration of variable");
+							
+						}
 						
                     }
                     else
                     {	
-						// display_all();
+						//display_all();
 						$1=search_recursive(yylval.lexi);
-                      	if($1 == NULL) 
+                      	if($1 == NULL){
 					  		yyerror("Variable not declared");
+						  }
                     }
 					$$ = $1;
 					
@@ -662,8 +672,9 @@ arithmetic_expr: arithmetic_expr ADDITION arithmetic_expr
 						$$ = new content_t();
 						$$->data_type = $2->data_type;
 						$$->addr = "t" + to_string(temp_var_number);
-						std::string expr = $$->addr + " = " + "minus " + $2->addr;
-						$$->code = $2->code + expr;
+						std::string expr = $$->addr + " = " + "-" + $2->addr;
+						$$->code = expr;
+						gencode($$->code);
 						temp_var_number++;
 				 	 }
 
@@ -700,10 +711,8 @@ array_access: identifier arr
 					$$->entry = $1;
 					if(is_declaration && !rhs){
 						$1->size*=$2->array_dimension;
-					}
-
-					
-				}
+					}	
+				};
 
 arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			$$ = new content_t();
@@ -715,21 +724,23 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			{			
 						if(!$4->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");
-							exit(0);
 						}
 						
-						if($4->value <= 0)
+						if($4->value <= 0){
 							yyerror("size of array is not positive");
+						}
 						else if($4->is_constant){
 							$$->array_dimension = $1->array_dimension * $4->value;
 						}
 			}
 			else if($4->is_constant)
 			{
-				if($4->value > $1->array_dimension)
+				if($4->value > $1->array_dimension){
 					yyerror("Array index out of bound");
-				if($4->value < 0)
+				}
+				if($4->value < 0){
 					yyerror("Array index cannot be negative");
+				}
 			}
 
 			
@@ -738,7 +749,7 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 			else
 				$$->code = string($1->code) + string("[") + string($4->lexeme) + string("]");
 		}
-		| 
+		| /* empty */
 		'[' {is_array_index=1;} array_index {is_array_index=0;} ']' {
 			
 			$$ = new content_t();
@@ -751,17 +762,18 @@ arr: arr '[' {is_array_index=1;} array_index {is_array_index=0;}']' {
 					{
 						if(!$3->is_constant){
 							yyerror("Size of Array should be an Integer Literal.");
-							exit(0);
 						}
-						if($3->value <= 0)
+						if($3->value <= 0){
 							yyerror("size of array is not positive");
+							}
 						else if($3->is_constant)
 							$$->array_dimension = $3->value;
 			}
 			else if($3->is_constant)
 			{
-				if($3->value < 0)
+				if($3->value < 0){
 					yyerror("Array index cannot be negative");
+					}
 			}
 			
 			
@@ -775,14 +787,12 @@ array_index: constant		{$$ = $1;}
 		   | identifier		{$$ = $1;}
 					 ;
 
-M: 			{$$ = nextinstr;} ;
+M:  {$$ = nextinstr;};
 
-N:			{
-				$$ = new content_t;
+N:  {				$$ = new content_t;
 				$$->nextlist = {nextinstr};
 				gencode("goto _");
-			}
-	;
+			};
 
 %%
 
@@ -847,8 +857,8 @@ void type_check(int left, int right, int flag) {
 		switch(flag)
 		{
 			case 0: yyerror("Type mismatch in arithmetic expression"); break;
-			case 1: yyerror("Type mismatch in assignment expression"); break;
-			case 2: yyerror("Type mismatch in logical expression"); break;
+			case 1: yyerror("Type mismatch in assignment expression");  break;
+			case 2: yyerror("Type mismatch in logical expression");  break;
 		}
 	}
 }
@@ -884,6 +894,7 @@ int main(int argc, char *argv[]){
     	while(!feof(yyin))
 		yyparse();
 	
+
 	printf("SYMBOL TABLES\n\n");
 	display_all();
 
@@ -896,6 +907,6 @@ int main(int argc, char *argv[]){
 
 void yyerror(const char *msg)
 {
-	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg,yylval.lexi );
-	// exit(0);
+	printf("Line no: %d Error message: %s Token: %s\n", yylineno, msg, yylval.lexi );
+	exit(0);
 }
