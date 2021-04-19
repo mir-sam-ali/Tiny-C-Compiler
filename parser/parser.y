@@ -18,13 +18,7 @@
 
 	int is_declaration = 0;
 	int is_loop = 0;
-	
-
 	int is_array_index=0;
-
-	
-	
-	
 	int rhs = 0;
 	int old_is_declaration=0;
 	int arr_size = 1;
@@ -40,7 +34,6 @@
 
 	int nextinstr = 0;
 	int temp_var_number = 0;
-
 	vector<string> ICG;
 %}
 
@@ -56,16 +49,14 @@
 	int instr;
 }
 
-%token<entry> IDENTIFIER
-%token <entry> INTEGER_LITERAL CHAR_LITERAL TRUE FALSE STRING_LITERAL
 
- /* Constants */
-// %token INTEGER_LITERAL STRING_LITERAL CHAR_LITERAL
+/* Constants and Identifier */
+%token <entry> INTEGER_LITERAL CHAR_LITERAL TRUE FALSE STRING_LITERAL IDENTIFIER
 
- /* Logical and Relational operators */
+/* Logical and Relational operators */
 %token AND OR LESSTHANEQUAL GREATERTHANEQUAL EQ NEQ AMPERSAND 
 
- /* Short hand assignment operators */
+/* Short hand assignment operators */
 %token MULEQ DIVEQ MODEQ PLUSEQ MINUSEQ
 %token INCREMENT DECREMENT
 
@@ -75,15 +66,11 @@
  /* Keywords */
 %token IF FOR WHILE CONTINUE BREAK RETURN CASE DEFAULT DO ELSE SWITCH
 
-/* operators */
-
+/* operators and functions */
 %token STAR ADDITION MINUS NEGATION EXCLAIMATION DIVISION MODULO
 %token SHIFTLEFT SHIFTRIGHT LESSTHAN GREATERTHAN 
-%token BITXOR BITOR QUESTION ASSIGN  SHIFTLEQ SHIFTREQ BITANDEQ BITXOREQ BITOREQ HASH
-
-// %token TRUE FALSE
+%token BITXOR BITOR QUESTION ASSIGN SHIFTLEQ SHIFTREQ BITANDEQ BITXOREQ BITOREQ HASH
 %token PRINT SCANF GETS PUTS SIZEOF LOOP SUM MAX MIN
-
 %token COMMA FULL_STOP OPEN_SQUARE CLOSE_SQUARE COLON 
 
 %type <entry> identifier
@@ -220,9 +207,7 @@ single_stmt: if_block {
 				$$= $1;
 				gencode($1->code);
 			}    
-	
-	
-	    ;
+			;
 
 print_statement: PRINT '(' print_var ')'{
 				$$= new content_t();
@@ -574,19 +559,13 @@ identifier: IDENTIFIER {
 						}
 						string temp_lex;
 						temp_lex.assign(yylval.lexi);
-						// cout<<temp_lex<<endl;
 						char temp = current_scope+'0';
 						temp_lex+=temp;
-						// cout<<temp_lex<<endl;
-						// strcat(yylval.lexi, &temp);
-
+				
 						int n = temp_lex.length();
 					
-						// declaring character array
 						char char_array[n + 1];
 					
-						// copying the contents of the
-						// string to char array
 						strcpy(char_array, temp_lex.c_str());
 
 						$1=insert(SYMBOL_TABLE,char_array,INT_MAX,current_dtype, size);
