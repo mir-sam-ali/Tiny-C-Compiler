@@ -307,7 +307,7 @@ class Assembler:
                     if self.variables[instruction[i][0]]['size'] == 1:
                         res += "\tli $v0, 11\n"
                     else:
-                        res += "\tli $v0, 11\n"
+                        res += "\tli $v0, 1\n"
                     try:
                         instruction[i][1] = int(instruction[i][1])
                         res += f"\tli $t4, {instruction[i][1]}\n"
