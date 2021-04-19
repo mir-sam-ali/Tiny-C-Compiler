@@ -4,3 +4,8 @@ lex.yy.c
 y.tab.h 
 y.output 
 y.dot
+ICG.code
+ICG.vars
+output.asm
+myparser.dSYM
+.vscode
